@@ -1,4 +1,4 @@
-"""CLI interface for GPS Genealogy Agents."""
+"""CLI interface for GPS Genealogy Agents using Semantic Kernel + AutoGen."""
 
 import asyncio
 import json
@@ -12,7 +12,7 @@ from rich.table import Table
 
 app = typer.Typer(
     name="gps-agents",
-    help="GPS Genealogical Research Multi-Agent System",
+    help="GPS Genealogical Research Multi-Agent System (SK + AutoGen)",
     add_completion=False,
 )
 console = Console()
@@ -28,36 +28,22 @@ def get_config():
     return {
         "anthropic_api_key": os.getenv("ANTHROPIC_API_KEY"),
         "openai_api_key": os.getenv("OPENAI_API_KEY"),
-        "rocksdb_path": os.getenv("ROCKSDB_PATH", "./data/ledger"),
-        "sqlite_path": os.getenv("SQLITE_PATH", "./data/projection.db"),
+        "data_dir": Path(os.getenv("DATA_DIR", "./data")),
         "familysearch_client_id": os.getenv("FAMILYSEARCH_CLIENT_ID"),
         "familysearch_client_secret": os.getenv("FAMILYSEARCH_CLIENT_SECRET"),
     }
 
 
-def get_sources(config: dict):
-    """Initialize data sources based on configuration."""
-    from .sources.accessgenealogy import AccessGenealogySource
-    from .sources.familysearch import FamilySearchSource
-    from .sources.jerripedia import JerripediaSource
-    from .sources.wikitree import WikiTreeSource
+def get_kernel_config():
+    """Create SK kernel configuration."""
+    from gps_agents.sk.kernel import KernelConfig
 
-    sources = [
-        WikiTreeSource(),  # Free, no auth needed
-        AccessGenealogySource(),  # Free, scraping
-        JerripediaSource(),  # Free, API
-    ]
-
-    # Add FamilySearch if configured
-    if config.get("familysearch_client_id"):
-        sources.append(
-            FamilySearchSource(
-                client_id=config["familysearch_client_id"],
-                client_secret=config["familysearch_client_secret"],
-            )
-        )
-
-    return sources
+    config = get_config()
+    return KernelConfig(
+        data_dir=config["data_dir"],
+        openai_api_key=config["openai_api_key"],
+        anthropic_api_key=config["anthropic_api_key"],
+    )
 
 
 @app.command()
@@ -65,8 +51,9 @@ def research(
     query: str = typer.Argument(..., help="Research query in natural language"),
     output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
+    max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),
 ):
-    """Run a genealogical research query."""
+    """Run a genealogical research query using the GPS multi-agent system."""
     config = get_config()
 
     if not config.get("anthropic_api_key") and not config.get("openai_api_key"):
@@ -76,27 +63,21 @@ def research(
     console.print(Panel(f"[bold]Research Query:[/bold] {query}", title="GPS Genealogy Research"))
 
     async def run():
-        from .graph import run_research
-        from .ledger.fact_ledger import FactLedger
-        from .projections.sqlite_projection import SQLiteProjection
+        from gps_agents.autogen.orchestration import run_research_session
 
-        # Initialize storage
-        ledger = FactLedger(config["rocksdb_path"])
-        projection = SQLiteProjection(config["sqlite_path"])
-        sources = get_sources(config)
+        kernel_config = get_kernel_config()
 
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
-            task = progress.add_task("Researching...", total=None)
+            task = progress.add_task("Researching with GPS agents...", total=None)
 
-            result = await run_research(
-                task=query,
-                ledger=ledger,
-                projection=projection,
-                sources=sources,
+            result = await run_research_session(
+                query=query,
+                kernel_config=kernel_config,
+                max_rounds=max_rounds,
             )
 
             progress.update(task, completed=True)
@@ -106,7 +87,7 @@ def research(
     result = asyncio.run(run())
 
     # Display results
-    _display_results(result, verbose)
+    _display_chat_results(result, verbose)
 
     # Save to file if requested
     if output:
@@ -115,18 +96,98 @@ def research(
 
 
 @app.command()
+def evaluate(
+    fact_id: str = typer.Argument(..., help="Fact UUID to evaluate"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
+):
+    """Evaluate a fact against GPS standards."""
+    config = get_config()
+
+    if not config.get("openai_api_key"):
+        console.print("[red]Error: OPENAI_API_KEY required for GPS evaluation.[/red]")
+        raise typer.Exit(1)
+
+    async def run():
+        from gps_agents.autogen.orchestration import evaluate_fact_gps
+        from gps_agents.sk.kernel import create_kernel
+
+        kernel_config = get_kernel_config()
+        kernel = create_kernel(kernel_config)
+
+        # Get fact from ledger
+        ledger_plugin = kernel.get_plugin("ledger")
+        fact_json = await ledger_plugin.get_fact(fact_id=fact_id)
+
+        if "error" in fact_json:
+            console.print(f"[red]Error: {fact_json}[/red]")
+            raise typer.Exit(1)
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task("Evaluating GPS pillars...", total=None)
+            result = await evaluate_fact_gps(fact_json, kernel_config)
+            progress.update(task, completed=True)
+
+        return result
+
+    result = asyncio.run(run())
+
+    console.print(Panel("GPS Evaluation Complete", title="[bold]Evaluation Results[/bold]"))
+
+    if verbose:
+        for msg in result.get("evaluation", []):
+            role = msg.get("role", "unknown")
+            content = msg.get("content", "")
+            console.print(f"\n[bold]{role}:[/bold] {content[:500]}...")
+
+
+@app.command()
+def translate(
+    text: str = typer.Argument(..., help="Text to translate"),
+    language: str = typer.Option("auto", "--language", "-l", help="Source language"),
+):
+    """Translate a genealogical record."""
+    config = get_config()
+
+    if not config.get("openai_api_key"):
+        console.print("[red]Error: OPENAI_API_KEY required.[/red]")
+        raise typer.Exit(1)
+
+    async def run():
+        from gps_agents.autogen.orchestration import translate_record
+
+        kernel_config = get_kernel_config()
+        return await translate_record(text, language, kernel_config)
+
+    result = asyncio.run(run())
+
+    if result.get("translation"):
+        console.print(Panel(result["translation"], title=f"[bold]Translation from {language}[/bold]"))
+    else:
+        console.print("[yellow]No translation returned[/yellow]")
+
+
+@app.command()
 def load_gedcom(
     file_path: Path = typer.Argument(..., help="Path to GEDCOM file"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
 ):
     """Load a GEDCOM file into the system."""
-    from .sources.gedcom import GedcomSource
+    from gps_agents.sources.gedcom import GedcomSource
+    from gps_agents.models.search import SearchQuery
 
     if not file_path.exists():
         console.print(f"[red]Error: File not found: {file_path}[/red]")
         raise typer.Exit(1)
 
-    source = GedcomSource(file_path)
+    async def run():
+        source = GedcomSource()
+        count = source.load_file(str(file_path))
+        records = await source.search(SearchQuery())
+        return count, records
 
     with Progress(
         SpinnerColumn(),
@@ -134,25 +195,22 @@ def load_gedcom(
         console=console,
     ) as progress:
         task = progress.add_task("Loading GEDCOM...", total=None)
-        count = source.load_file()
+        count, records = asyncio.run(run())
         progress.update(task, completed=True)
 
     console.print(f"[green]Loaded {count} individuals from {file_path.name}[/green]")
 
-    if verbose:
-        # Show sample individuals
+    if verbose and records:
         table = Table(title="Sample Individuals")
         table.add_column("ID")
         table.add_column("Name")
-        table.add_column("Birth")
-        table.add_column("Death")
+        table.add_column("Source")
 
-        for i, (indi_id, indi) in enumerate(list(source._individuals.items())[:10]):
+        for record in records[:10]:
             table.add_row(
-                indi_id,
-                indi.get("name", "").replace("/", ""),
-                indi.get("birth_date", ""),
-                indi.get("death_date", ""),
+                record.record_id,
+                record.raw_data.get("name", "Unknown"),
+                record.source_name,
             )
 
         console.print(table)
@@ -166,15 +224,15 @@ def list_facts(
     """List facts from the ledger."""
     config = get_config()
 
-    from .ledger.fact_ledger import FactLedger
-    from .models.fact import FactStatus
+    from gps_agents.ledger.fact_ledger import FactLedger
+    from gps_agents.models.fact import FactStatus
 
-    ledger = FactLedger(config["rocksdb_path"])
+    ledger = FactLedger(str(config["data_dir"] / "ledger"))
 
     status_filter = None
     if status:
         try:
-            status_filter = FactStatus(status.lower())
+            status_filter = FactStatus(status.upper())
         except ValueError:
             console.print(f"[red]Invalid status. Choose from: {[s.value for s in FactStatus]}[/red]")
             raise typer.Exit(1)
@@ -202,15 +260,18 @@ def list_facts(
     console.print(table)
     console.print(f"[dim]Showing {count} facts[/dim]")
 
+    ledger.close()
+
 
 @app.command()
 def stats():
     """Show statistics about the research database."""
     config = get_config()
 
-    from .projections.sqlite_projection import SQLiteProjection
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.sk.plugins.memory import MemoryPlugin
 
-    projection = SQLiteProjection(config["sqlite_path"])
+    projection = SQLiteProjection(str(config["data_dir"] / "projection.db"))
     statistics = projection.get_statistics()
 
     table = Table(title="Database Statistics")
@@ -229,109 +290,146 @@ def stats():
 
     console.print(table)
 
-    # Sources breakdown
-    sources = statistics.get("sources", {})
-    if sources:
-        source_table = Table(title="Records by Source")
-        source_table.add_column("Source")
-        source_table.add_column("Count")
+    # Memory stats
+    memory = MemoryPlugin(str(config["data_dir"] / "chroma"))
+    memory_stats = json.loads(memory.get_memory_stats())
 
-        for source, count in sorted(sources.items(), key=lambda x: -x[1]):
-            source_table.add_row(source, str(count))
+    if memory_stats.get("available"):
+        mem_table = Table(title="Semantic Memory Statistics")
+        mem_table.add_column("Collection")
+        mem_table.add_column("Count")
 
-        console.print(source_table)
+        for collection, count in memory_stats.get("collections", {}).items():
+            mem_table.add_row(collection, str(count))
+
+        console.print(mem_table)
 
 
 @app.command()
 def search(
     term: str = typer.Argument(..., help="Search term"),
+    semantic: bool = typer.Option(False, "--semantic", "-s", help="Use semantic search"),
     limit: int = typer.Option(20, "--limit", "-l", help="Maximum results"),
 ):
     """Search fact statements."""
     config = get_config()
 
-    from .projections.sqlite_projection import SQLiteProjection
+    if semantic:
+        # Use ChromaDB semantic search
+        from gps_agents.sk.plugins.memory import MemoryPlugin
 
-    projection = SQLiteProjection(config["sqlite_path"])
-    facts = projection.search_statements(term, limit)
+        memory = MemoryPlugin(str(config["data_dir"] / "chroma"))
+        results_json = memory.search_similar_facts(term, limit)
+        results = json.loads(results_json)
 
-    if not facts:
-        console.print(f"[yellow]No facts found matching '{term}'[/yellow]")
-        return
+        if not results:
+            console.print(f"[yellow]No facts found matching '{term}'[/yellow]")
+            return
 
-    table = Table(title=f"Search Results for '{term}'")
-    table.add_column("Statement")
-    table.add_column("Status")
-    table.add_column("Confidence")
-
-    for fact in facts:
-        table.add_row(
-            fact.statement,
-            fact.status.value,
-            f"{fact.confidence_score:.2f}",
-        )
-
-    console.print(table)
-
-
-def _display_results(result: dict, verbose: bool):
-    """Display research results."""
-    # Synthesis
-    synthesis = result.get("synthesis", {})
-
-    if synthesis.get("proof_summary"):
-        console.print(Panel(synthesis["proof_summary"], title="[bold]Proof Summary[/bold]"))
-
-    if synthesis.get("narrative"):
-        console.print(Panel(synthesis["narrative"], title="[bold]Narrative[/bold]"))
-
-    # Accepted facts
-    accepted = result.get("accepted_facts", [])
-    if accepted:
-        table = Table(title="Accepted Facts")
+        table = Table(title=f"Semantic Search Results for '{term}'")
         table.add_column("Statement")
-        table.add_column("Confidence")
-        table.add_column("Sources")
+        table.add_column("Similarity")
 
-        for fact in accepted:
+        for result in results:
+            distance = result.get("distance", 0)
+            similarity = f"{(1 - distance) * 100:.1f}%" if distance else "N/A"
             table.add_row(
-                fact.statement,
-                f"{fact.confidence_score:.2f}",
-                str(len(fact.sources)),
+                result.get("statement", "")[:60] + "...",
+                similarity,
             )
 
         console.print(table)
 
-    # Open questions
-    open_questions = synthesis.get("open_questions", [])
-    if open_questions:
-        console.print("\n[bold]Open Questions:[/bold]")
-        for q in open_questions:
-            console.print(f"  • {q}")
+    else:
+        # Use SQLite text search
+        from gps_agents.projections.sqlite_projection import SQLiteProjection
 
-    # Sources searched
-    sources = result.get("sources_searched", [])
-    if sources and verbose:
-        console.print(f"\n[dim]Sources searched: {', '.join(sources)}[/dim]")
+        projection = SQLiteProjection(str(config["data_dir"] / "projection.db"))
+        facts = projection.search_statements(term, limit)
+
+        if not facts:
+            console.print(f"[yellow]No facts found matching '{term}'[/yellow]")
+            return
+
+        table = Table(title=f"Search Results for '{term}'")
+        table.add_column("Statement")
+        table.add_column("Status")
+        table.add_column("Confidence")
+
+        for fact in facts:
+            table.add_row(
+                fact.statement,
+                fact.status.value,
+                f"{fact.confidence_score:.2f}",
+            )
+
+        console.print(table)
+
+
+@app.command()
+def memory_stats():
+    """Show semantic memory statistics."""
+    config = get_config()
+
+    from gps_agents.sk.plugins.memory import MemoryPlugin
+
+    memory = MemoryPlugin(str(config["data_dir"] / "chroma"))
+    stats = json.loads(memory.get_memory_stats())
+
+    if not stats.get("available"):
+        console.print("[yellow]ChromaDB not available. Install with: pip install chromadb[/yellow]")
+        return
+
+    table = Table(title="Semantic Memory (ChromaDB)")
+    table.add_column("Collection")
+    table.add_column("Documents")
+
+    for collection, count in stats.get("collections", {}).items():
+        table.add_row(collection, str(count))
+
+    console.print(table)
+    console.print(f"[dim]Persist directory: {stats.get('persist_directory')}[/dim]")
+
+
+def _display_chat_results(result: dict, verbose: bool):
+    """Display research chat results."""
+    chat_history = result.get("chat_history", [])
+
+    if not chat_history:
+        console.print("[yellow]No results from research session[/yellow]")
+        return
+
+    # Show final messages
+    console.print("\n[bold]Research Summary:[/bold]")
+
+    # Find synthesis or conclusion
+    for msg in reversed(chat_history):
+        content = msg.get("content", "")
+        name = msg.get("name", "unknown")
+
+        if "synthesis" in name.lower() or "conclusion" in content.lower() or "proof" in content.lower():
+            console.print(Panel(content[:1000], title=f"[bold]{name}[/bold]"))
+            break
+
+    if verbose:
+        console.print("\n[bold]Full Conversation:[/bold]")
+        for msg in chat_history:
+            name = msg.get("name", "unknown")
+            content = msg.get("content", "")[:300]
+            console.print(f"\n[bold]{name}:[/bold] {content}...")
+
+    # Cost summary
+    if result.get("cost"):
+        console.print(f"\n[dim]Total cost: ${result['cost']:.4f}[/dim]")
 
 
 def _save_results(result: dict, output: Path):
     """Save results to file."""
-
-    def serialize(obj):
-        if hasattr(obj, "model_dump"):
-            return obj.model_dump()
-        if hasattr(obj, "__dict__"):
-            return obj.__dict__
-        return str(obj)
-
     output_data = {
-        "task": result.get("task"),
-        "synthesis": result.get("synthesis"),
-        "accepted_facts": [
-            serialize(f) for f in result.get("accepted_facts", [])
-        ],
-        "sources_searched": result.get("sources_searched"),
+        "query": result.get("query"),
+        "chat_history": result.get("chat_history", []),
+        "summary": result.get("summary"),
+        "cost": result.get("cost"),
     }
 
     with open(output, "w") as f:
