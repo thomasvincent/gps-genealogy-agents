@@ -10,6 +10,7 @@ from .translation import TranslationAgent
 from .citation import CitationAgent
 from .synthesis import SynthesisAgent
 from .dna import DNAAgent
+from .search_orchestrator import SearchOrchestratorAgent
 
 __all__ = [
     "BaseAgent",
@@ -22,4 +23,5 @@ __all__ = [
     "CitationAgent",
     "SynthesisAgent",
     "DNAAgent",
+    "SearchOrchestratorAgent",
 ]
