@@ -1,22 +1,45 @@
-"""Data source connectors."""
+"""Data source connectors and smart router for genealogy research."""
 
-from .base import GenealogySource, SearchQuery
-from .familysearch import FamilySearchSource
-from .wikitree import WikiTreeSource
-from .findmypast import FindMyPastSource
-from .myheritage import MyHeritageSource
-from .accessgenealogy import AccessGenealogySource
-from .jerripedia import JerripediaSource
-from .gedcom import GedcomSource
+from gps_agents.models.search import RawRecord, SearchQuery
+from gps_agents.sources.base import BaseSource, GenealogySource
+from gps_agents.sources.router import (
+    RecordType,
+    Region,
+    RouterConfig,
+    SearchRouter,
+    SourceSearchResult,
+    UnifiedSearchResult,
+    create_default_router,
+)
+from gps_agents.sources.accessgenealogy import AccessGenealogySource
+from gps_agents.sources.familysearch import FamilySearchSource
+from gps_agents.sources.findmypast import FindMyPastSource
+from gps_agents.sources.gedcom import GedcomSource
+from gps_agents.sources.jerripedia import JerripediaSource
+from gps_agents.sources.myheritage import MyHeritageSource
+from gps_agents.sources.wikitree import WikiTreeSource
 
 __all__ = [
-    "GenealogySource",
+    # Models
+    "RawRecord",
     "SearchQuery",
-    "FamilySearchSource",
-    "WikiTreeSource",
-    "FindMyPastSource",
-    "MyHeritageSource",
+    # Base classes
+    "BaseSource",
+    "GenealogySource",
+    # Router
+    "RecordType",
+    "Region",
+    "RouterConfig",
+    "SearchRouter",
+    "SourceSearchResult",
+    "UnifiedSearchResult",
+    "create_default_router",
+    # Sources
     "AccessGenealogySource",
-    "JerripediaSource",
+    "FamilySearchSource",
+    "FindMyPastSource",
     "GedcomSource",
+    "JerripediaSource",
+    "MyHeritageSource",
+    "WikiTreeSource",
 ]
