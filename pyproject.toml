@@ -1,6 +1,6 @@
 [project]
 name = "gps-genealogy-agents"
-version = "0.2.0"
+version = "0.3.0"
 description = "Multi-agent AI genealogical research system using Semantic Kernel and AutoGen, meeting GPS (Genealogical Proof Standard) with Gramps integration"
 readme = "README.md"
 requires-python = ">=3.13"

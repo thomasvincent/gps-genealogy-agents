@@ -301,7 +301,190 @@ def plan_person(
 
     p = GPerson(names=[GName(given=given, surname=surname)])
     dec = decide_upsert_person(gc, proj, p)
+console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("event")
+def plan_event(
+    event_type: str = typer.Option(..., "--type", help="Event type e.g., birth"),
+    year: int = typer.Option(None, "--year", help="Year"),
+    run_id: str = typer.Option(None, "--run-id", help="Bind run_id"),
+) -> None:
+    from gps_agents.idempotency.decision import decide_upsert_event
+    from gps_agents.gramps.models import Event as GEvent, EventType as GEventType, GrampsDate
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    et = GEventType(event_type) if event_type in GEventType.__members__.values() else GEventType.OTHER
+    ev = GEvent(event_type=et, date=GrampsDate(year=year) if year else None)
+    dec = decide_upsert_event(gc, proj, ev)
     console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("source")
+def plan_source(
+    title: str = typer.Option(..., "--title", help="Source title"),
+    run_id: str = typer.Option(None, "--run-id", help="Bind run_id"),
+) -> None:
+    from gps_agents.idempotency.decision import decide_upsert_source
+    from gps_agents.gramps.models import Source as GSource
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    s = GSource(title=title)
+    dec = decide_upsert_source(gc, proj, s)
+    console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("place")
+def plan_place(
+    name: str = typer.Option("", "--name"),
+    city: str = typer.Option(None, "--city"),
+    state: str = typer.Option(None, "--state"),
+    country: str = typer.Option(None, "--country"),
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    from gps_agents.idempotency.decision import decide_upsert_place
+    from gps_agents.gramps.models import Place as GPlace
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    pl = GPlace(name=name, city=city, state=state, country=country)
+    dec = decide_upsert_place(gc, proj, pl)
+    console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("citation")
+def plan_citation(
+    source_id: str = typer.Option(..., "--source-id"),
+    page: str = typer.Option(None, "--page"),
+    year: int = typer.Option(None, "--year"),
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    from gps_agents.idempotency.decision import decide_upsert_citation
+    from gps_agents.gramps.models import Citation as GCitation, GrampsDate
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    cit = GCitation(source_id=source_id, page=page, date=GrampsDate(year=year) if year else None)
+    dec = decide_upsert_citation(gc, proj, cit)
+    console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("relationship")
+def plan_relationship(
+    kind: str = typer.Option(..., "--kind"),
+    a: str = typer.Option(..., "--a"),
+    b: str = typer.Option(..., "--b"),
+    context: str = typer.Option(None, "--context"),
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    from gps_agents.idempotency.decision import decide_upsert_relationship
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    dec = decide_upsert_relationship(gc, proj, kind, a, b, context)
+    console.print(_json.dumps(dec.__dict__, indent=2))
+
+
+@plan_app.command("batch")
+def plan_batch(
+    input: Path = typer.Option(..., "--input", help="JSON list of entities"),  # noqa: B008
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    """Batch planner: input is a list like:
+    [
+      {"entity":"person","given":"John","surname":"Doe"},
+      {"entity":"event","type":"birth","year":1850}
+    ]
+    """
+    import json as _json
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+    data = _json.loads(Path(input).read_text())
+
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    from gps_agents.idempotency.decision import (
+        decide_upsert_person, decide_upsert_event, decide_upsert_source,
+        decide_upsert_place, decide_upsert_citation, decide_upsert_relationship,
+    )
+    from gps_agents.gramps.models import (
+        Person as GPerson, Name as GName, Event as GEvent, EventType as GEventType,
+        GrampsDate, Source as GSource, Place as GPlace, Citation as GCitation,
+    )
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    decisions = []
+    for item in data:
+        et = item.get("entity")
+        if et == "person":
+            p = GPerson(names=[GName(given=item.get("given",""), surname=item.get("surname",""))])
+            decisions.append(decide_upsert_person(gc, proj, p).__dict__)
+        elif et == "event":
+            ev = GEvent(event_type=GEventType(item.get("type","other")), date=GrampsDate(year=item.get("year")))
+            decisions.append(decide_upsert_event(gc, proj, ev).__dict__)
+        elif et == "source":
+            s = GSource(title=item.get("title",""))
+            decisions.append(decide_upsert_source(gc, proj, s).__dict__)
+        elif et == "place":
+            pl = GPlace(name=item.get("name",""), city=item.get("city"), state=item.get("state"), country=item.get("country"))
+            decisions.append(decide_upsert_place(gc, proj, pl).__dict__)
+        elif et == "citation":
+            cit = GCitation(source_id=item.get("source_id",""), page=item.get("page"), date=GrampsDate(year=item.get("year")))
+            decisions.append(decide_upsert_citation(gc, proj, cit).__dict__)
+        elif et == "relationship":
+            decisions.append(decide_upsert_relationship(gc, proj, item.get("kind",""), item.get("a",""), item.get("b",""), item.get("context")).__dict__)
+    console.print(_json.dumps(decisions, indent=2))
 
 
 @backfill_app.command("idempotency")
