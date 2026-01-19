@@ -2,9 +2,10 @@
 
 import asyncio
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
-from uuid import uuid4
+
+from uuid_utils import uuid7
 
 from ..models.fact import Fact, FactStatus
 from ..models.gps import GPSEvaluation
@@ -264,14 +265,14 @@ class ResearchAgent(BaseAgent):
         confidence = proposal.get("confidence_hint", 0.5)
 
         return Fact(
-            fact_id=uuid4(),
+            fact_id=uuid7(),
             statement=statement,
             sources=sources,
             provenance=Provenance(
                 created_by=ProvenanceSource.RESEARCH_AGENT,
                 agent_id=self.name,
                 query_context=statement,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(UTC),
             ),
             confidence_score=confidence,
             status=FactStatus.PROPOSED,

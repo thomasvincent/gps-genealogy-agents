@@ -1,6 +1,6 @@
 """WikiTree API and scraping connector."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
@@ -151,5 +151,5 @@ class WikiTreeSource(BaseSource):
             url=f"https://www.wikitree.com/wiki/{wiki_id}",
             raw_data=person,
             extracted_fields={k: v for k, v in extracted.items() if v},
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )

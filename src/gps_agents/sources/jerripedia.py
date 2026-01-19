@@ -1,6 +1,6 @@
 """Jerripedia web scraper for Channel Islands records."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 
@@ -136,7 +136,7 @@ class JerripediaSource(BaseSource):
                     "snippet": clean_snippet,
                     "word_count": str(result.get("wordcount", 0)),
                 },
-                accessed_at=datetime.utcnow(),
+                accessed_at=datetime.now(UTC),
             )
             records.append(record)
 
@@ -181,7 +181,7 @@ class JerripediaSource(BaseSource):
                 url=f"{self.base_url}/wiki/{title.replace(' ', '_')}",
                 raw_data=page_data,
                 extracted_fields=extracted,
-                accessed_at=datetime.utcnow(),
+                accessed_at=datetime.now(UTC),
             )
 
         return None

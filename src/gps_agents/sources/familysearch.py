@@ -1,6 +1,6 @@
 """FamilySearch API connector."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
@@ -209,5 +209,5 @@ class FamilySearchSource(BaseSource):
             url=f"https://www.familysearch.org/tree/person/details/{pid}",
             raw_data=person,
             extracted_fields=extracted,
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )

@@ -1,15 +1,21 @@
 """Core Fact model - the central entity of the genealogical research system."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, Field
+from uuid_utils import uuid7 as _uuid7
 
 from .confidence import ConfidenceDelta
 from .gps import GPSEvaluation
 from .provenance import Provenance
 from .source import SourceCitation
+
+
+def uuid7() -> UUID:
+    """Generate a UUID7 compatible with stdlib UUID."""
+    return UUID(str(_uuid7()))
 
 
 class FactStatus(str, Enum):
@@ -24,7 +30,7 @@ class FactStatus(str, Enum):
 class Annotation(BaseModel):
     """An annotation or note attached to a fact."""
 
-    annotation_id: str = Field(default_factory=lambda: str(uuid4()))
+    annotation_id: str = Field(default_factory=lambda: str(uuid7()))
     author: str = Field(description="Agent or user who added this")
     content: str
     annotation_type: str = Field(default="note", description="note, warning, question, etc.")
@@ -38,7 +44,7 @@ class Fact(BaseModel):
     meaning updates create new versions rather than modifying existing ones.
     """
 
-    fact_id: UUID = Field(default_factory=uuid4)
+    fact_id: UUID = Field(default_factory=uuid7)
     version: int = Field(default=1, ge=1)
     statement: str = Field(description="The factual claim, e.g., 'John Smith born 1842'")
 
@@ -91,7 +97,7 @@ class Fact(BaseModel):
                 "version": self.version + 1,
                 "confidence_score": new_score,
                 "confidence_history": [*self.confidence_history, delta_with_scores],
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(UTC),
             }
         )
 
@@ -101,7 +107,7 @@ class Fact(BaseModel):
             update={
                 "version": self.version + 1,
                 "sources": [*self.sources, source],
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(UTC),
             }
         )
 
@@ -111,7 +117,7 @@ class Fact(BaseModel):
             update={
                 "version": self.version + 1,
                 "status": status,
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(UTC),
             }
         )
 
@@ -121,7 +127,7 @@ class Fact(BaseModel):
             update={
                 "version": self.version + 1,
                 "annotations": [*self.annotations, annotation],
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(UTC),
             }
         )
 

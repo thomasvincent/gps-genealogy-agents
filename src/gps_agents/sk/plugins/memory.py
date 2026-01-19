@@ -2,9 +2,9 @@
 
 import json
 from typing import Annotated
-from uuid import uuid4
 
 from semantic_kernel.functions import kernel_function
+from uuid_utils import uuid7
 
 try:
     import chromadb
@@ -199,7 +199,7 @@ class MemoryPlugin:
             return json.dumps({"error": "ChromaDB not available"})
 
         collection = self.client.get_collection(self.RESEARCH_COLLECTION)
-        context_id = str(uuid4())
+        context_id = str(uuid7())
 
         collection.add(
             ids=[context_id],

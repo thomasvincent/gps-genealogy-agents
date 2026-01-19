@@ -1,6 +1,6 @@
 """AccessGenealogy web scraper for Native American records."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 
@@ -136,7 +136,7 @@ class AccessGenealogySource(BaseSource):
                 url=url,
                 raw_data={"title": title, "summary": summary},
                 extracted_fields={"title": title, "summary": summary},
-                accessed_at=datetime.utcnow(),
+                accessed_at=datetime.now(UTC),
             )
             records.append(record)
 
@@ -178,5 +178,5 @@ class AccessGenealogySource(BaseSource):
             url=url,
             raw_data={"title": title, "content": content},
             extracted_fields=extracted,
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )

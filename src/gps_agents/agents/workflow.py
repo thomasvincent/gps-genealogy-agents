@@ -1,9 +1,10 @@
 """Workflow Agent - orchestrates the research process."""
 
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
-from uuid import uuid4
+
+from uuid_utils import uuid7
 
 from ..models.confidence import ConfidenceDelta
 from ..models.fact import Annotation, Fact, FactStatus
@@ -211,8 +212,8 @@ class WorkflowAgent(BaseAgent):
             sources=sources or [],
             provenance=Provenance(
                 created_by=ProvenanceSource.RESEARCH_AGENT,
-                agent_id=str(uuid4()),
-                created_at=datetime.utcnow(),
+                agent_id=str(uuid7()),
+                created_at=datetime.now(UTC),
             ),
             fact_type=fact_type,
             person_id=person_id,

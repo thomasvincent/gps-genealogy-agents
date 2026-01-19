@@ -1,6 +1,6 @@
 """FindMyPast API connector."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
@@ -148,5 +148,5 @@ class FindMyPastSource(BaseSource):
             url=hit.get("url") or f"https://www.findmypast.com/record?id={rid}",
             raw_data=hit,
             extracted_fields={k: v for k, v in extracted.items() if v},
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )

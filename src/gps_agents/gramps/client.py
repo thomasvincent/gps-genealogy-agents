@@ -20,7 +20,8 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from uuid import uuid4
+
+from uuid_utils import uuid7
 
 from gps_agents.gramps.models import (
     Family,
@@ -104,7 +105,7 @@ class GrampsClient:
             self._conn = None
 
     @contextmanager
-    def session(self) -> Generator[sqlite3.Connection, None, None]:
+    def session(self) -> Generator[sqlite3.Connection]:
         """Context manager for database session."""
         if not self._conn:
             raise RuntimeError("Not connected to database")
@@ -285,7 +286,7 @@ class GrampsClient:
         if not self._conn:
             raise RuntimeError("Not connected to database")
 
-        handle = str(uuid4()).replace("-", "")[:20]
+        handle = str(uuid7()).replace("-", "")[:20]
         gramps_id = person.gramps_id or f"I{self._get_next_id('person')}"
 
         # Build Gramps data structure
@@ -396,7 +397,7 @@ class GrampsClient:
         if not self._conn:
             raise RuntimeError("Not connected to database")
 
-        handle = str(uuid4()).replace("-", "")[:20]
+        handle = str(uuid7()).replace("-", "")[:20]
         gramps_id = source.gramps_id or f"S{self._get_next_id('source')}"
 
         data = {
@@ -459,9 +460,10 @@ class GrampsClient:
         if not self._conn or not self._db_file:
             raise RuntimeError("Not connected to database")
 
-        import shutil
         backup_path = Path(backup_path)
         backup_path.mkdir(parents=True, exist_ok=True)
+
+        import shutil
 
         # Create timestamped backup
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -1,6 +1,6 @@
 """GEDCOM file parser for local genealogy files."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ..models.search import RawRecord, SearchQuery
@@ -239,7 +239,7 @@ class GedcomSource(BaseSource):
             url=str(self.file_path) if self.file_path else None,
             raw_data=indi,
             extracted_fields={k: v for k, v in extracted.items() if v},
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )
 
     def get_family(self, family_id: str) -> dict | None:

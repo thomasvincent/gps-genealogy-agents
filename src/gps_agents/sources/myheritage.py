@@ -1,6 +1,6 @@
 """MyHeritage API connector."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
@@ -108,5 +108,5 @@ class MyHeritageSource(BaseSource):
             url=item.get("url") or f"https://www.myheritage.com/record/{rid}",
             raw_data=item,
             extracted_fields={k: v for k, v in extracted.items() if v},
-            accessed_at=datetime.utcnow(),
+            accessed_at=datetime.now(UTC),
         )
