@@ -29,6 +29,17 @@ from gps_agents.autogen.orchestration import (
     synthesize_proof,
     translate_record,
 )
+from gps_agents.autogen.match_merge import (
+    MATCH_MERGE_PROMPT,
+    MERGE_REVIEWER_PROMPT,
+    MatchMergeAgent,
+    MergeAction,
+    MergeDecision,
+    confidence_to_action,
+    create_match_merge_team,
+    evaluate_match_with_review,
+    quick_match_decision,
+)
 from gps_agents.autogen.wiki_publishing import (
     Platform,
     PublishDecision,
@@ -90,4 +101,12 @@ __all__ = [
     "ReviewIssue",
     "ReviewerMemory",
     "Severity",
+    # Match-merge agent
+    "MatchMergeAgent",
+    "MergeAction",
+    "MergeDecision",
+    "create_match_merge_team",
+    "evaluate_match_with_review",
+    "quick_match_decision",
+    "confidence_to_action",
 ]
