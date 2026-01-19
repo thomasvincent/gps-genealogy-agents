@@ -184,6 +184,62 @@ def test_wikidata_ensure_statement_prevents_duplicates():
     assert len(wd.claims) == 1
 
 
+def test_wikidata_equivalence_order_independent():
+    class MockWD2:
+        def __init__(self):
+            self.claims = [{
+                "id": "Q1$1",
+                "property": "p569",
+                "value": {"time": "+1850-03-00T00:00:00Z", "precision": 10},
+                "qualifiers": {"P580": {"time": "+1850-00-00T00:00:00Z", "precision": 9}},
+                "references": [{"P248": "Q999"}, {"P854": "https://example.org"}],
+            }]
+        def get_claims(self, entity_id: str, property_id: str):
+            return list(self.claims)
+        def add_claim(self, entity_id: str, property_id: str, value, qualifiers, references):
+            self.claims.append({
+                "id": "Q1$2",
+                "property": property_id,
+                "value": value,
+                "qualifiers": qualifiers,
+                "references": references,
+            })
+            return "Q1$2"
+
+    wd = MockWD2()
+    # Same semantics but different order and precision forms
+    ensure_statement(wd, "Q1", "P569", {"time": "+1850-03-15T00:00:00Z", "precision": 10}, qualifiers={"P580": {"time": "+1850-00-00T00:00:00Z", "precision": 9}}, references=[{"P854": "https://example.org"}, {"P248": "Q999"}])
+    assert len(wd.claims) == 1
+
+
+# ---------------------- Concurrency tests ----------------------
+
+def test_upsert_person_parallel_no_duplicates(env_tmp: Path):
+    import threading
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    p = Person(names=[Name(given="Concurrent", surname="Case")])
+    handles: list[str] = []
+
+    def worker():
+        r = upsert_person(gc, proj, p)
+        handles.append(r.handle)
+
+    threads = [threading.Thread(target=worker) for _ in range(10)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    assert len(set(handles)) == 1
+    with sqlite3.connect(db) as conn:
+        n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
+        assert n == 1
+
+
 # ---------------------- Git guard tests ----------------------
 
 def test_git_commit_guard_skips_when_no_change(env_tmp: Path, monkeypatch):
