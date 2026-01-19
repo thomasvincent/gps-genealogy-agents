@@ -29,6 +29,12 @@ from gps_agents.autogen.orchestration import (
     synthesize_proof,
     translate_record,
 )
+from gps_agents.autogen.wiki_publishing import (
+    create_wiki_publishing_team,
+    generate_wikidata_payload,
+    grade_article_gps,
+    publish_to_wikis,
+)
 
 __all__ = [
     # Agent classes
@@ -57,4 +63,9 @@ __all__ = [
     "run_research_session",
     "synthesize_proof",
     "translate_record",
+    # Wiki publishing
+    "create_wiki_publishing_team",
+    "generate_wikidata_payload",
+    "grade_article_gps",
+    "publish_to_wikis",
 ]
