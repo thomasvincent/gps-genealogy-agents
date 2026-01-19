@@ -212,6 +212,15 @@ def test_wikidata_equivalence_order_independent():
     assert len(wd.claims) == 1
 
 
+# ---------------------- Property tests ------------------------
+
+def test_person_fingerprint_stable_under_whitespace_and_case():
+    from gps_agents.idempotency.fingerprint import fingerprint_person
+    p1 = Person(names=[Name(given="JOHN ", surname="  DOE")])
+    p2 = Person(names=[Name(given="john", surname="doe")])
+    assert fingerprint_person(p1).value == fingerprint_person(p2).value
+
+
 # ---------------------- Concurrency tests ----------------------
 
 def test_upsert_person_parallel_no_duplicates(env_tmp: Path):
@@ -235,6 +244,35 @@ def test_upsert_person_parallel_no_duplicates(env_tmp: Path):
         t.join()
 
     assert len(set(handles)) == 1
+    with sqlite3.connect(db) as conn:
+        n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
+        assert n == 1
+
+
+def test_upsert_person_multiprocess_no_duplicates(env_tmp: Path):
+    from multiprocessing import Process, Manager
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    p = Person(names=[Name(given="Multi", surname="Proc")])
+
+    def worker(shared):
+        local_gc = GrampsClient(db)
+        local_gc.connect(db)
+        local_proj = SQLiteProjection(env_tmp / "proj.sqlite")
+        r = upsert_person(local_gc, local_proj, p)
+        shared.append(r.handle)
+
+    with Manager() as m:
+        shared = m.list()
+        procs = [Process(target=worker, args=(shared,)) for _ in range(6)]
+        for pr in procs:
+            pr.start()
+        for pr in procs:
+            pr.join()
+        assert len(set(list(shared))) == 1
     with sqlite3.connect(db) as conn:
         n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
         assert n == 1

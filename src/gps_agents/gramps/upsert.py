@@ -100,32 +100,43 @@ def upsert_person(
                 recommended_action="review_and_merge_or_skip",
             )
 
-    # Claim-before-create with lock
-    import uuid, time
-    owner = str(uuid.uuid4())
-    attempts = 20
-    while attempts > 0:
-        if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
-            break
-        time.sleep(0.01)
-        attempts -= 1
-    if attempts == 0:
-        raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
-
+    # Reservation + claim within a transaction; fallback to lock on busy
     try:
-        # Recheck mapping after lock
-        existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
-        if existing2:
-            logger.info("upsert_person.reuse_after_lock", fingerprint=fp.value, handle=existing2)
-            return UpsertResult(handle=existing2, created=False)
-        # Create new person
-        handle = client.add_person(person)
-        projection.save_fingerprint("person", fp.value, handle)
-        projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
-        logger.info("upsert_person.created", fingerprint=fp.value, handle=handle)
-        return UpsertResult(handle=handle, created=True)
-    finally:
-        projection.release_fingerprint_lock(fp.value, owner)
+        with projection.transaction() as conn:  # type: ignore[unused-variable]
+            projection.ensure_fingerprint_row("person", fp.value)
+            existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+            if existing2:
+                return UpsertResult(handle=existing2, created=False)
+            handle = client.add_person(person)
+            claimed = projection.claim_fingerprint_handle(fp.value, handle)
+            if claimed == 0:
+                # Lost race; reuse winner
+                reuse = projection.get_gramps_handle_by_fingerprint(fp.value)
+                return UpsertResult(handle=reuse or handle, created=False)
+            projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
+            return UpsertResult(handle=handle, created=True)
+    except Exception:
+        # fallback: lock approach (rare)
+        import uuid, time
+        owner = str(uuid.uuid4())
+        attempts = 20
+        while attempts > 0:
+            if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
+                break
+            time.sleep(0.01)
+            attempts -= 1
+        if attempts == 0:
+            raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
+        try:
+            existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+            if existing2:
+                return UpsertResult(handle=existing2, created=False)
+            handle = client.add_person(person)
+            projection.save_fingerprint("person", fp.value, handle)
+            projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
+            return UpsertResult(handle=handle, created=True)
+        finally:
+            projection.release_fingerprint_lock(fp.value, owner)
 
 
 # ---------------------------- Citation ----------------------------
@@ -186,41 +197,67 @@ def upsert_place(
     existing = projection.get_gramps_handle_by_fingerprint(fp.value)
     if existing:
         return UpsertResult(handle=existing, created=False)
-    import uuid, time
-    owner = str(uuid.uuid4())
-    attempts = 20
-    while attempts > 0:
-        if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
-            break
-        time.sleep(0.01)
-        attempts -= 1
-    if attempts == 0:
-        raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
     try:
-        existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
-        if existing2:
-            return UpsertResult(handle=existing2, created=False)
-        if not client._conn:
-            raise RuntimeError("GrampsClient must be connected")
-        # simple insert structure
-        handle = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")[:20]
-        gramps_id = place.gramps_id or f"P{int(datetime.now(UTC).timestamp())}"
-        data = {
-            "handle": handle,
-            "gramps_id": gramps_id,
-            "name": place.name,
-            "city": place.city,
-            "state": place.state,
-            "country": place.country,
-        }
-        blob = client._serialize_blob(data)  # noqa: SLF001
-        with client.session():
-            client._conn.execute("INSERT INTO place (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (handle, gramps_id, blob))
-        projection.save_fingerprint("place", fp.value, handle)
-        projection.set_external_ids(fp.value, gramps_handle=handle)
-        return UpsertResult(handle=handle, created=True)
-    finally:
-        projection.release_fingerprint_lock(fp.value, owner)
+        with projection.transaction() as _:
+            projection.ensure_fingerprint_row("place", fp.value)
+            existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+            if existing2:
+                return UpsertResult(handle=existing2, created=False)
+            if not client._conn:
+                raise RuntimeError("GrampsClient must be connected")
+            handle = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")[:20]
+            gramps_id = place.gramps_id or f"P{int(datetime.now(UTC).timestamp())}"
+            data = {
+                "handle": handle,
+                "gramps_id": gramps_id,
+                "name": place.name,
+                "city": place.city,
+                "state": place.state,
+                "country": place.country,
+            }
+            blob = client._serialize_blob(data)  # noqa: SLF001
+            with client.session():
+                client._conn.execute("INSERT INTO place (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (handle, gramps_id, blob))
+            claimed = projection.claim_fingerprint_handle(fp.value, handle)
+            if claimed == 0:
+                reuse = projection.get_gramps_handle_by_fingerprint(fp.value)
+                return UpsertResult(handle=reuse or handle, created=False)
+            projection.set_external_ids(fp.value, gramps_handle=handle)
+            return UpsertResult(handle=handle, created=True)
+    except Exception:
+        # fallback lock
+        import uuid, time
+        owner = str(uuid.uuid4())
+        attempts = 20
+        while attempts > 0:
+            if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
+                break
+            time.sleep(0.01)
+            attempts -= 1
+        if attempts == 0:
+            raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
+        try:
+            existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+            if existing2:
+                return UpsertResult(handle=existing2, created=False)
+            handle = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")[:20]
+            gramps_id = place.gramps_id or f"P{int(datetime.now(UTC).timestamp())}"
+            data = {
+                "handle": handle,
+                "gramps_id": gramps_id,
+                "name": place.name,
+                "city": place.city,
+                "state": place.state,
+                "country": place.country,
+            }
+            blob = client._serialize_blob(data)  # noqa: SLF001
+            with client.session():
+                client._conn.execute("INSERT INTO place (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (handle, gramps_id, blob))
+            projection.save_fingerprint("place", fp.value, handle)
+            projection.set_external_ids(fp.value, gramps_handle=handle)
+            return UpsertResult(handle=handle, created=True)
+        finally:
+            projection.release_fingerprint_lock(fp.value, owner)
 
 
 # ---------------------------- Relationship -----------------------
