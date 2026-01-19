@@ -34,9 +34,11 @@ class SQLiteProjection:
         # Enforce PRAGMAs per-connection
         conn.execute("PRAGMA foreign_keys=ON;")
         conn.execute("PRAGMA journal_mode=WAL;")
+        conn.execute("PRAGMA busy_timeout=5000;")
         try:
             yield conn
         finally:
+            conn.close()
             conn.close()
 
     def _init_schema(self) -> None:
@@ -348,6 +350,19 @@ class SQLiteProjection:
             count += 1
             return count
 
+    # ------------------- Transaction API ----------------------------
+
+    @contextmanager
+    def transaction(self):
+        with self._get_conn() as conn:
+            try:
+                conn.execute("BEGIN IMMEDIATE")
+                yield conn
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+
     # ------------------- Fingerprint Reservation API -----------------
 
     def reserve_fingerprint_lock(self, fingerprint: str, reserved_by: str, ttl_seconds: int = 300) -> bool:
@@ -389,6 +404,29 @@ class SQLiteProjection:
             )
             conn.commit()
 
+    # ------------------- Fingerprint Index Claim API -----------------
+
+    def ensure_fingerprint_row(self, entity_type: str, fingerprint: str) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
+                VALUES (?, ?, NULL)
+                ON CONFLICT(fingerprint) DO NOTHING
+                """,
+                (fingerprint, entity_type),
+            )
+            conn.commit()
+
+    def claim_fingerprint_handle(self, fingerprint: str, handle: str) -> int:
+        with self._get_conn() as conn:
+            cur = conn.execute(
+                "UPDATE fingerprint_index SET gramps_handle = ? WHERE fingerprint = ? AND gramps_handle IS NULL",
+                (handle, fingerprint),
+            )
+            conn.commit()
+            return cur.rowcount
+
     # --------------------- Wikidata Statement Cache ------------------
 
     def get_statement_guid(self, fingerprint: str) -> str | None:
@@ -413,3 +451,39 @@ class SQLiteProjection:
                 (fingerprint, guid, entity_id, property_id),
             )
             conn.commit()
+
+    # ---------------------- Transaction helper ----------------------
+
+    @contextmanager
+    def transaction(self):
+        with self._get_conn() as conn:
+            try:
+                conn.execute("BEGIN IMMEDIATE")
+                yield conn
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+
+    # -------------- Fingerprint index reservation/claim -------------
+
+    def ensure_fingerprint_row(self, entity_type: str, fingerprint: str) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
+                VALUES (?, ?, NULL)
+                ON CONFLICT(fingerprint) DO NOTHING
+                """,
+                (fingerprint, entity_type),
+            )
+            conn.commit()
+
+    def claim_fingerprint_handle(self, fingerprint: str, handle: str) -> int:
+        with self._get_conn() as conn:
+            cur = conn.execute(
+                "UPDATE fingerprint_index SET gramps_handle = ? WHERE fingerprint = ? AND gramps_handle IS NULL",
+                (handle, fingerprint),
+            )
+            conn.commit()
+            return cur.rowcount

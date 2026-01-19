@@ -28,7 +28,8 @@ def save_media_bytes(data: bytes, root: Path | str) -> Path:
         logger.info("media.exists", path=str(path))
         return path
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(data)
+    from gps_agents.fs import atomic_write
+    atomic_write(path, data)
     logger.info("media.saved", path=str(path))
     return path
 

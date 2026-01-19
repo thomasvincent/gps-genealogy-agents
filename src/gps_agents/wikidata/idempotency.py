@@ -43,17 +43,54 @@ def _normalize_time(value: dict) -> dict:
     return t
 
 
+def _normalize_quantity(value: dict) -> dict:
+    if not isinstance(value, dict):
+        return value
+    q = value.copy()
+    # Canonicalize unit URIs and numeric form if present
+    if "amount" in q and isinstance(q["amount"], str):
+        try:
+            q["amount"] = str(float(q["amount"]))
+        except Exception:
+            pass
+    if "unit" in q and isinstance(q["unit"], str):
+        q["unit"] = q["unit"].rstrip("/")
+    return q
+
+
+def _canon_url(u: str) -> str:
+    try:
+        from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+        p = urlparse(u)
+        host = (p.netloc or "").lower()
+        scheme = (p.scheme or "http").lower()
+        # Drop common tracking params
+        qs = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True) if not k.startswith("utm_")]
+        new = p._replace(scheme=scheme, netloc=host, query=urlencode(qs, doseq=True))
+        s = urlunparse(new)
+        return s.rstrip("/")
+    except Exception:
+        return u
+
+
 def _canon_claim(property_id: str, value, qualifiers: dict | None, references: list | None) -> dict:
     # Normalize property/value and deep-sort order-independent structures
     pid = property_id.upper()
     val = _normalize_time(value)
+    val = _normalize_quantity(val) if isinstance(val, dict) else val
     def sort_dict(d: dict) -> dict:
         return json.loads(json.dumps(d, sort_keys=True))
     def canon_refs(refs: list | None) -> list:
         if not refs:
             return []
-        # Each reference is a dict; sort items within, then sort list
-        items = [sort_dict(r) for r in refs]
+        items = []
+        for r in refs:
+            rd = dict(r)
+            # Normalize P854 URL if present
+            url = rd.get("P854")
+            if isinstance(url, str):
+                rd["P854"] = _canon_url(url)
+            items.append(sort_dict(rd))
         return sorted(items, key=lambda x: json.dumps(x, sort_keys=True))
     def canon_qual(q: dict | None) -> dict:
         return sort_dict(q or {})
