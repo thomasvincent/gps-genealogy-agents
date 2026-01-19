@@ -1,10 +1,13 @@
 """FindMyPast API connector."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+
+logger = logging.getLogger(__name__)
 
 
 class FindMyPastSource(BaseSource):
@@ -63,7 +66,7 @@ class FindMyPastSource(BaseSource):
             data = await self._make_request(f"{self.base_url}/search", params)
             return self._parse_results(data)
         except Exception as e:
-            print(f"FindMyPast search error: {e}")
+            logger.warning("FindMyPast search error: %s", e)
             return []
 
     async def get_record(self, record_id: str) -> RawRecord | None:
@@ -82,7 +85,7 @@ class FindMyPastSource(BaseSource):
             data = await self._make_request(f"{self.base_url}/records/{record_id}")
             return self._parse_single_record(data, record_id)
         except Exception as e:
-            print(f"FindMyPast get_record error: {e}")
+            logger.warning("FindMyPast get_record error: %s", e)
             return None
 
     def _parse_results(self, data: dict) -> list[RawRecord]:

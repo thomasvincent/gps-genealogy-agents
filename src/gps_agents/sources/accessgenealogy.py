@@ -1,12 +1,15 @@
 """AccessGenealogy web scraper for Native American records."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+
+logger = logging.getLogger(__name__)
 
 
 class AccessGenealogySource(BaseSource):
@@ -73,7 +76,7 @@ class AccessGenealogySource(BaseSource):
                         continue
 
         except Exception as e:
-            print(f"AccessGenealogy search error: {e}")
+            logger.warning("AccessGenealogy search error: %s", e)
 
         return records
 
@@ -99,7 +102,7 @@ class AccessGenealogySource(BaseSource):
                 return self._parse_article(soup, url)
 
         except Exception as e:
-            print(f"AccessGenealogy get_record error: {e}")
+            logger.warning("AccessGenealogy get_record error: %s", e)
             return None
 
     def _parse_search_page(self, soup: BeautifulSoup) -> list[RawRecord]:

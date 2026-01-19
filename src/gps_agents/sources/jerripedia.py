@@ -1,12 +1,15 @@
 """Jerripedia web scraper for Channel Islands records."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+
+logger = logging.getLogger(__name__)
 
 
 class JerripediaSource(BaseSource):
@@ -66,7 +69,7 @@ class JerripediaSource(BaseSource):
                 records = self._parse_search_results(data)
 
         except Exception as e:
-            print(f"Jerripedia search error: {e}")
+            logger.warning("Jerripedia search error: %s", e)
 
         return records
 
@@ -103,7 +106,7 @@ class JerripediaSource(BaseSource):
                 return self._parse_page(data, page_title)
 
         except Exception as e:
-            print(f"Jerripedia get_record error: {e}")
+            logger.warning("Jerripedia get_record error: %s", e)
             return None
 
     def _parse_search_results(self, data: dict) -> list[RawRecord]:

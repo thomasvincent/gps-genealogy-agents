@@ -1,10 +1,13 @@
 """FamilySearch API connector."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+
+logger = logging.getLogger(__name__)
 
 
 class FamilySearchSource(BaseSource):
@@ -92,7 +95,7 @@ class FamilySearchSource(BaseSource):
             return self._parse_results(data)
         except Exception as e:
             # Log error and return empty results
-            print(f"FamilySearch search error: {e}")
+            logger.warning("FamilySearch search error: %s", e)
             return []
 
     async def get_record(self, record_id: str) -> RawRecord | None:
@@ -114,7 +117,7 @@ class FamilySearchSource(BaseSource):
             data = await self._make_request(url)
             return self._parse_person(data, record_id)
         except Exception as e:
-            print(f"FamilySearch get_record error: {e}")
+            logger.warning("FamilySearch get_record error: %s", e)
             return None
 
     def _parse_results(self, data: dict) -> list[RawRecord]:

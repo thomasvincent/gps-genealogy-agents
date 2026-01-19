@@ -48,14 +48,48 @@ class FactLedger:
             self.db = rocksdb.DB(str(self.db_path / "facts.db"), opts)
 
     def _load_fallback_index(self) -> None:
-        """Load index for fallback file-based storage."""
+        """Load index for fallback file-based storage.
+
+        Initializes _index as empty dict if file doesn't exist or is corrupted.
+        """
         self._index: dict[str, list[int]] = {}  # fact_id -> [versions]
         if self._index_path.exists():
-            self._index = json.loads(self._index_path.read_text())
+            try:
+                self._index = json.loads(self._index_path.read_text())
+            except (json.JSONDecodeError, OSError):
+                # Index corrupted or unreadable - rebuild from facts file
+                self._rebuild_index_from_facts()
 
     def _save_fallback_index(self) -> None:
         """Save index for fallback file-based storage."""
         self._index_path.write_text(json.dumps(self._index))
+
+    def _rebuild_index_from_facts(self) -> None:
+        """Rebuild index by scanning facts file.
+
+        Used when index is corrupted or missing.
+        """
+        self._index = {}
+        if not self._fallback_path.exists():
+            return
+
+        try:
+            with open(self._fallback_path) as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line)
+                        key = entry.get("key", "")
+                        if ":" in key:
+                            fact_id_str, version_str = key.split(":", 1)
+                            version = int(version_str)
+                            if fact_id_str not in self._index:
+                                self._index[fact_id_str] = []
+                            self._index[fact_id_str].append(version)
+                    except (json.JSONDecodeError, ValueError):
+                        continue  # Skip malformed entries
+            self._save_fallback_index()
+        except OSError:
+            pass  # Can't read file, leave index empty
 
     def append(self, fact: Fact) -> str:
         """Append a fact to the ledger.
@@ -174,36 +208,44 @@ class FactLedger:
 
         Yields:
             Facts matching the criteria
-        """
-        seen_ids: set[str] = set()
 
+        Note:
+            For RocksDB mode, this builds a version cache first to avoid O(n²)
+            complexity from calling get_latest_version for each key.
+        """
         if self._use_fallback:
             if not self._fallback_path.exists():
                 return
-            # Get latest version of each fact
+            # Get latest version of each fact - uses pre-built index
             for fact_id_str, versions in self._index.items():
-                if fact_id_str in seen_ids:
-                    continue
-                seen_ids.add(fact_id_str)
                 fact = self.get(UUID(fact_id_str), max(versions))
                 if fact and (status is None or fact.status == status):
                     yield fact
         else:
+            # First pass: build version cache (O(n) instead of O(n²))
+            latest_versions: dict[str, tuple[int, bytes]] = {}
             it = self.db.iteritems()
             it.seek_to_first()
+
             for key, value in it:
-                fact_id_str = key.decode().split(":")[0]
-                if fact_id_str in seen_ids:
+                key_str = key.decode()
+                parts = key_str.split(":", 1)
+                if len(parts) != 2:
                     continue
-                # Only yield if this is the latest version
-                fact_id = UUID(fact_id_str)
-                latest = self.get_latest_version(fact_id)
-                version = int(key.decode().split(":")[1])
-                if version == latest:
-                    seen_ids.add(fact_id_str)
-                    fact = Fact.model_validate_json(value.decode())
-                    if status is None or fact.status == status:
-                        yield fact
+                fact_id_str, version_str = parts
+                try:
+                    version = int(version_str)
+                except ValueError:
+                    continue
+
+                if fact_id_str not in latest_versions or version > latest_versions[fact_id_str][0]:
+                    latest_versions[fact_id_str] = (version, value)
+
+            # Second pass: yield latest versions
+            for _, value in latest_versions.values():
+                fact = Fact.model_validate_json(value.decode())
+                if status is None or fact.status == status:
+                    yield fact
 
     def count(self, status: FactStatus | None = None) -> int:
         """Count facts in the ledger.

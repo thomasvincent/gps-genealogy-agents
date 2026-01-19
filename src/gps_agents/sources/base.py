@@ -1,10 +1,13 @@
 """Base interface for genealogy data sources."""
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import httpx
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from ..models.search import RawRecord, SearchQuery
@@ -136,3 +139,17 @@ class BaseSource(ABC):
         if self._client:
             await self._client.aclose()
             self._client = None
+
+    async def __aenter__(self) -> BaseSource:
+        """Async context manager entry."""
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object,
+    ) -> bool:
+        """Async context manager exit - ensures connection cleanup."""
+        await self.close()
+        return False

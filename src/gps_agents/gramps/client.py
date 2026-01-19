@@ -326,7 +326,26 @@ class GrampsClient:
         return handle
 
     def _get_next_id(self, table: str) -> int:
-        """Get next available ID number for a table."""
+        """Get next available ID number for a table.
+
+        Args:
+            table: Table name (must be a valid Gramps table)
+
+        Returns:
+            Next available ID number
+
+        Raises:
+            RuntimeError: If not connected to database
+            ValueError: If table name is not valid
+        """
+        if not self._conn:
+            raise RuntimeError("Not connected to database")
+
+        # Validate table name against whitelist to prevent SQL injection
+        if table not in self.TABLES:
+            raise ValueError(f"Invalid table name: {table}. Must be one of {list(self.TABLES.keys())}")
+
+        # Safe to use table name since it's validated against TABLES constant
         cursor = self._conn.execute(
             f"SELECT MAX(CAST(SUBSTR(gramps_id, 2) AS INTEGER)) FROM {table}"
         )
@@ -458,14 +477,25 @@ class GrampsClient:
         return stats
 
     def backup(self, backup_path: str | Path) -> Path:
-        """Create a backup of the database."""
+        """Create a backup of the database.
+
+        Args:
+            backup_path: Directory to store the backup
+
+        Returns:
+            Path to the created backup file
+
+        Raises:
+            RuntimeError: If not connected to database
+            OSError: If backup fails
+        """
         if not self._conn or not self._db_file:
             raise RuntimeError("Not connected to database")
 
+        import shutil
+
         backup_path = Path(backup_path)
         backup_path.mkdir(parents=True, exist_ok=True)
-
-        import shutil
 
         # Create timestamped backup
         timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -473,9 +503,14 @@ class GrampsClient:
 
         # Close connection temporarily for clean copy
         self._conn.close()
-        shutil.copy2(self._db_file, backup_file)
-        self._conn = sqlite3.connect(str(self._db_file))
-        self._conn.row_factory = sqlite3.Row
+        self._conn = None  # Mark as closed
+
+        try:
+            shutil.copy2(self._db_file, backup_file)
+        finally:
+            # Always reconnect, even if copy fails
+            self._conn = sqlite3.connect(str(self._db_file))
+            self._conn.row_factory = sqlite3.Row
 
         return backup_file
 

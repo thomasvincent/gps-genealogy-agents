@@ -1,10 +1,13 @@
 """WikiTree API and scraping connector."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+
+logger = logging.getLogger(__name__)
 
 
 class WikiTreeSource(BaseSource):
@@ -51,7 +54,7 @@ class WikiTreeSource(BaseSource):
             data = await self._make_request(self.base_url, params)
             return self._parse_search_results(data)
         except Exception as e:
-            print(f"WikiTree search error: {e}")
+            logger.warning("WikiTree search error: %s", e)
             return []
 
     async def get_record(self, record_id: str) -> RawRecord | None:
@@ -75,7 +78,7 @@ class WikiTreeSource(BaseSource):
             data = await self._make_request(self.base_url, params)
             return self._parse_person(data, record_id)
         except Exception as e:
-            print(f"WikiTree get_record error: {e}")
+            logger.warning("WikiTree get_record error: %s", e)
             return None
 
     def _parse_search_results(self, data: dict) -> list[RawRecord]:
