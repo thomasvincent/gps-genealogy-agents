@@ -1,8 +1,8 @@
 """RocksDB-based append-only fact ledger."""
 
 import json
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 from uuid import UUID
 
 try:

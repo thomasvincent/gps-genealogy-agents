@@ -6,14 +6,13 @@ before creating new records, with configurable merge strategies.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable
 
 from pydantic import BaseModel, Field
 
 from gps_agents.gramps.client import GrampsClient
-from gps_agents.gramps.models import Event, Family, Name, Person, Source
+from gps_agents.gramps.models import Event, Name, Person
 
 
 class MatchConfidence(str, Enum):

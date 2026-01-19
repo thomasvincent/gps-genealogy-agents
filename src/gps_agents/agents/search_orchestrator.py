@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime
 from enum import Enum
 from typing import Any
 
@@ -17,15 +16,13 @@ from pydantic import BaseModel, Field
 from gps_agents.agents.base import BaseAgent
 from gps_agents.gramps.client import GrampsClient
 from gps_agents.gramps.merge import (
-    GrampsMerger,
     MatchConfidence,
     MatchResult,
-    MergeStrategy,
     PersonMatcher,
 )
 from gps_agents.gramps.models import Event, EventType, GrampsDate, Name, Person
 from gps_agents.models.search import RawRecord, SearchQuery
-from gps_agents.sources.router import RecordType, Region, SearchRouter
+from gps_agents.sources.router import Region, SearchRouter
 
 
 class OrchestratorAction(str, Enum):
@@ -265,7 +262,7 @@ class SearchOrchestratorAgent(BaseAgent):
                     action=OrchestratorAction.SEARCH,
                     parameters={"query": query.model_dump(), "region": str(search_region)},
                     results=resolved_results,
-                    justification=f"Conflicts resolved using evidence quality weighting",
+                    justification="Conflicts resolved using evidence quality weighting",
                     next_step=self._recommend_next_step(overall_confidence, sources_searched),
                 )
             else:

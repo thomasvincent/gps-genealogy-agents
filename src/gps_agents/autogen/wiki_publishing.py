@@ -32,7 +32,6 @@ from autogen_agentchat.teams import SelectorGroupChat
 
 from gps_agents.autogen.agents import create_model_client
 
-
 # =============================================================================
 # Publishing Decision Models
 # =============================================================================
@@ -75,7 +74,7 @@ class PublishDecision:
     integrity_score: int = 100
 
     @classmethod
-    def from_issues(cls, issues: list[ReviewIssue]) -> "PublishDecision":
+    def from_issues(cls, issues: list[ReviewIssue]) -> PublishDecision:
         """Create a publish decision based on found issues."""
         decision = cls(issues=issues)
 
@@ -1386,7 +1385,7 @@ async def main():
     print(f"\nGPS Grade:\n{result.get('gps_grade', 'Not found')}")
     print(f"\nWikidata Payload:\n{result.get('wikidata_payload', 'Not found')}")
     print(f"\nGit Commit:\n{result.get('git_commit', 'Not found')}")
-    print(f"\n=== Review Report ===")
+    print("\n=== Review Report ===")
     print(f"\nIntegrity Score:\n{result.get('integrity_score', 'Not found')}")
     print(f"\nBlocking Issues:\n{result.get('blocking_issues', 'Not found')}")
 

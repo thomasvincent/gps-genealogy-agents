@@ -6,9 +6,7 @@ and GEDCOM standards, optimized for GPS-compliant research.
 
 from __future__ import annotations
 
-from datetime import date
 from enum import Enum
-from typing import Any
 
 from pydantic import BaseModel, Field
 

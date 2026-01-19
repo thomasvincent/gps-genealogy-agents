@@ -15,22 +15,17 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 from uuid import uuid4
 
 from gps_agents.gramps.models import (
-    Citation,
-    Event,
-    EventType,
     Family,
-    GrampsDate,
     Name,
     Person,
-    Place,
-    Repository,
     Source,
     SourceLevel,
 )

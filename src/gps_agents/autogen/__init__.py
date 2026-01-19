@@ -20,15 +20,6 @@ from gps_agents.autogen.agents import (
     get_available_providers,
     validate_api_key,
 )
-from gps_agents.autogen.orchestration import (
-    create_citation,
-    create_focused_research_team,
-    create_gps_research_team,
-    evaluate_fact_gps,
-    run_research_session,
-    synthesize_proof,
-    translate_record,
-)
 from gps_agents.autogen.match_merge import (
     MATCH_MERGE_PROMPT,
     MERGE_REVIEWER_PROMPT,
@@ -39,6 +30,15 @@ from gps_agents.autogen.match_merge import (
     create_match_merge_team,
     evaluate_match_with_review,
     quick_match_decision,
+)
+from gps_agents.autogen.orchestration import (
+    create_citation,
+    create_focused_research_team,
+    create_gps_research_team,
+    evaluate_fact_gps,
+    run_research_session,
+    synthesize_proof,
+    translate_record,
 )
 from gps_agents.autogen.wiki_publishing import (
     Platform,

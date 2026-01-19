@@ -19,15 +19,9 @@ from autogen_agentchat.teams import RoundRobinGroupChat
 
 from gps_agents.autogen.agents import create_model_client
 from gps_agents.gramps.merge import (
-    GrampsMerger,
-    MatchConfidence,
-    MatchResult,
-    MergeResult,
-    MergeStrategy,
     PersonMatcher,
 )
-from gps_agents.gramps.models import Event, Name, Person
-
+from gps_agents.gramps.models import Name, Person
 
 # =============================================================================
 # Action Types

@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from ..models.confidence import ConfidenceDelta
 from ..models.fact import Annotation, Fact, FactStatus
-from ..models.gps import GPSEvaluation, PillarStatus
+from ..models.gps import GPSEvaluation
 from ..models.provenance import Provenance, ProvenanceSource
 from .base import BaseAgent
 

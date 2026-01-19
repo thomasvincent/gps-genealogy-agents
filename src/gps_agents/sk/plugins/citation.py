@@ -5,7 +5,7 @@ from typing import Annotated
 
 from semantic_kernel.functions import kernel_function
 
-from gps_agents.models.source import SourceCitation, EvidenceType
+from gps_agents.models.source import EvidenceType, SourceCitation
 
 
 class CitationPlugin:

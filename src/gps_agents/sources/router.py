@@ -10,12 +10,11 @@ import asyncio
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable
 
 from pydantic import BaseModel, Field
 
 from gps_agents.models.search import RawRecord, SearchQuery
-from gps_agents.sources.base import BaseSource, GenealogySource
+from gps_agents.sources.base import GenealogySource
 
 
 class Region(str, Enum):
@@ -269,7 +268,7 @@ class SearchRouter:
                     total_count=len(records),
                     search_time_ms=(time.time() - start) * 1000,
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 return name, SourceSearchResult(
                     source_name=name,
                     records=[],

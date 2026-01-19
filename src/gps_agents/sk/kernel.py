@@ -5,20 +5,20 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from semantic_kernel import Kernel
+from semantic_kernel.connectors.ai.anthropic import AnthropicChatCompletion
 from semantic_kernel.connectors.ai.open_ai import (
     AzureChatCompletion,
     OpenAIChatCompletion,
     OpenAITextEmbedding,
 )
-from semantic_kernel.connectors.ai.anthropic import AnthropicChatCompletion
 
 from gps_agents.ledger.fact_ledger import FactLedger
 from gps_agents.projections.sqlite_projection import SQLiteProjection
-from gps_agents.sk.plugins.ledger import LedgerPlugin
-from gps_agents.sk.plugins.sources import SourcesPlugin
-from gps_agents.sk.plugins.gps import GPSPlugin
 from gps_agents.sk.plugins.citation import CitationPlugin
+from gps_agents.sk.plugins.gps import GPSPlugin
+from gps_agents.sk.plugins.ledger import LedgerPlugin
 from gps_agents.sk.plugins.memory import MemoryPlugin
+from gps_agents.sk.plugins.sources import SourcesPlugin
 
 
 @dataclass

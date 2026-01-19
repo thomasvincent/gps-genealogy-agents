@@ -6,13 +6,13 @@ from typing import Annotated
 from semantic_kernel.functions import kernel_function
 
 from gps_agents.models.search import SearchQuery
-from gps_agents.sources.familysearch import FamilySearchSource
-from gps_agents.sources.wikitree import WikiTreeSource
-from gps_agents.sources.findmypast import FindMyPastSource
-from gps_agents.sources.myheritage import MyHeritageSource
 from gps_agents.sources.accessgenealogy import AccessGenealogySource
-from gps_agents.sources.jerripedia import JerripediaSource
+from gps_agents.sources.familysearch import FamilySearchSource
+from gps_agents.sources.findmypast import FindMyPastSource
 from gps_agents.sources.gedcom import GedcomSource
+from gps_agents.sources.jerripedia import JerripediaSource
+from gps_agents.sources.myheritage import MyHeritageSource
+from gps_agents.sources.wikitree import WikiTreeSource
 
 
 class SourcesPlugin:

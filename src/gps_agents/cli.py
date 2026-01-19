@@ -20,8 +20,9 @@ console = Console()
 
 def get_config():
     """Load configuration from environment."""
-    from dotenv import load_dotenv
     import os
+
+    from dotenv import load_dotenv
 
     load_dotenv()
 
@@ -176,8 +177,8 @@ def load_gedcom(
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
 ):
     """Load a GEDCOM file into the system."""
-    from gps_agents.sources.gedcom import GedcomSource
     from gps_agents.models.search import SearchQuery
+    from gps_agents.sources.gedcom import GedcomSource
 
     if not file_path.exists():
         console.print(f"[red]Error: File not found: {file_path}[/red]")

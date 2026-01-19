@@ -1,11 +1,11 @@
 """Pydantic data models."""
 
-from .fact import Fact, FactStatus
-from .source import SourceCitation, EvidenceType
-from .provenance import Provenance
 from .confidence import ConfidenceDelta
-from .gps import GPSEvaluation, PillarStatus, Conflict
-from .search import SearchQuery, RawRecord
+from .fact import Fact, FactStatus
+from .gps import Conflict, GPSEvaluation, PillarStatus
+from .provenance import Provenance
+from .search import RawRecord, SearchQuery
+from .source import EvidenceType, SourceCitation
 
 __all__ = [
     "Fact",

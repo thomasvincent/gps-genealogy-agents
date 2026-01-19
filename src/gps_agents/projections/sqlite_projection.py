@@ -3,7 +3,6 @@
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
 from uuid import UUID
 
 from ..models.fact import Fact, FactStatus

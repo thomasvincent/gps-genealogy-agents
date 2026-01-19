@@ -5,7 +5,7 @@ Uses the modern autogen_agentchat teams API with intelligent agent selection.
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any
 
 from autogen_agentchat.agents import BaseChatAgent
 from autogen_agentchat.base import TaskResult
@@ -19,7 +19,6 @@ from gps_agents.autogen.agents import (
     create_model_client,
 )
 from gps_agents.sk.kernel import KernelConfig, create_kernel
-
 
 GPS_COORDINATOR_PROMPT = """You are the GPS Research Coordinator managing genealogical research.
 
