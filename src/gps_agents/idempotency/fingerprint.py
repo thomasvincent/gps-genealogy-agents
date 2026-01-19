@@ -117,14 +117,44 @@ def fingerprint_citation(c: Citation) -> Fingerprint:
     return Fingerprint("citation", _sha256(parts))
 
 
+def _canon_place_token(tok: str) -> str:
+    t = _normalize_text(tok)
+    if not t:
+        return t
+    # Expand St. → Saint
+    t = t.replace("st ", "saint ")
+    # Strip 'county' suffix
+    if t.endswith(" county"):
+        t = t[:-7]
+    # Simple US state abbreviations (common ones)
+    us = {
+        "ca": "california",
+        "ny": "new york",
+        "tx": "texas",
+        "fl": "florida",
+        "il": "illinois",
+        "pa": "pennsylvania",
+        "oh": "ohio",
+        "mi": "michigan",
+        "ga": "georgia",
+        "nc": "north carolina",
+        "va": "virginia",
+        "wa": "washington",
+        "ma": "massachusetts",
+    }
+    if t in us:
+        t = us[t]
+    return t
+
+
 def fingerprint_place(pl: Place) -> Fingerprint:
     parts = [
         "place",
-        _normalize_text(pl.name),
-        _normalize_text(pl.city or ""),
-        _normalize_text(pl.county or ""),
-        _normalize_text(pl.state or ""),
-        _normalize_text(pl.country or ""),
+        _canon_place_token(pl.name),
+        _canon_place_token(pl.city or ""),
+        _canon_place_token(pl.county or ""),
+        _canon_place_token(pl.state or ""),
+        _canon_place_token(pl.country or ""),
     ]
     return Fingerprint("place", _sha256(parts))
 
