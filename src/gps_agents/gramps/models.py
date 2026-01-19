@@ -53,6 +53,7 @@ class Place(BaseModel):
     latitude: float | None = None
     longitude: float | None = None
     gramps_id: str | None = None
+    fingerprint: str | None = None
 
     def __str__(self) -> str:
         parts = [p for p in [self.city, self.county, self.state, self.country] if p]
@@ -110,6 +111,7 @@ class Event(BaseModel):
     description: str | None = None
     gramps_id: str | None = None
     citations: list[str] = Field(default_factory=list)
+    fingerprint: str | None = None
 
 
 class Person(BaseModel):
@@ -124,6 +126,7 @@ class Person(BaseModel):
     family_ids: list[str] = Field(default_factory=list)
     note: str | None = None
     is_private: bool = False
+    fingerprint: str | None = None
 
     @property
     def primary_name(self) -> Name | None:
@@ -165,6 +168,7 @@ class Source(BaseModel):
     level: SourceLevel = SourceLevel.DERIVATIVE
     url: str | None = None
     note: str | None = None
+    fingerprint: str | None = None
 
 
 class Citation(BaseModel):
@@ -175,6 +179,7 @@ class Citation(BaseModel):
     date: GrampsDate | None = None
     confidence: int = 2  # 0-4, Gramps confidence scale
     note: str | None = None
+    fingerprint: str | None = None
 
 
 class Repository(BaseModel):
