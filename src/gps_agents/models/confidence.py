@@ -1,6 +1,7 @@
 """Confidence scoring models."""
+from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +14,7 @@ class ConfidenceDelta(BaseModel):
     previous_score: float = Field(description="Score before adjustment", ge=0.0, le=1.0)
     new_score: float = Field(description="Score after adjustment", ge=0.0, le=1.0)
     reason: str = Field(description="Explanation for the adjustment")
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     pillar_affected: int | None = Field(
         default=None, description="GPS pillar that triggered this adjustment (1-5)"
     )

@@ -1,4 +1,5 @@
 """Core Fact model - the central entity of the genealogical research system."""
+from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import Enum
@@ -34,7 +35,7 @@ class Annotation(BaseModel):
     author: str = Field(description="Agent or user who added this")
     content: str
     annotation_type: str = Field(default="note", description="note, warning, question, etc.")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class Fact(BaseModel):
@@ -62,8 +63,8 @@ class Fact(BaseModel):
 
     # Metadata
     annotations: list[Annotation] = Field(default_factory=list)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Relationships
     related_fact_ids: list[UUID] = Field(
@@ -82,7 +83,7 @@ class Fact(BaseModel):
         description="birth, death, marriage, residence, occupation, etc.",
     )
 
-    def apply_confidence_delta(self, delta: ConfidenceDelta) -> "Fact":
+    def apply_confidence_delta(self, delta: ConfidenceDelta) -> Fact:
         """Create a new version of this fact with adjusted confidence.
 
         Returns a new Fact instance (facts are immutable).
@@ -101,7 +102,7 @@ class Fact(BaseModel):
             }
         )
 
-    def add_source(self, source: SourceCitation) -> "Fact":
+    def add_source(self, source: SourceCitation) -> Fact:
         """Create a new version with an additional source."""
         return self.model_copy(
             update={
@@ -111,7 +112,7 @@ class Fact(BaseModel):
             }
         )
 
-    def set_status(self, status: FactStatus) -> "Fact":
+    def set_status(self, status: FactStatus) -> Fact:
         """Create a new version with updated status."""
         return self.model_copy(
             update={
@@ -121,7 +122,7 @@ class Fact(BaseModel):
             }
         )
 
-    def add_annotation(self, annotation: Annotation) -> "Fact":
+    def add_annotation(self, annotation: Annotation) -> Fact:
         """Create a new version with an additional annotation."""
         return self.model_copy(
             update={

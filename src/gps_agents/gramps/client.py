@@ -15,11 +15,10 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from collections.abc import Generator
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from uuid_utils import uuid7
 
@@ -30,6 +29,9 @@ from gps_agents.gramps.models import (
     Source,
     SourceLevel,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class GrampsClient:
@@ -44,7 +46,7 @@ class GrampsClient:
     """
 
     # Gramps database tables
-    TABLES = {
+    TABLES: ClassVar[dict[str, str]] = {
         "person": "person",
         "family": "family",
         "event": "event",
@@ -136,7 +138,7 @@ class GrampsClient:
         # Only deserialize blobs from trusted Gramps databases you own.
         # This is required for Gramps compatibility - there is no alternative.
         try:
-            import pickle  # noqa: S403 - required for Gramps native format
+            import pickle
             return pickle.loads(blob)  # noqa: S301 - Gramps native format, trusted data only
         except Exception:
             return {}
@@ -149,7 +151,7 @@ class GrampsClient:
         except (TypeError, ValueError):
             # Fall back to pickle for complex Gramps structures
             # Required for Gramps compatibility
-            import pickle  # noqa: S403 - required for Gramps native format
+            import pickle
             return pickle.dumps(data)
 
     # =========================================
@@ -466,7 +468,7 @@ class GrampsClient:
         import shutil
 
         # Create timestamped backup
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         backup_file = backup_path / f"gramps_backup_{timestamp}.db"
 
         # Close connection temporarily for clean copy

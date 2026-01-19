@@ -1,6 +1,7 @@
 """Source citation models."""
+from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -20,7 +21,7 @@ class SourceCitation(BaseModel):
     repository: str = Field(description="Source repository (e.g., 'FamilySearch', 'WikiTree')")
     record_id: str = Field(description="Unique identifier within the repository")
     url: str | None = Field(default=None, description="Direct URL to the record if available")
-    accessed_at: datetime = Field(default_factory=datetime.utcnow)
+    accessed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     evidence_type: EvidenceType = Field(default=EvidenceType.DIRECT)
     record_type: str | None = Field(
         default=None, description="Type of record (e.g., 'birth certificate', 'census')"

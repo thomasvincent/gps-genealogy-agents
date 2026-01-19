@@ -1,6 +1,7 @@
 """Provenance tracking models."""
+from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -20,7 +21,7 @@ class Provenance(BaseModel):
     """Tracks who/what created a fact and when."""
 
     created_by: ProvenanceSource = Field(description="What created this fact")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     agent_id: str | None = Field(default=None, description="Specific agent instance ID")
     session_id: str | None = Field(default=None, description="Research session ID")
     query_context: str | None = Field(

@@ -6,13 +6,17 @@ before creating new records, with configurable merge strategies.
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from enum import Enum
+from typing import TYPE_CHECKING, ClassVar
 
 from pydantic import BaseModel, Field
 
-from gps_agents.gramps.client import GrampsClient
 from gps_agents.gramps.models import Event, Name, Person
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from gps_agents.gramps.client import GrampsClient
 
 
 class MatchConfidence(str, Enum):
@@ -63,7 +67,7 @@ class PersonMatcher:
     """
 
     # Scoring weights
-    WEIGHTS = {
+    WEIGHTS: ClassVar[dict[str, int]] = {
         "exact_name": 40,
         "soundex_match": 25,
         "similar_name": 15,
@@ -78,7 +82,7 @@ class PersonMatcher:
     }
 
     # Negative signals
-    CONFLICTS = {
+    CONFLICTS: ClassVar[dict[str, int]] = {
         "sex_mismatch": -50,
         "birth_year_far": -30,  # more than 10 years
         "death_before_birth": -100,
@@ -273,25 +277,25 @@ class PersonMatcher:
 
         # Soundex mapping
         mapping = {
-            'B': '1', 'F': '1', 'P': '1', 'V': '1',
-            'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
-            'D': '3', 'T': '3',
-            'L': '4',
-            'M': '5', 'N': '5',
-            'R': '6',
+            "B": "1", "F": "1", "P": "1", "V": "1",
+            "C": "2", "G": "2", "J": "2", "K": "2", "Q": "2", "S": "2", "X": "2", "Z": "2",
+            "D": "3", "T": "3",
+            "L": "4",
+            "M": "5", "N": "5",
+            "R": "6",
         }
 
-        prev_code = mapping.get(name[0], '0')
+        prev_code = mapping.get(name[0], "0")
 
         for char in name[1:]:
-            code = mapping.get(char, '0')
-            if code != '0' and code != prev_code:
+            code = mapping.get(char, "0")
+            if code != "0" and code != prev_code:
                 soundex += code
                 prev_code = code
             if len(soundex) == 4:
                 break
 
-        return soundex.ljust(4, '0')
+        return soundex.ljust(4, "0")
 
     def _is_name_variant(self, name1: str, name2: str) -> bool:
         """Check if names are common variants of each other."""
@@ -315,7 +319,7 @@ class PersonMatcher:
         n2 = name2.lower()
 
         for base, var_list in variants.items():
-            all_names = [base] + var_list
+            all_names = [base, *var_list]
             if n1 in all_names and n2 in all_names:
                 return True
 
@@ -384,7 +388,7 @@ class GrampsMerger:
         if best_match.confidence == MatchConfidence.DEFINITE:
             if strategy == MergeStrategy.AUTO_MERGE:
                 return self._merge_persons(person, best_match)
-            elif strategy == MergeStrategy.SKIP_DUPLICATES:
+            if strategy == MergeStrategy.SKIP_DUPLICATES:
                 return MergeResult(
                     action="skipped",
                     person=person,
@@ -397,7 +401,7 @@ class GrampsMerger:
             decision = self.on_conflict(person, best_match)
             if decision == "merge":
                 return self._merge_persons(person, best_match)
-            elif decision == "skip":
+            if decision == "skip":
                 return MergeResult(
                     action="skipped",
                     person=person,
