@@ -12,6 +12,9 @@ from typing import TYPE_CHECKING, ClassVar
 from pydantic import BaseModel, Field
 
 from gps_agents.gramps.models import Event, Name, Person
+from gps_agents.idempotency.exceptions import IdempotencyBlock
+from gps_agents.gramps.upsert import upsert_person
+from gps_agents.projections.sqlite_projection import SQLiteProjection
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -340,6 +343,7 @@ class GrampsMerger:
         client: GrampsClient,
         strategy: MergeStrategy = MergeStrategy.PROMPT_USER,
         on_conflict: Callable[[Person, MatchResult], str] | None = None,
+        projection: SQLiteProjection | None = None,
     ) -> None:
         """
         Initialize merger.
@@ -353,6 +357,7 @@ class GrampsMerger:
         self.matcher = PersonMatcher(client)
         self.strategy = strategy
         self.on_conflict = on_conflict
+        self.projection = projection
 
     def add_person(
         self,
@@ -371,55 +376,13 @@ class GrampsMerger:
         """
         strategy = strategy or self.strategy
 
-        # Find potential matches
-        matches = self.matcher.find_matches(person)
-
-        if not matches:
-            # No matches - create new record
-            handle = self.client.add_person(person)
-            return MergeResult(
-                action="created",
-                person=person,
-                handle=handle,
-                message="No duplicates found, created new record",
-            )
-
-        best_match = matches[0]
-
-        # Handle based on confidence and strategy
-        if best_match.confidence == MatchConfidence.DEFINITE:
-            if strategy == MergeStrategy.AUTO_MERGE:
-                return self._merge_persons(person, best_match)
-            if strategy == MergeStrategy.SKIP_DUPLICATES:
-                return MergeResult(
-                    action="skipped",
-                    person=person,
-                    handle=best_match.matched_handle,
-                    message=f"Skipped: Definite match found ({best_match.match_score:.1f}%)",
-                    conflicts=best_match.conflict_reasons,
-                )
-
-        if strategy == MergeStrategy.PROMPT_USER and self.on_conflict:
-            decision = self.on_conflict(person, best_match)
-            if decision == "merge":
-                return self._merge_persons(person, best_match)
-            if decision == "skip":
-                return MergeResult(
-                    action="skipped",
-                    person=person,
-                    handle=best_match.matched_handle,
-                    message="User chose to skip",
-                )
-
-        # Default: create with note about potential match
-        handle = self.client.add_person(person)
-        return MergeResult(
-            action="created",
-            person=person,
-            handle=handle,
-            message=f"Created new record. Potential match: {best_match.matched_person.display_name if best_match.matched_person else 'Unknown'} ({best_match.match_score:.1f}%)",
-            conflicts=best_match.match_reasons,
-        )
+        # Delegate to idempotent upsert which enforces fingerprint + matcher rules
+        if not self.projection:
+            raise RuntimeError("SQLiteProjection is required for idempotent upsert")
+        result = upsert_person(self.client, self.projection, person, matcher_factory=lambda c: self.matcher)
+        if result.created:
+            return MergeResult(action="created", person=person, handle=result.handle, message="Created via upsert")
+        return MergeResult(action="merged", person=person, handle=result.handle, message="Reused existing via upsert")
 
     def _merge_persons(self, new: Person, match: MatchResult) -> MergeResult:
         """Merge new person data into existing record."""
