@@ -297,13 +297,16 @@ class SearchRouter:
         query: SearchQuery,
         sources: dict[str, GenealogySource],
     ) -> dict[str, SourceSearchResult]:
-        """Execute searches sequentially."""
+        """Execute searches sequentially with per-source timeout."""
         results = {}
 
         for name, source in sources.items():
             start = time.time()
             try:
-                records = await source.search(query)
+                records = await asyncio.wait_for(
+                    source.search(query),
+                    timeout=self.config.timeout_per_source,
+                )
                 if len(records) > self.config.max_results_per_source:
                     records = records[:self.config.max_results_per_source]
 
@@ -312,6 +315,14 @@ class SearchRouter:
                     records=records,
                     total_count=len(records),
                     search_time_ms=(time.time() - start) * 1000,
+                )
+            except TimeoutError:
+                results[name] = SourceSearchResult(
+                    source_name=name,
+                    records=[],
+                    total_count=0,
+                    search_time_ms=(time.time() - start) * 1000,
+                    error="Search timed out",
                 )
             except Exception as e:
                 results[name] = SourceSearchResult(

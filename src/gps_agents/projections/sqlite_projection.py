@@ -242,15 +242,22 @@ class SQLiteProjection:
         Returns:
             Matching facts
         """
+        # Escape LIKE wildcards to prevent search pattern injection
+        escaped_term = (
+            search_term
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_")
+        )
         with self._get_conn() as conn:
             rows = conn.execute(
                 """
                 SELECT full_json FROM facts
-                WHERE statement LIKE ?
+                WHERE statement LIKE ? ESCAPE '\\'
                 ORDER BY confidence_score DESC
                 LIMIT ?
                 """,
-                (f"%{search_term}%", limit),
+                (f"%{escaped_term}%", limit),
             ).fetchall()
             return [Fact.model_validate_json(row["full_json"]) for row in rows]
 
