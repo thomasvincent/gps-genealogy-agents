@@ -32,7 +32,7 @@ class TestPrompts:
         """Manager prompt should mention GPS grading."""
         assert "GPS" in MANAGER_PROMPT
         assert "Genealogical Proof Standard" in MANAGER_PROMPT
-        assert "Pillars 1-5" in MANAGER_PROMPT
+        assert "5 Pillars" in MANAGER_PROMPT
 
     def test_manager_prompt_has_workflow_steps(self):
         """Manager prompt should define workflow steps."""
@@ -43,9 +43,9 @@ class TestPrompts:
     def test_manager_prompt_has_output_formats(self):
         """Manager prompt should specify output format headers."""
         assert "WIKIDATA_PAYLOAD" in MANAGER_PROMPT
-        assert "WIKITREE_BIO" in MANAGER_PROMPT
-        assert "WIKIPEDIA_DRAFT" in MANAGER_PROMPT
-        assert "GIT_COMMIT_MSG" in MANAGER_PROMPT
+        assert "GPS Grade Card" in MANAGER_PROMPT
+        assert "Extracted Entities" in MANAGER_PROMPT
+        assert "REVIEW REPORT" in MANAGER_PROMPT
 
     def test_linguist_prompt_has_platforms(self):
         """Linguist prompt should cover Wikipedia and WikiTree."""
@@ -182,7 +182,7 @@ class TestOutputFormats:
         headers = [
             "### 📊 GPS Grade Card",
             "### 🧬 Extracted Entities",
-            "### 📝 Suggested Improvements",
+            "### 🔍 REVIEW REPORT",
             "### 🚀 Sync Commands",
         ]
         for header in headers:
@@ -241,18 +241,18 @@ class TestReviewerPrompt:
 
     def test_reviewer_checks_fabrications(self):
         """Reviewer should check for fabrications."""
-        assert "FABRICATIONS" in REVIEWER_PROMPT
+        assert "FABRICATION CHECK" in REVIEWER_PROMPT
         assert "invented" in REVIEWER_PROMPT.lower() or "Invented" in REVIEWER_PROMPT
 
     def test_reviewer_checks_logic(self):
         """Reviewer should check for logical errors."""
-        assert "LOGICAL ERRORS" in REVIEWER_PROMPT
+        assert "LOGIC CHECK" in REVIEWER_PROMPT
         assert "death before birth" in REVIEWER_PROMPT.lower()
 
     def test_reviewer_checks_sources(self):
         """Reviewer should verify source matching."""
-        assert "SOURCE MISMATCHES" in REVIEWER_PROMPT
-        assert "cited source" in REVIEWER_PROMPT.lower()
+        assert "SOURCE MISMATCH CHECK" in REVIEWER_PROMPT
+        assert "misinterpret" in REVIEWER_PROMPT.lower()
 
     def test_reviewer_output_format(self):
         """Reviewer should have defined output sections."""
