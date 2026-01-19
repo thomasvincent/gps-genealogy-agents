@@ -1,0 +1,16 @@
+{
+  "run_id": "archer-l-durham",
+  "subject": "Archer L. Durham",
+  "plan": {
+    "engine": "manual",
+    "outputs": [
+      "facts.json",
+      "review.json",
+      "wikidata_payload.json",
+      "wikipedia_draft.md",
+      "wikitree_bio.md",
+      "wikitree_profile.yaml",
+      "subject.ged"
+    ]
+  }
+}
