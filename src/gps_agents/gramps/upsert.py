@@ -19,6 +19,7 @@ from gps_agents.idempotency.fingerprint import (
     fingerprint_source,
 )
 from gps_agents.projections.sqlite_projection import SQLiteProjection
+from gps_agents.idempotency.config import CONFIG
 
 logger = structlog.get_logger(__name__)
 
@@ -30,6 +31,24 @@ class UpsertResult:
 
 
 # ---------------------------- Person ----------------------------
+
+def _validate_timeline(person: Person) -> None:
+    # death before birth
+    by = person.birth.date.year if person.birth and person.birth.date else None
+    dy = person.death.date.year if person.death and person.death.date else None
+    if by is not None and dy is not None and dy < by:
+        raise IdempotencyBlock(
+            reason="Timeline impossible: death before birth",
+            recommended_action="correct_dates",
+        )
+    # lifespan > MAX_LIFESPAN
+    if by is not None and dy is not None and (dy - by) > CONFIG.max_lifespan:
+        raise IdempotencyBlock(
+            reason=f"Timeline impossible: lifespan exceeds {CONFIG.max_lifespan} years",
+            recommended_action="review_life_events",
+        )
+    # future extension: event-after-death checks if events carry dates
+
 
 def upsert_person(
     client: GrampsClient,
@@ -59,16 +78,7 @@ def upsert_person(
         return UpsertResult(handle=existing, created=False)
 
     # timeline sanity
-    by = person.birth.date.year if person.birth and person.birth.date else None
-    dy = person.death.date.year if person.death and person.death.date else None
-    if by is not None and dy is not None and dy < by:
-        raise IdempotencyBlock(
-            reason="Timeline impossible: death before birth",
-            match_score=None,
-            existing_summary=None,
-            proposed_summary=f"{person.display_name} birth={by} death={dy}",
-            recommended_action="correct_dates",
-        )
+    _validate_timeline(person)
 
     # matcher path
     matcher = matcher_factory(client) if matcher_factory else PersonMatcher(client)
@@ -76,13 +86,12 @@ def upsert_person(
     if matches:
         m = matches[0]
         score = m.match_score / 100.0  # convert to 0-1
-        if score >= 0.95:
-            # auto-merge (no destructive writes here; return existing handle)
+        if score >= CONFIG.merge_threshold:
             logger.info("upsert_person.automerge", score=score)
             projection.save_fingerprint("person", fp.value, m.matched_handle)
             projection.set_external_ids(fp.value, gramps_handle=m.matched_handle)
             return UpsertResult(handle=m.matched_handle or "", created=False)
-        if 0.80 <= score < 0.95:
+        if CONFIG.review_low <= score < CONFIG.review_high:
             raise IdempotencyBlock(
                 reason="Probable duplicate requires review",
                 match_score=score,
@@ -91,12 +100,32 @@ def upsert_person(
                 recommended_action="review_and_merge_or_skip",
             )
 
-    # Create new person
-    handle = client.add_person(person)
-    projection.save_fingerprint("person", fp.value, handle)
-    projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
-    logger.info("upsert_person.created", fingerprint=fp.value, handle=handle)
-    return UpsertResult(handle=handle, created=True)
+    # Claim-before-create with lock
+    import uuid, time
+    owner = str(uuid.uuid4())
+    attempts = 20
+    while attempts > 0:
+        if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
+            break
+        time.sleep(0.01)
+        attempts -= 1
+    if attempts == 0:
+        raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
+
+    try:
+        # Recheck mapping after lock
+        existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+        if existing2:
+            logger.info("upsert_person.reuse_after_lock", fingerprint=fp.value, handle=existing2)
+            return UpsertResult(handle=existing2, created=False)
+        # Create new person
+        handle = client.add_person(person)
+        projection.save_fingerprint("person", fp.value, handle)
+        projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
+        logger.info("upsert_person.created", fingerprint=fp.value, handle=handle)
+        return UpsertResult(handle=handle, created=True)
+    finally:
+        projection.release_fingerprint_lock(fp.value, owner)
 
 
 # ---------------------------- Citation ----------------------------
@@ -139,6 +168,96 @@ def upsert_citation(
     projection.set_external_ids(fp.value, gramps_handle=handle)
     logger.info("upsert_citation.created", fingerprint=fp.value, handle=handle)
     return UpsertResult(handle=handle, created=True)
+
+
+# ---------------------------- Place -----------------------------
+
+def upsert_place(
+    client: GrampsClient,
+    projection: SQLiteProjection,
+    place: "Place",
+) -> UpsertResult:
+    from gps_agents.idempotency.fingerprint import fingerprint_place
+    fp = fingerprint_place(place)
+    try:
+        place.fingerprint = fp.value
+    except Exception:
+        pass
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertResult(handle=existing, created=False)
+    import uuid, time
+    owner = str(uuid.uuid4())
+    attempts = 20
+    while attempts > 0:
+        if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
+            break
+        time.sleep(0.01)
+        attempts -= 1
+    if attempts == 0:
+        raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
+    try:
+        existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+        if existing2:
+            return UpsertResult(handle=existing2, created=False)
+        if not client._conn:
+            raise RuntimeError("GrampsClient must be connected")
+        # simple insert structure
+        handle = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")[:20]
+        gramps_id = place.gramps_id or f"P{int(datetime.now(UTC).timestamp())}"
+        data = {
+            "handle": handle,
+            "gramps_id": gramps_id,
+            "name": place.name,
+            "city": place.city,
+            "state": place.state,
+            "country": place.country,
+        }
+        blob = client._serialize_blob(data)  # noqa: SLF001
+        with client.session():
+            client._conn.execute("INSERT INTO place (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (handle, gramps_id, blob))
+        projection.save_fingerprint("place", fp.value, handle)
+        projection.set_external_ids(fp.value, gramps_handle=handle)
+        return UpsertResult(handle=handle, created=True)
+    finally:
+        projection.release_fingerprint_lock(fp.value, owner)
+
+
+# ---------------------------- Relationship -----------------------
+
+def upsert_relationship(
+    client: GrampsClient,
+    projection: SQLiteProjection,
+    kind: str,
+    a_handle: str,
+    b_handle: str,
+    context: str | None = None,
+) -> UpsertResult:
+    from gps_agents.idempotency.fingerprint import fingerprint_relationship
+    fp = fingerprint_relationship(kind, a_handle, b_handle, context)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertResult(handle=existing, created=False)
+    import uuid, time
+    owner = str(uuid.uuid4())
+    attempts = 20
+    while attempts > 0:
+        if projection.reserve_fingerprint_lock(fp.value, owner, ttl_seconds=CONFIG.lock_ttl_seconds):
+            break
+        time.sleep(0.01)
+        attempts -= 1
+    if attempts == 0:
+        raise IdempotencyBlock(reason="Could not obtain idempotency lock", recommended_action="retry")
+    try:
+        existing2 = projection.get_gramps_handle_by_fingerprint(fp.value)
+        if existing2:
+            return UpsertResult(handle=existing2, created=False)
+        # For now just record fingerprint mapping; Gramps stores relationships in family/event tables
+        projection.save_fingerprint("relationship", fp.value, None)
+        projection.set_external_ids(fp.value, gramps_handle=None)
+        return UpsertResult(handle="", created=True)
+    finally:
+        projection.release_fingerprint_lock(fp.value, owner)
 
 
 # ---------------------------- Event -----------------------------

@@ -31,6 +31,9 @@ class SQLiteProjection:
     def _get_conn(self):
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
+        # Enforce PRAGMAs per-connection
+        conn.execute("PRAGMA foreign_keys=ON;")
+        conn.execute("PRAGMA journal_mode=WAL;")
         try:
             yield conn
         finally:
@@ -102,6 +105,13 @@ class SQLiteProjection:
                     gramps_handle TEXT
                 );
                 CREATE INDEX IF NOT EXISTS idx_fingerprint_entity ON fingerprint_index(entity_type);
+
+                -- Locks for claim-before-create (separate table to avoid altering index schema)
+                CREATE TABLE IF NOT EXISTS fingerprint_locks (
+                    fingerprint TEXT PRIMARY KEY,
+                    reserved_by TEXT NOT NULL,
+                    reserved_at TEXT NOT NULL
+                );
 
                 -- Wikidata statement fingerprint cache
                 CREATE TABLE IF NOT EXISTS wikidata_statement_cache (
@@ -336,7 +346,48 @@ class SQLiteProjection:
         for fact in ledger.iter_all_facts():
             self.upsert_fact(fact)
             count += 1
-        return count
+            return count
+
+    # ------------------- Fingerprint Reservation API -----------------
+
+    def reserve_fingerprint_lock(self, fingerprint: str, reserved_by: str, ttl_seconds: int = 300) -> bool:
+        """Attempt to reserve a lock for a fingerprint (non-blocking).
+
+        Returns True if reserved by this caller. Cleans up stale locks older than ttl_seconds.
+        """
+        from datetime import datetime, UTC
+        now = datetime.now(UTC)
+        cutoff = (now.timestamp() - ttl_seconds)
+        with self._get_conn() as conn:
+            # cleanup stale
+            try:
+                rows = conn.execute("SELECT fingerprint, reserved_at FROM fingerprint_locks").fetchall()
+                for row in rows:
+                    try:
+                        ts = datetime.fromisoformat(row["reserved_at"]).timestamp()
+                        if ts < cutoff:
+                            conn.execute("DELETE FROM fingerprint_locks WHERE fingerprint = ?", (row["fingerprint"],))
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+            try:
+                conn.execute(
+                    "INSERT INTO fingerprint_locks (fingerprint, reserved_by, reserved_at) VALUES (?, ?, ?)",
+                    (fingerprint, reserved_by, now.isoformat()),
+                )
+                conn.commit()
+                return True
+            except sqlite3.IntegrityError:
+                return False
+
+    def release_fingerprint_lock(self, fingerprint: str, reserved_by: str) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                "DELETE FROM fingerprint_locks WHERE fingerprint = ? AND reserved_by = ?",
+                (fingerprint, reserved_by),
+            )
+            conn.commit()
 
     # --------------------- Wikidata Statement Cache ------------------
 

@@ -20,12 +20,53 @@ def _statement_fingerprint(property_id: str, value: Any, qualifiers: dict | None
     return hashlib.sha256(b).hexdigest()
 
 
-def _equivalent(a: dict, b: dict) -> bool:
-    # Compare property, value, qualifiers, references canonicalized
-    def canon(x: dict) -> dict:
-        return json.loads(json.dumps(x, sort_keys=True))
+def _normalize_time(value: dict) -> dict:
+    # Normalize time strings to the granularity of precision
+    if not isinstance(value, dict):
+        return value
+    t = value.copy()
+    time = t.get("time")
+    precision = t.get("precision")
+    if isinstance(time, str) and isinstance(precision, int):
+        # If year precision (9), keep +YYYY; month (10) keep +YYYY-MM; day (11) keep +YYYY-MM-DD
+        try:
+            core = time.lstrip("+")
+            parts = core.split("T")[0].split("-")
+            if precision == 9 and len(parts) >= 1:
+                t["time"] = "+" + parts[0]
+            elif precision == 10 and len(parts) >= 2:
+                t["time"] = "+" + parts[0] + "-" + parts[1]
+            elif precision == 11 and len(parts) >= 3:
+                t["time"] = "+" + parts[0] + "-" + parts[1] + "-" + parts[2]
+        except Exception:
+            pass
+    return t
 
-    return canon(a) == canon(b)
+
+def _canon_claim(property_id: str, value, qualifiers: dict | None, references: list | None) -> dict:
+    # Normalize property/value and deep-sort order-independent structures
+    pid = property_id.upper()
+    val = _normalize_time(value)
+    def sort_dict(d: dict) -> dict:
+        return json.loads(json.dumps(d, sort_keys=True))
+    def canon_refs(refs: list | None) -> list:
+        if not refs:
+            return []
+        # Each reference is a dict; sort items within, then sort list
+        items = [sort_dict(r) for r in refs]
+        return sorted(items, key=lambda x: json.dumps(x, sort_keys=True))
+    def canon_qual(q: dict | None) -> dict:
+        return sort_dict(q or {})
+    return {
+        "property": pid,
+        "value": val,
+        "qualifiers": canon_qual(qualifiers),
+        "references": canon_refs(references),
+    }
+
+
+def _equivalent(a: dict, b: dict) -> bool:
+    return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
 
 
 def ensure_statement(
@@ -60,17 +101,10 @@ def ensure_statement(
         return cache[fp]
 
     existing = client.get_claims(entity_id, property_id)  # mocked in tests
-    target = {
-        "property": property_id,
-        "value": value,
-        "qualifiers": qualifiers or {},
-        "references": references or [],
-    }
+    target = _canon_claim(property_id, value, qualifiers, references)
     for claim in existing:
-        if _equivalent(
-            {k: claim.get(k) for k in ("property", "value", "qualifiers", "references")},
-            target,
-        ):
+        cand = _canon_claim(claim.get("property"), claim.get("value"), claim.get("qualifiers"), claim.get("references"))
+        if _equivalent(cand, target):
             guid = claim.get("id") or claim.get("guid")
             if projection is not None:
                 getattr(projection, "set_statement_guid")(fp, guid, entity_id=entity_id, property_id=property_id)
