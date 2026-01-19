@@ -291,7 +291,21 @@ def test_upsert_person_dry_run_no_writes(env_tmp: Path):
     assert r.action in {"create", "merge"}
     with sqlite3.connect(db) as conn:
         n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
-        assert n == 0
+assert n == 0
+
+
+def test_decide_upsert_person(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    from gps_agents.idempotency.decision import decide_upsert_person
+    from gps_agents.gramps.models import Name, Person as GPerson
+
+    p = GPerson(names=[Name(given="Decide", surname="Only")])
+    d = decide_upsert_person(gc, proj, p)
+    assert d.action in {"create", "merge", "reuse", "review"}
 
 # ---------------------- Concurrency tests ----------------------
 

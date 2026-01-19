@@ -57,9 +57,13 @@ def research(
     output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),  # noqa: B008
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
     max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),
+    run_id: str = typer.Option(None, "--run-id", help="Bind run_id to structured logs"),
 ) -> None:
     """Run a genealogical research query using the GPS multi-agent system."""
     config = get_config()
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
 
     if not config.get("anthropic_api_key") and not config.get("openai_api_key"):
         console.print("[red]Error: No API keys configured. Set ANTHROPIC_API_KEY or OPENAI_API_KEY.[/red]")
@@ -271,6 +275,7 @@ def list_facts(
 @backfill_app.command("idempotency")
 def backfill_idempotency(
     gramps_db: Path = typer.Argument(..., help="Path to Gramps sqlite.db/grampsdb.db"),  # noqa: B008
+    run_id: str = typer.Option(None, "--run-id", help="Bind run_id to structured logs"),
 ) -> None:
     """Compute and persist fingerprints for existing Gramps records.
 
@@ -286,6 +291,9 @@ def backfill_idempotency(
     from gps_agents.gramps.models import Person as GPerson
 
     gc = GrampsClient(str(gramps_db))
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
     gc.connect(str(gramps_db))
 
     # Use projection in default data dir for simplicity

@@ -8,6 +8,7 @@ from typing import Literal
 
 import logging
 import structlog
+from structlog.contextvars import bind_contextvars, merge_contextvars
 
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
@@ -16,6 +17,7 @@ def configure_logging(level: LogLevel = "INFO") -> None:
     logging.basicConfig(format="%(message)s", level=getattr(logging, level))
     structlog.configure(
         processors=[
+            merge_contextvars,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="ISO"),
             structlog.processors.JSONRenderer(),
@@ -27,6 +29,10 @@ def configure_logging(level: LogLevel = "INFO") -> None:
 
 def get_logger(name: str = "gps_agents"):
     return structlog.get_logger(name)
+
+
+def set_run_id(run_id: str) -> None:
+    bind_contextvars(run_id=run_id)
 
 
 # Initialize default config
