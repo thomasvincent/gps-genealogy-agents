@@ -462,7 +462,7 @@ class MatchMergeAgent:
 
     def _build_reasoning(
         self,
-        proposed: Person,
+        _proposed: Person,
         best_match: dict[str, Any],
         action: MergeAction,
     ) -> str:

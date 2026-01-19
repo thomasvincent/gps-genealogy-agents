@@ -81,10 +81,7 @@ class JerripediaSource(BaseSource):
         import httpx
 
         # Handle both titles and full URLs
-        if record_id.startswith("http"):
-            page_title = record_id.split("/wiki/")[-1]
-        else:
-            page_title = record_id
+        page_title = record_id.split("/wiki/")[-1] if record_id.startswith("http") else record_id
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:

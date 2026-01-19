@@ -232,7 +232,7 @@ class ReviewerMemory:
         Returns:
             List of (agent_name, stats) tuples sorted by mistake count
         """
-        agent_names = set(m.agent_name for m in self.mistakes)
+        agent_names = {m.agent_name for m in self.mistakes}
 
         problem_agents = []
         for name in agent_names:

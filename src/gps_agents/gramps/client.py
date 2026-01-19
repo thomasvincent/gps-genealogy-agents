@@ -189,7 +189,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._person_from_gramps(row["handle"], data)
 
-    def _person_from_gramps(self, handle: str, data: dict) -> Person:
+    def _person_from_gramps(self, _handle: str, data: dict) -> Person:
         """Convert Gramps person data to our Person model."""
         person = Person(
             gramps_id=data.get("gramps_id"),
@@ -263,12 +263,14 @@ class GrampsClient:
             person = self._person_from_gramps(row["handle"], data)
 
             # Filter
-            if surname:
-                if not person.primary_name or surname.lower() not in person.primary_name.surname.lower():
-                    continue
-            if given:
-                if not person.primary_name or given.lower() not in person.primary_name.given.lower():
-                    continue
+            if surname and (
+                not person.primary_name or surname.lower() not in person.primary_name.surname.lower()
+            ):
+                continue
+            if given and (
+                not person.primary_name or given.lower() not in person.primary_name.given.lower()
+            ):
+                continue
 
             results.append(person)
 
@@ -349,7 +351,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._family_from_gramps(handle, data)
 
-    def _family_from_gramps(self, handle: str, data: dict) -> Family:
+    def _family_from_gramps(self, _handle: str, data: dict) -> Family:
         """Convert Gramps family data to our Family model."""
         return Family(
             gramps_id=data.get("gramps_id"),
@@ -379,7 +381,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._source_from_gramps(handle, data)
 
-    def _source_from_gramps(self, handle: str, data: dict) -> Source:
+    def _source_from_gramps(self, _handle: str, data: dict) -> Source:
         """Convert Gramps source data to our Source model."""
         return Source(
             gramps_id=data.get("gramps_id"),

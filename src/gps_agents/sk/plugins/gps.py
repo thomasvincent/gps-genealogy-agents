@@ -165,7 +165,7 @@ class GPSPlugin:
         conflicts_json: Annotated[str, "JSON array of identified Conflicts"],
     ) -> Annotated[str, "JSON evaluation result"]:
         """Evaluate Pillar 4: Conflict Resolution."""
-        fact = Fact.model_validate_json(fact_json)
+        _ = Fact.model_validate_json(fact_json)  # Validate but not used yet
         conflicts_data = json.loads(conflicts_json)
 
         if not conflicts_data:

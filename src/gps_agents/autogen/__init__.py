@@ -102,6 +102,8 @@ __all__ = [
     "ReviewerMemory",
     "Severity",
     # Match-merge agent
+    "MATCH_MERGE_PROMPT",
+    "MERGE_REVIEWER_PROMPT",
     "MatchMergeAgent",
     "MergeAction",
     "MergeDecision",

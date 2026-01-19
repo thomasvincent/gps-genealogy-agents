@@ -55,7 +55,7 @@ class ResearchAgent(BaseAgent):
         # Search all configured sources
         all_records = await self._search_all_sources(query)
         state["raw_records"] = [r.model_dump() for r in all_records]
-        state["sources_searched"] = list(set(r.source for r in all_records))
+        state["sources_searched"] = list({r.source for r in all_records})
 
         # Analyze records and propose facts
         proposed_facts = await self._analyze_and_propose(task, all_records, existing_facts)
@@ -151,7 +151,7 @@ class ResearchAgent(BaseAgent):
             return []
 
     async def _analyze_and_propose(
-        self, task: str, records: list[RawRecord], existing_facts: list[Fact]
+        self, task: str, records: list[RawRecord], _existing_facts: list[Fact]
     ) -> list[Fact]:
         """Analyze records and propose facts.
 

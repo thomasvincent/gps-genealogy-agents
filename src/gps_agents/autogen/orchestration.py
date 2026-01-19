@@ -165,9 +165,8 @@ async def create_focused_research_team(
 
     # Always include workflow_agent if doing GPS evaluation
     gps_agents = {"gps_standards_critic", "gps_reasoning_critic"}
-    if any(name in agent_names for name in gps_agents):
-        if "workflow_agent" not in selected_agents:
-            selected_agents["workflow_agent"] = all_agents["workflow_agent"]
+    if any(name in agent_names for name in gps_agents) and "workflow_agent" not in selected_agents:
+        selected_agents["workflow_agent"] = all_agents["workflow_agent"]
 
     participant_list: list[BaseChatAgent] = list(selected_agents.values())
     selector_model = create_model_client("openai", temperature=0.1)

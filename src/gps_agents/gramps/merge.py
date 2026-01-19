@@ -118,10 +118,12 @@ class PersonMatcher:
         # Also search by Soundex variants
         soundex = self._soundex(person.primary_name.surname)
         for candidate in self.client.find_persons(limit=100):
-            if candidate.primary_name:
-                if self._soundex(candidate.primary_name.surname) == soundex:
-                    if candidate not in candidates:
-                        candidates.append(candidate)
+            if (
+                candidate.primary_name
+                and self._soundex(candidate.primary_name.surname) == soundex
+                and candidate not in candidates
+            ):
+                candidates.append(candidate)
 
         # Score each candidate
         results = []
@@ -255,10 +257,9 @@ class PersonMatcher:
                     score += self.CONFLICTS["birth_year_far"] if event_type == "birth" else 0
                     conflicts.append(f"{event_type.title()} years far apart: {year1} vs {year2}")
 
-        if event1.place and event2.place:
-            if str(event1.place).lower() == str(event2.place).lower():
-                score += self.WEIGHTS[f"{event_type}_place"]
-                reasons.append(f"{event_type.title()} place match: {event1.place}")
+        if event1.place and event2.place and str(event1.place).lower() == str(event2.place).lower():
+            score += self.WEIGHTS[f"{event_type}_place"]
+            reasons.append(f"{event_type.title()} place match: {event1.place}")
 
         return score, reasons, conflicts
 
@@ -463,10 +464,7 @@ class GrampsMerger:
         """Check if two events are effectively equal."""
         if e1.event_type != e2.event_type:
             return False
-        if e1.date and e2.date:
-            if e1.date.year != e2.date.year:
-                return False
-        return True
+        return not (e1.date and e2.date and e1.date.year != e2.date.year)
 
 
 # Convenience function for async contexts

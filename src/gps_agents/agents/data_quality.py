@@ -146,7 +146,7 @@ class DataQualityAgent(BaseAgent):
         issues = []
 
         # Group sources by repository
-        repos = set(s.repository for s in fact.sources)
+        repos = {s.repository for s in fact.sources}
         if len(repos) > 1:
             # Multiple independent sources - good for corroboration
             pass

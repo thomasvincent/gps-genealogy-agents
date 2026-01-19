@@ -411,9 +411,10 @@ class SearchOrchestratorAgent(BaseAgent):
         record_type = record.record_type.lower() if record.record_type else ""
 
         # Original sources
-        if any(kw in source_lower for kw in ["parish", "civil", "church", "archive"]):
-            if "image" in record_type or "original" in record_type:
-                return SourceType.ORIGINAL
+        if any(kw in source_lower for kw in ["parish", "civil", "church", "archive"]) and (
+            "image" in record_type or "original" in record_type
+        ):
+            return SourceType.ORIGINAL
 
         # Derivative sources
         if any(kw in source_lower for kw in ["index", "transcript", "abstract"]):
@@ -484,7 +485,7 @@ class SearchOrchestratorAgent(BaseAgent):
     def _resolve_conflicts(
         self,
         results: list[OrchestratorResult],
-        conflicts: list[ConflictInfo],
+        _conflicts: list[ConflictInfo],
     ) -> list[OrchestratorResult]:
         """Resolve conflicts by preferring higher-confidence sources."""
         # For now, just sort by confidence and return
@@ -590,7 +591,7 @@ class SearchOrchestratorAgent(BaseAgent):
     async def _execute_search(
         self,
         request: dict[str, Any],
-        context: dict[str, Any],
+        _context: dict[str, Any],
     ) -> OrchestratorResponse:
         """Execute a search request."""
         return await self.search(
@@ -605,7 +606,7 @@ class SearchOrchestratorAgent(BaseAgent):
     async def _execute_match(
         self,
         request: dict[str, Any],
-        context: dict[str, Any],
+        _context: dict[str, Any],
     ) -> OrchestratorResponse:
         """Execute a Gramps match check."""
         match = await self._check_gramps_match(
@@ -635,7 +636,7 @@ class SearchOrchestratorAgent(BaseAgent):
     async def _execute_format(
         self,
         request: dict[str, Any],
-        context: dict[str, Any],
+        _context: dict[str, Any],
     ) -> OrchestratorResponse:
         """Execute a format/report request."""
         # This would format results into a GPS-compliant report

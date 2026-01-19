@@ -49,10 +49,10 @@ def get_kernel_config():
 
 @app.command()
 def research(
-    query: str = typer.Argument(..., help="Research query in natural language"),
-    output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
-    max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),
+    query: str = typer.Argument(..., help="Research query in natural language"),  # noqa: B008
+    output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),  # noqa: B008
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
+    max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),  # noqa: B008
 ):
     """Run a genealogical research query using the GPS multi-agent system."""
     config = get_config()
@@ -173,8 +173,8 @@ def translate(
 
 @app.command()
 def load_gedcom(
-    file_path: Path = typer.Argument(..., help="Path to GEDCOM file"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
+    file_path: Path = typer.Argument(..., help="Path to GEDCOM file"),  # noqa: B008
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
 ):
     """Load a GEDCOM file into the system."""
     from gps_agents.models.search import SearchQuery
@@ -234,9 +234,9 @@ def list_facts(
     if status:
         try:
             status_filter = FactStatus(status.upper())
-        except ValueError:
+        except ValueError as err:
             console.print(f"[red]Invalid status. Choose from: {[s.value for s in FactStatus]}[/red]")
-            raise typer.Exit(1)
+            raise typer.Exit(1) from err
 
     table = Table(title="Facts")
     table.add_column("ID", style="dim")

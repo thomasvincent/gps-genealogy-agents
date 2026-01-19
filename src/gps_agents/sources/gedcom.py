@@ -174,14 +174,12 @@ class GedcomSource(BaseSource):
         """
         name = indi.get("name", "").lower()
 
-        if query.surname:
-            # GEDCOM names use /Surname/ format
-            if query.surname.lower() not in name:
-                return False
+        # GEDCOM names use /Surname/ format
+        if query.surname and query.surname.lower() not in name:
+            return False
 
-        if query.given_name:
-            if query.given_name.lower() not in name:
-                return False
+        if query.given_name and query.given_name.lower() not in name:
+            return False
 
         if query.birth_year:
             birth_date = indi.get("birth_date", "")

@@ -69,7 +69,7 @@ class CitationPlugin:
     ) -> Annotated[str, "JSON with evidence classification and reasoning"]:
         """Classify evidence type based on source content and claim."""
         source_lower = source_description.lower()
-        claim_lower = claim.lower()
+        _ = claim.lower()  # Reserved for future claim-based classification
 
         # Direct: Source explicitly states the fact
         direct_indicators = [
