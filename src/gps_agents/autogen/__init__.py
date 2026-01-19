@@ -30,9 +30,18 @@ from gps_agents.autogen.orchestration import (
     translate_record,
 )
 from gps_agents.autogen.wiki_publishing import (
+    Platform,
+    PublishDecision,
+    QuorumResult,
+    ReviewerMemory,
+    ReviewIssue,
+    Severity,
+    check_quorum,
     create_wiki_publishing_team,
     generate_wikidata_payload,
+    get_reviewer_memory,
     grade_article_gps,
+    parse_review_issues,
     publish_to_wikis,
     review_outputs,
 )
@@ -70,4 +79,15 @@ __all__ = [
     "grade_article_gps",
     "publish_to_wikis",
     "review_outputs",
+    # Dual reviewer quorum
+    "check_quorum",
+    "parse_review_issues",
+    "get_reviewer_memory",
+    "QuorumResult",
+    # Publishing decision models
+    "Platform",
+    "PublishDecision",
+    "ReviewIssue",
+    "ReviewerMemory",
+    "Severity",
 ]

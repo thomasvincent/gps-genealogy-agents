@@ -1,15 +1,27 @@
 """Tests for Wiki Publishing Team."""
 
+import tempfile
+from pathlib import Path
+
 import pytest
 
 from gps_agents.autogen.wiki_publishing import (
     DATA_ENGINEER_PROMPT,
     DEVOPS_PROMPT,
     LINGUIST_PROMPT,
+    LOGIC_REVIEWER_PROMPT,
     MANAGER_PROMPT,
+    Platform,
+    PublishDecision,
+    QuorumResult,
     REVIEWER_PROMPT,
+    ReviewerMemory,
+    ReviewIssue,
+    SOURCE_REVIEWER_PROMPT,
+    Severity,
     _extract_section,
     _is_approved,
+    check_quorum,
 )
 
 
@@ -334,3 +346,388 @@ Must fix before publishing.
         assert blocking is not None
         assert "CRITICAL" in blocking
         assert "Birth date" in blocking
+
+
+class TestDualReviewerPrompts:
+    """Test dual reviewer prompts are properly defined."""
+
+    def test_logic_reviewer_has_timeline_focus(self):
+        """LogicReviewer should focus on timeline errors."""
+        assert "TIMELINE" in LOGIC_REVIEWER_PROMPT
+        assert "Death before birth" in LOGIC_REVIEWER_PROMPT
+        assert "LOGIC_VERDICT" in LOGIC_REVIEWER_PROMPT
+
+    def test_logic_reviewer_has_relationship_checks(self):
+        """LogicReviewer should check relationships."""
+        assert "RELATIONSHIP" in LOGIC_REVIEWER_PROMPT
+        assert "Circular" in LOGIC_REVIEWER_PROMPT
+
+    def test_logic_reviewer_requires_quorum(self):
+        """LogicReviewer should require agreement with SourceReviewer."""
+        assert "SourceReviewer" in LOGIC_REVIEWER_PROMPT
+        assert "AGREE" in LOGIC_REVIEWER_PROMPT
+
+    def test_source_reviewer_has_fabrication_focus(self):
+        """SourceReviewer should focus on fabrications."""
+        assert "FABRICATION" in SOURCE_REVIEWER_PROMPT
+        assert "Hallucinated" in SOURCE_REVIEWER_PROMPT
+        assert "SOURCE_VERDICT" in SOURCE_REVIEWER_PROMPT
+
+    def test_source_reviewer_has_citation_checks(self):
+        """SourceReviewer should check citations."""
+        assert "CITATION" in SOURCE_REVIEWER_PROMPT
+        assert "Incomplete" in SOURCE_REVIEWER_PROMPT
+
+    def test_source_reviewer_requires_quorum(self):
+        """SourceReviewer should require agreement with LogicReviewer."""
+        assert "LogicReviewer" in SOURCE_REVIEWER_PROMPT
+        assert "AGREE" in SOURCE_REVIEWER_PROMPT
+
+
+class TestQuorumResult:
+    """Test QuorumResult dataclass."""
+
+    def test_both_pass(self):
+        """Test quorum when both reviewers pass."""
+        result = QuorumResult(
+            logic_verdict="PASS",
+            source_verdict="PASS",
+            quorum_reached=True,
+            approved=True,
+        )
+        assert result.approved is True
+        assert "Both reviewers approved" in result.status
+
+    def test_logic_fails(self):
+        """Test quorum when LogicReviewer fails."""
+        result = QuorumResult(
+            logic_verdict="FAIL",
+            source_verdict="PASS",
+            quorum_reached=True,
+            approved=False,
+        )
+        assert result.approved is False
+        assert "LogicReviewer" in result.status
+
+    def test_source_fails(self):
+        """Test quorum when SourceReviewer fails."""
+        result = QuorumResult(
+            logic_verdict="PASS",
+            source_verdict="FAIL",
+            quorum_reached=True,
+            approved=False,
+        )
+        assert result.approved is False
+        assert "SourceReviewer" in result.status
+
+    def test_both_fail(self):
+        """Test quorum when both fail."""
+        result = QuorumResult(
+            logic_verdict="FAIL",
+            source_verdict="FAIL",
+            quorum_reached=True,
+            approved=False,
+        )
+        assert "Both reviewers found issues" in result.status
+
+    def test_awaiting_logic(self):
+        """Test status when awaiting LogicReviewer."""
+        result = QuorumResult(
+            source_verdict="PASS",
+        )
+        assert "Awaiting LogicReviewer" in result.status
+
+    def test_awaiting_source(self):
+        """Test status when awaiting SourceReviewer."""
+        result = QuorumResult(
+            logic_verdict="PASS",
+        )
+        assert "Awaiting SourceReviewer" in result.status
+
+
+class TestCheckQuorum:
+    """Test check_quorum function."""
+
+    def test_quorum_both_pass(self):
+        """Test quorum detection when both pass."""
+        messages = [
+            {
+                "source": "LogicReviewer",
+                "content": """### 🧮 LOGIC REVIEW
+All timeline checks passed.
+
+### LOGIC_VERDICT
+PASS - No logical errors found.
+""",
+            },
+            {
+                "source": "SourceReviewer",
+                "content": """### 📚 SOURCE REVIEW
+All sources verified.
+
+### SOURCE_VERDICT
+PASS - Sources are accurate.
+""",
+            },
+        ]
+
+        result = check_quorum(messages)
+        assert result.quorum_reached is True
+        assert result.approved is True
+        assert result.logic_verdict == "PASS"
+        assert result.source_verdict == "PASS"
+
+    def test_quorum_logic_fails(self):
+        """Test quorum when logic fails."""
+        messages = [
+            {
+                "source": "LogicReviewer",
+                "content": """### 🧮 LOGIC REVIEW
+- CRITICAL: Death before birth
+
+### LOGIC_VERDICT
+FAIL - Timeline impossibility found.
+""",
+            },
+            {
+                "source": "SourceReviewer",
+                "content": """### SOURCE_VERDICT
+PASS - Sources are accurate.
+""",
+            },
+        ]
+
+        result = check_quorum(messages)
+        assert result.quorum_reached is True
+        assert result.approved is False
+        assert result.logic_verdict == "FAIL"
+
+    def test_quorum_not_reached(self):
+        """Test when only one reviewer has responded."""
+        messages = [
+            {
+                "source": "LogicReviewer",
+                "content": """### LOGIC_VERDICT
+PASS
+""",
+            },
+        ]
+
+        result = check_quorum(messages)
+        assert result.quorum_reached is False
+        assert result.approved is False
+
+
+class TestPublishDecision:
+    """Test auto-downgrade publishing logic."""
+
+    def test_no_issues_all_approved(self):
+        """Test all platforms approved with no issues."""
+        decision = PublishDecision.from_issues([])
+        assert decision.wikipedia is True
+        assert decision.wikidata is True
+        assert decision.wikitree is True
+        assert decision.github is True
+        assert decision.integrity_score == 100
+
+    def test_critical_blocks_all(self):
+        """Test CRITICAL issue blocks all platforms."""
+        issues = [
+            ReviewIssue(
+                severity=Severity.CRITICAL,
+                category="fabrication",
+                description="Birth date invented",
+            )
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert decision.wikipedia is False
+        assert decision.wikidata is False
+        assert decision.wikitree is False
+        assert decision.github is False
+        assert decision.integrity_score == 60  # 100 - 40
+
+    def test_high_blocks_wikipedia_wikidata(self):
+        """Test HIGH issue blocks Wikipedia and Wikidata."""
+        issues = [
+            ReviewIssue(
+                severity=Severity.HIGH,
+                category="logic",
+                description="Timeline impossible",
+            )
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert decision.wikipedia is False
+        assert decision.wikidata is False
+        assert decision.wikitree is True
+        assert decision.wikitree is True
+        assert decision.github is True
+        assert decision.integrity_score == 80  # 100 - 20
+
+    def test_medium_blocks_wikipedia_only(self):
+        """Test MEDIUM issue blocks only Wikipedia."""
+        issues = [
+            ReviewIssue(
+                severity=Severity.MEDIUM,
+                category="quality",
+                description="Missing uncertainty marker",
+            )
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert decision.wikipedia is False
+        assert decision.wikidata is True
+        assert decision.wikitree is True
+        assert decision.github is True
+        assert decision.integrity_score == 90  # 100 - 10
+
+    def test_low_blocks_nothing(self):
+        """Test LOW issue blocks nothing."""
+        issues = [
+            ReviewIssue(
+                severity=Severity.LOW,
+                category="style",
+                description="Template format issue",
+            )
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert decision.wikipedia is True
+        assert decision.wikidata is True
+        assert decision.wikitree is True
+        assert decision.github is True
+        assert decision.integrity_score == 95  # 100 - 5
+
+    def test_get_allowed_platforms(self):
+        """Test getting allowed platforms."""
+        issues = [
+            ReviewIssue(severity=Severity.MEDIUM, category="quality", description="Test")
+        ]
+        decision = PublishDecision.from_issues(issues)
+        allowed = decision.get_allowed_platforms()
+        assert Platform.WIKIPEDIA not in allowed
+        assert Platform.WIKIDATA in allowed
+        assert Platform.WIKITREE in allowed
+        assert Platform.GITHUB in allowed
+
+    def test_summary_all_approved(self):
+        """Test summary when all approved."""
+        decision = PublishDecision.from_issues([])
+        assert "APPROVED" in decision.summary()
+
+    def test_summary_downgraded(self):
+        """Test summary when downgraded."""
+        issues = [
+            ReviewIssue(severity=Severity.MEDIUM, category="quality", description="Test")
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert "DOWNGRADED" in decision.summary()
+        assert "Wikipedia" in decision.summary()
+
+    def test_summary_blocked(self):
+        """Test summary when all blocked."""
+        issues = [
+            ReviewIssue(severity=Severity.CRITICAL, category="fabrication", description="Test")
+        ]
+        decision = PublishDecision.from_issues(issues)
+        assert "BLOCKED" in decision.summary()
+
+
+class TestReviewerMemory:
+    """Test ReviewerMemory tracking."""
+
+    def test_record_mistake(self):
+        """Test recording a single mistake."""
+        memory = ReviewerMemory()
+        memory.record_mistake(
+            agent_name="DataEngineer",
+            category="fabrication",
+            severity=Severity.CRITICAL,
+            description="Hallucinated QID",
+        )
+        assert len(memory.mistakes) == 1
+        assert memory.mistakes[0].agent_name == "DataEngineer"
+
+    def test_agent_stats(self):
+        """Test getting agent statistics."""
+        memory = ReviewerMemory()
+        memory.record_mistake("DataEngineer", "fabrication", Severity.CRITICAL, "Issue 1")
+        memory.record_mistake("DataEngineer", "fabrication", Severity.HIGH, "Issue 2")
+        memory.record_mistake("DataEngineer", "logic", Severity.MEDIUM, "Issue 3")
+
+        stats = memory.get_agent_stats("DataEngineer")
+        assert stats["total"] == 3
+        assert stats["by_category"]["fabrication"] == 2
+        assert stats["by_category"]["logic"] == 1
+        assert stats["most_common"] == "fabrication"
+
+    def test_agent_stats_empty(self):
+        """Test stats for agent with no mistakes."""
+        memory = ReviewerMemory()
+        stats = memory.get_agent_stats("UnknownAgent")
+        assert stats["total"] == 0
+
+    def test_problem_agents(self):
+        """Test identifying problem agents."""
+        memory = ReviewerMemory()
+        # DataEngineer has 4 mistakes
+        for i in range(4):
+            memory.record_mistake("DataEngineer", "fabrication", Severity.HIGH, f"Issue {i}")
+        # Linguist has 2 mistakes
+        for i in range(2):
+            memory.record_mistake("Linguist", "style", Severity.LOW, f"Issue {i}")
+
+        problems = memory.get_problem_agents(min_mistakes=3)
+        assert len(problems) == 1
+        assert problems[0][0] == "DataEngineer"
+
+    def test_generate_report(self):
+        """Test report generation."""
+        memory = ReviewerMemory()
+        memory.record_mistake("DataEngineer", "fabrication", Severity.CRITICAL, "Test issue")
+
+        report = memory.generate_report()
+        assert "DataEngineer" in report
+        assert "fabrication" in report
+
+    def test_empty_report(self):
+        """Test report with no mistakes."""
+        memory = ReviewerMemory()
+        report = memory.generate_report()
+        assert "No mistakes" in report
+
+    def test_persistence(self):
+        """Test saving and loading memory."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "memory.json"
+
+            # Create and save
+            memory1 = ReviewerMemory(persist_path=path)
+            memory1.record_mistake("DataEngineer", "fabrication", Severity.CRITICAL, "Test")
+
+            assert path.exists()
+
+            # Load in new instance
+            memory2 = ReviewerMemory(persist_path=path)
+            assert len(memory2.mistakes) == 1
+            assert memory2.mistakes[0].agent_name == "DataEngineer"
+
+    def test_record_issues(self):
+        """Test recording issues from review."""
+        memory = ReviewerMemory()
+        issues = [
+            ReviewIssue(
+                severity=Severity.CRITICAL,
+                category="fabrication",
+                description="Made up date",
+                agent_responsible="DataEngineer",
+            ),
+            ReviewIssue(
+                severity=Severity.HIGH,
+                category="logic",
+                description="Timeline error",
+                agent_responsible="Linguist",
+            ),
+        ]
+        memory.record_issues(issues)
+
+        assert len(memory.mistakes) == 2
+        assert memory.get_agent_stats("DataEngineer")["total"] == 1
+        assert memory.get_agent_stats("Linguist")["total"] == 1
