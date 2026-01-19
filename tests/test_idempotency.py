@@ -326,7 +326,24 @@ def test_decide_upsert_event_source_place(env_tmp: Path):
     dp = decide_upsert_place(gc, proj, pl)
     assert de.action == "create"
     assert ds.action == "create"
-    assert dp.action == "create"
+assert dp.action == "create"
+
+
+def test_decide_upsert_citation_relationship(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    from gps_agents.idempotency.decision import decide_upsert_citation, decide_upsert_relationship
+    from gps_agents.gramps.models import Citation as GCitation, GrampsDate
+
+    c = GCitation(source_id="S1", page="12", date=GrampsDate(year=1850))
+    dc = decide_upsert_citation(gc, proj, c)
+    assert dc.action == "create"
+
+    dr = decide_upsert_relationship(gc, proj, "spouse", "H1", "W1")
+    assert dr.action == "create"
 
 # ---------------------- Concurrency tests ----------------------
 

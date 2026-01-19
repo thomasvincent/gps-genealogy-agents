@@ -19,6 +19,9 @@ app = typer.Typer(
 
 backfill_app = typer.Typer(help="Backfill utilities")
 app.add_typer(backfill_app, name="backfill")
+
+plan_app = typer.Typer(help="Dry-run planners (decision-only)")
+app.add_typer(plan_app, name="plan")
 console = Console()
 
 
@@ -270,6 +273,35 @@ def list_facts(
     console.print(f"[dim]Showing {count} facts[/dim]")
 
     ledger.close()
+
+
+@plan_app.command("person")
+def plan_person(
+    given: str = typer.Option(..., "--given", help="Given name"),
+    surname: str = typer.Option(..., "--surname", help="Surname"),
+    run_id: str = typer.Option(None, "--run-id", help="Bind run_id"),
+) -> None:
+    """Decision-only plan for a Person upsert (no writes)."""
+    from gps_agents.idempotency.decision import decide_upsert_person
+    from gps_agents.gramps.models import Person as GPerson, Name as GName
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.gramps.client import GrampsClient
+    import json as _json
+
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    cfg = get_config()
+    proj = SQLiteProjection(str(cfg["data_dir"] / "projection.db"))
+    # For decision-only we don't need a real DB; create an in-memory client placeholder
+    # but GrampsClient expects a path; we provide a non-existent path and only use matcher lightly.
+    # In practice, matcher may need candidates; here it will return create unless a fingerprint exists.
+    gc = GrampsClient(cfg["data_dir"])  # not connecting
+
+    p = GPerson(names=[GName(given=given, surname=surname)])
+    dec = decide_upsert_person(gc, proj, p)
+    console.print(_json.dumps(dec.__dict__, indent=2))
 
 
 @backfill_app.command("idempotency")

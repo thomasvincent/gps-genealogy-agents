@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from gps_agents.gramps.merge import PersonMatcher
-from gps_agents.gramps.models import Person, Event, Source, Place
+from gps_agents.gramps.models import Person, Event, Source, Place, Citation
 from gps_agents.idempotency.config import CONFIG
 from gps_agents.idempotency.fingerprint import (
     fingerprint_person,
@@ -57,6 +57,24 @@ def decide_upsert_person(client, projection, person: Person) -> UpsertDecision:
 
 def decide_upsert_event(client, projection, event: Event) -> UpsertDecision:
     fp = fingerprint_event(event)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
+    return UpsertDecision(action="create", score=0.0, fingerprint=fp.value)
+
+
+def decide_upsert_citation(client, projection, citation: Citation) -> UpsertDecision:
+    from gps_agents.idempotency.fingerprint import fingerprint_citation
+    fp = fingerprint_citation(citation)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
+    return UpsertDecision(action="create", score=0.0, fingerprint=fp.value)
+
+
+def decide_upsert_relationship(client, projection, kind: str, a_handle: str, b_handle: str, context: str | None = None) -> UpsertDecision:
+    from gps_agents.idempotency.fingerprint import fingerprint_relationship
+    fp = fingerprint_relationship(kind, a_handle, b_handle, context)
     existing = projection.get_gramps_handle_by_fingerprint(fp.value)
     if existing:
         return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
