@@ -1,4 +1,5 @@
 """Research Agent - discovers records and proposes facts."""
+from __future__ import annotations
 
 import asyncio
 import json
@@ -28,7 +29,7 @@ class ResearchAgent(BaseAgent):
     prompt_file = "research_agent.txt"
     default_provider = "openai"  # GPT-4 for structured search tasks
 
-    def __init__(self, sources: list = None, **kwargs) -> None:
+    def __init__(self, sources: list | None = None, **kwargs) -> None:
         """Initialize research agent.
 
         Args:

@@ -21,16 +21,19 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from autogen_agentchat.agents import AssistantAgent
-from autogen_agentchat.base import TaskResult
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 from autogen_agentchat.messages import TextMessage
 from autogen_agentchat.teams import SelectorGroupChat
 
 from gps_agents.autogen.agents import create_model_client
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from autogen_agentchat.base import TaskResult
 
 # =============================================================================
 # Publishing Decision Models
@@ -261,7 +264,7 @@ class ReviewerMemory:
             for agent, stats in problem_agents:
                 lines.append(f"### {agent}")
                 lines.append(f"- Total mistakes: {stats['total']}")
-                if stats['most_common']:
+                if stats["most_common"]:
                     lines.append(f"- Most common issue: {stats['most_common']}")
                 lines.append(f"- By severity: {stats['by_severity']}")
                 lines.append("")
@@ -888,7 +891,7 @@ async def publish_to_wikis(
     Returns:
         Publishing outputs including payloads for each platform
     """
-    team, agents = create_wiki_publishing_team(model=model)
+    team, _agents = create_wiki_publishing_team(model=model)
 
     # Build context about existing IDs
     id_context = []
@@ -933,7 +936,7 @@ Please:
             })
 
     # Parse outputs from final messages
-    outputs = {
+    return {
         "subject": subject_name,
         "messages": messages,
         "wikidata_payload": _extract_section(messages, "WIKIDATA_PAYLOAD"),
@@ -946,7 +949,6 @@ Please:
         "blocking_issues": _extract_section(messages, "BLOCKING ISSUES"),
     }
 
-    return outputs
 
 
 async def grade_article_gps(
@@ -964,7 +966,7 @@ async def grade_article_gps(
     Returns:
         GPS grading with improvement suggestions
     """
-    team, agents = create_wiki_publishing_team(model=model, max_messages=15)
+    team, _agents = create_wiki_publishing_team(model=model, max_messages=15)
 
     task = f"""Grade the following genealogical article against GPS standards:
 
@@ -1026,7 +1028,7 @@ async def generate_wikidata_payload(
     Returns:
         Wikidata payload ready for pywikibot
     """
-    team, agents = create_wiki_publishing_team(model=model, max_messages=10)
+    team, _agents = create_wiki_publishing_team(model=model, max_messages=10)
 
     facts_text = "\n".join(
         f"- {f.get('statement', f)}" for f in facts
@@ -1084,8 +1086,8 @@ def _extract_section(messages: list[dict], section_name: str) -> str | None:
                 if section_name in line:
                     in_section = True
                     continue
-                elif in_section:
-                    if line.startswith("###") or line.startswith("## "):
+                if in_section:
+                    if line.startswith(("###", "## ")):
                         break
                     section_lines.append(line)
 
@@ -1112,7 +1114,7 @@ async def review_outputs(
     Returns:
         Review report with integrity score and blocking issues
     """
-    team, agents = create_wiki_publishing_team(model=model, max_messages=10)
+    team, _agents = create_wiki_publishing_team(model=model, max_messages=10)
 
     outputs_text = "\n\n".join(
         f"### {key}\n{value}" for key, value in outputs.items() if value
@@ -1196,7 +1198,7 @@ def _extract_verdict(messages: list[dict], verdict_section: str) -> str | None:
     verdict_upper = verdict.upper()
     if "PASS" in verdict_upper:
         return "PASS"
-    elif "FAIL" in verdict_upper:
+    if "FAIL" in verdict_upper:
         return "FAIL"
     return None
 

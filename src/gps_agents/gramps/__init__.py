@@ -3,6 +3,7 @@
 Provides access to local Gramps databases with intelligent
 match-merge logic to prevent duplicate records.
 """
+from __future__ import annotations
 
 from gps_agents.gramps.client import GrampsClient
 from gps_agents.gramps.merge import (
@@ -29,26 +30,26 @@ from gps_agents.gramps.models import (
 )
 
 __all__ = [
+    # Models
+    "Citation",
+    "Event",
+    "EventType",
+    "Family",
     # Client
     "GrampsClient",
+    "GrampsDate",
     # Match-Merge
     "GrampsMerger",
     "MatchConfidence",
     "MatchResult",
     "MergeResult",
     "MergeStrategy",
-    "PersonMatcher",
-    "smart_add_person",
-    # Models
-    "Citation",
-    "Event",
-    "EventType",
-    "Family",
-    "GrampsDate",
     "Name",
     "Person",
+    "PersonMatcher",
     "Place",
     "Repository",
     "Source",
     "SourceLevel",
+    "smart_add_person",
 ]

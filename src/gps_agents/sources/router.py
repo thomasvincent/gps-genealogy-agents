@@ -10,11 +10,14 @@ import asyncio
 import time
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import TYPE_CHECKING, ClassVar
 
 from pydantic import BaseModel, Field
 
 from gps_agents.models.search import RawRecord, SearchQuery
-from gps_agents.sources.base import GenealogySource
+
+if TYPE_CHECKING:
+    from gps_agents.sources.base import GenealogySource
 
 
 class Region(str, Enum):
@@ -94,7 +97,7 @@ class SearchRouter:
     """
 
     # Source recommendations by region
-    REGION_SOURCES: dict[Region, list[str]] = {
+    REGION_SOURCES: ClassVar[dict[Region, list[str]]] = {
         Region.BELGIUM: ["familysearch", "geneanet", "belgian_archives", "wikitree"],
         Region.NETHERLANDS: ["familysearch", "geneanet", "wikitree"],
         Region.GERMANY: ["familysearch", "geneanet", "wikitree"],
@@ -110,7 +113,7 @@ class SearchRouter:
     }
 
     # Source recommendations by record type
-    RECORD_TYPE_SOURCES: dict[RecordType, list[str]] = {
+    RECORD_TYPE_SOURCES: ClassVar[dict[RecordType, list[str]]] = {
         RecordType.BURIAL: ["findagrave", "familysearch"],
         RecordType.DEATH: ["findagrave", "familysearch", "geneanet"],
         RecordType.BIRTH: ["familysearch", "geneanet"],
@@ -387,5 +390,4 @@ def create_default_router(config: RouterConfig | None = None) -> SearchRouter:
     Note: Sources must be imported and registered separately
     as they may require configuration.
     """
-    router = SearchRouter(config)
-    return router
+    return SearchRouter(config)

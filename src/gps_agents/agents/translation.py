@@ -1,4 +1,5 @@
 """Translation Agent - translates foreign-language records."""
+from __future__ import annotations
 
 import json
 from typing import Any

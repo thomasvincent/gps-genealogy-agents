@@ -1,7 +1,7 @@
 """RocksDB-based append-only fact ledger."""
+from __future__ import annotations
 
 import json
-from collections.abc import Iterator
 from pathlib import Path
 from uuid import UUID
 
@@ -10,7 +10,12 @@ try:
 except ImportError:
     rocksdb = None  # type: ignore
 
+from typing import TYPE_CHECKING
+
 from ..models.fact import Fact, FactStatus
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class FactLedger:
@@ -104,11 +109,10 @@ class FactLedger:
                     if entry["key"] == key:
                         return Fact.model_validate(entry["value"])
             return None
-        else:
-            value = self.db.get(key.encode())
-            if value is None:
-                return None
-            return Fact.model_validate_json(value.decode())
+        value = self.db.get(key.encode())
+        if value is None:
+            return None
+        return Fact.model_validate_json(value.decode())
 
     def get_latest_version(self, fact_id: UUID) -> int | None:
         """Get the latest version number for a fact.
@@ -122,19 +126,18 @@ class FactLedger:
         if self._use_fallback:
             versions = self._index.get(str(fact_id), [])
             return max(versions) if versions else None
-        else:
-            # Scan for highest version (could optimize with secondary index)
-            latest = None
-            prefix = f"{fact_id}:".encode()
-            it = self.db.iterkeys()
-            it.seek(prefix)
-            for key in it:
-                if not key.startswith(prefix):
-                    break
-                version = int(key.decode().split(":")[1])
-                if latest is None or version > latest:
-                    latest = version
-            return latest
+        # Scan for highest version (could optimize with secondary index)
+        latest = None
+        prefix = f"{fact_id}:".encode()
+        it = self.db.iterkeys()
+        it.seek(prefix)
+        for key in it:
+            if not key.startswith(prefix):
+                break
+            version = int(key.decode().split(":")[1])
+            if latest is None or version > latest:
+                latest = version
+        return latest
 
     def get_all_versions(self, fact_id: UUID) -> list[Fact]:
         """Get all versions of a fact.
@@ -153,16 +156,15 @@ class FactLedger:
                 if fact:
                     facts.append(fact)
             return facts
-        else:
-            facts = []
-            prefix = f"{fact_id}:".encode()
-            it = self.db.iteritems()
-            it.seek(prefix)
-            for key, value in it:
-                if not key.startswith(prefix):
-                    break
-                facts.append(Fact.model_validate_json(value.decode()))
-            return sorted(facts, key=lambda f: f.version)
+        facts = []
+        prefix = f"{fact_id}:".encode()
+        it = self.db.iteritems()
+        it.seek(prefix)
+        for key, value in it:
+            if not key.startswith(prefix):
+                break
+            facts.append(Fact.model_validate_json(value.decode()))
+        return sorted(facts, key=lambda f: f.version)
 
     def iter_all_facts(self, status: FactStatus | None = None) -> Iterator[Fact]:
         """Iterate over all facts (latest versions only).

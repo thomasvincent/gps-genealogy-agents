@@ -1,4 +1,5 @@
 """Data source connectors and smart router for genealogy research."""
+from __future__ import annotations
 
 from gps_agents.models.search import RawRecord, SearchQuery
 from gps_agents.sources.accessgenealogy import AccessGenealogySource
@@ -20,26 +21,26 @@ from gps_agents.sources.router import (
 from gps_agents.sources.wikitree import WikiTreeSource
 
 __all__ = [
-    # Models
-    "RawRecord",
-    "SearchQuery",
+    # Sources
+    "AccessGenealogySource",
     # Base classes
     "BaseSource",
+    "FamilySearchSource",
+    "FindMyPastSource",
+    "GedcomSource",
     "GenealogySource",
+    "JerripediaSource",
+    "MyHeritageSource",
+    # Models
+    "RawRecord",
     # Router
     "RecordType",
     "Region",
     "RouterConfig",
+    "SearchQuery",
     "SearchRouter",
     "SourceSearchResult",
     "UnifiedSearchResult",
-    "create_default_router",
-    # Sources
-    "AccessGenealogySource",
-    "FamilySearchSource",
-    "FindMyPastSource",
-    "GedcomSource",
-    "JerripediaSource",
-    "MyHeritageSource",
     "WikiTreeSource",
+    "create_default_router",
 ]

@@ -9,12 +9,11 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field
 
 from gps_agents.agents.base import BaseAgent
-from gps_agents.gramps.client import GrampsClient
 from gps_agents.gramps.merge import (
     MatchConfidence,
     MatchResult,
@@ -23,6 +22,9 @@ from gps_agents.gramps.merge import (
 from gps_agents.gramps.models import Event, EventType, GrampsDate, Name, Person
 from gps_agents.models.search import RawRecord, SearchQuery
 from gps_agents.sources.router import Region, SearchRouter
+
+if TYPE_CHECKING:
+    from gps_agents.gramps.client import GrampsClient
 
 
 class OrchestratorAction(str, Enum):
@@ -265,15 +267,14 @@ class SearchOrchestratorAgent(BaseAgent):
                     justification="Conflicts resolved using evidence quality weighting",
                     next_step=self._recommend_next_step(overall_confidence, sources_searched),
                 )
-            else:
-                return OrchestratorResponse(
-                    action=OrchestratorAction.NEEDS_HUMAN_DECISION,
-                    parameters={"query": query.model_dump()},
-                    results=results,
-                    justification="Conflicting evidence requires human review",
-                    next_step="Present options to researcher for decision",
-                    conflicts=[self._conflict_to_dict(c) for c in conflicts],
-                )
+            return OrchestratorResponse(
+                action=OrchestratorAction.NEEDS_HUMAN_DECISION,
+                parameters={"query": query.model_dump()},
+                results=results,
+                justification="Conflicting evidence requires human review",
+                next_step="Present options to researcher for decision",
+                conflicts=[self._conflict_to_dict(c) for c in conflicts],
+            )
 
         return OrchestratorResponse(
             action=OrchestratorAction.SEARCH,

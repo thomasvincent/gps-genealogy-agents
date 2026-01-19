@@ -3,6 +3,7 @@
 A GPS (Genealogical Proof Standard) compliant research system using
 Semantic Kernel and AutoGen for multi-agent AI coordination.
 """
+from __future__ import annotations
 
 __version__ = "0.2.0"
 

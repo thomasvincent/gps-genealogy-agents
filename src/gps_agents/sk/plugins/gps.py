@@ -1,15 +1,18 @@
 """Semantic Kernel plugin for GPS (Genealogical Proof Standard) evaluation."""
+from __future__ import annotations
 
 import json
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 from uuid import UUID
 
 from semantic_kernel.functions import kernel_function
 
-from gps_agents.ledger.fact_ledger import FactLedger
 from gps_agents.models.confidence import ConfidenceDelta
 from gps_agents.models.fact import Fact
 from gps_agents.models.gps import Conflict, PillarStatus
+
+if TYPE_CHECKING:
+    from gps_agents.ledger.fact_ledger import FactLedger
 
 
 class GPSPlugin:

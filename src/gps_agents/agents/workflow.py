@@ -1,4 +1,5 @@
 """Workflow Agent - orchestrates the research process."""
+from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
@@ -192,7 +193,7 @@ class WorkflowAgent(BaseAgent):
     def create_fact(
         self,
         statement: str,
-        sources: list = None,
+        sources: list | None = None,
         fact_type: str = "general",
         person_id: str | None = None,
     ) -> Fact:

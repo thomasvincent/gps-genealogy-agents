@@ -1,10 +1,13 @@
 """Citation Agent - formats citations to Evidence Explained standards."""
+from __future__ import annotations
 
 import json
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from ..models.fact import Fact
 from .base import BaseAgent
+
+if TYPE_CHECKING:
+    from ..models.fact import Fact
 
 
 class CitationAgent(BaseAgent):

@@ -1,6 +1,7 @@
 """LangGraph workflow for GPS genealogy research."""
+from __future__ import annotations
 
-from typing import Annotated, TypedDict
+from typing import TYPE_CHECKING, Annotated, TypedDict
 
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
@@ -14,13 +15,15 @@ from .agents.research import ResearchAgent
 from .agents.synthesis import SynthesisAgent
 from .agents.translation import TranslationAgent
 from .agents.workflow import WorkflowAgent
-from .ledger.fact_ledger import FactLedger
-from .projections.sqlite_projection import SQLiteProjection
 from .sources.accessgenealogy import AccessGenealogySource
 from .sources.familysearch import FamilySearchSource
 from .sources.gedcom import GedcomSource
 from .sources.jerripedia import JerripediaSource
 from .sources.wikitree import WikiTreeSource
+
+if TYPE_CHECKING:
+    from .ledger.fact_ledger import FactLedger
+    from .projections.sqlite_projection import SQLiteProjection
 
 
 class ResearchState(TypedDict):
@@ -180,12 +183,11 @@ def _route_workflow_decision(state: ResearchState) -> str:
 
     if action == "accept":
         return "accept"
-    elif action == "retry" and retry_count < 2:
+    if action == "retry" and retry_count < 2:
         return "retry"
-    elif action == "incomplete":
+    if action == "incomplete":
         return "incomplete"
-    else:
-        return "continue"
+    return "continue"
 
 
 def _has_dna_data(state: ResearchState) -> bool:
@@ -240,9 +242,8 @@ async def run_research(
     }
 
     # Run the graph
-    final_state = await graph.ainvoke(initial_state)
+    return await graph.ainvoke(initial_state)
 
-    return final_state
 
 
 def create_simple_pipeline(sources: list | None = None):

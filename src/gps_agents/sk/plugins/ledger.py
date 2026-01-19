@@ -1,14 +1,17 @@
 """Semantic Kernel plugin for the Fact Ledger."""
+from __future__ import annotations
 
 import json
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 from uuid import UUID
 
 from semantic_kernel.functions import kernel_function
 
-from gps_agents.ledger.fact_ledger import FactLedger
 from gps_agents.models.fact import Fact, FactStatus
-from gps_agents.projections.sqlite_projection import SQLiteProjection
+
+if TYPE_CHECKING:
+    from gps_agents.ledger.fact_ledger import FactLedger
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
 
 
 class LedgerPlugin:

@@ -1,4 +1,5 @@
 """AccessGenealogy web scraper for Native American records."""
+from __future__ import annotations
 
 from datetime import UTC, datetime
 

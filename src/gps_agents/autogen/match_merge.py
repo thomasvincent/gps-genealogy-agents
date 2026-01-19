@@ -9,19 +9,22 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from autogen_agentchat.agents import AssistantAgent
-from autogen_agentchat.base import TaskResult
 from autogen_agentchat.conditions import MaxMessageTermination
 from autogen_agentchat.messages import TextMessage
 from autogen_agentchat.teams import RoundRobinGroupChat
 
 from gps_agents.autogen.agents import create_model_client
-from gps_agents.gramps.merge import (
-    PersonMatcher,
-)
-from gps_agents.gramps.models import Name, Person
+
+if TYPE_CHECKING:
+    from autogen_agentchat.base import TaskResult
+
+    from gps_agents.gramps.merge import (
+        PersonMatcher,
+    )
+    from gps_agents.gramps.models import Name, Person
 
 # =============================================================================
 # Action Types
@@ -366,12 +369,11 @@ class MatchMergeAgent:
 
         if diff == 0:
             return 0.20, [f"{event_type.title()} year exact: {year1}"], []
-        elif diff <= 2:
+        if diff <= 2:
             return 0.10, [f"{event_type.title()} year close: {year1} vs {year2}"], []
-        elif diff > 10:
+        if diff > 10:
             return -0.30, [], [f"{event_type.title()} years far apart: {year1} vs {year2}"]
-        else:
-            return 0.0, [], []
+        return 0.0, [], []
 
     def _soundex(self, name: str) -> str:
         """Generate Soundex code."""
@@ -382,25 +384,25 @@ class MatchMergeAgent:
         soundex = name[0]
 
         mapping = {
-            'B': '1', 'F': '1', 'P': '1', 'V': '1',
-            'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
-            'D': '3', 'T': '3',
-            'L': '4',
-            'M': '5', 'N': '5',
-            'R': '6',
+            "B": "1", "F": "1", "P": "1", "V": "1",
+            "C": "2", "G": "2", "J": "2", "K": "2", "Q": "2", "S": "2", "X": "2", "Z": "2",
+            "D": "3", "T": "3",
+            "L": "4",
+            "M": "5", "N": "5",
+            "R": "6",
         }
 
-        prev_code = mapping.get(name[0], '0')
+        prev_code = mapping.get(name[0], "0")
 
         for char in name[1:]:
-            code = mapping.get(char, '0')
-            if code != '0' and code != prev_code:
+            code = mapping.get(char, "0")
+            if code != "0" and code != prev_code:
                 soundex += code
                 prev_code = code
             if len(soundex) == 4:
                 break
 
-        return soundex.ljust(4, '0')
+        return soundex.ljust(4, "0")
 
     def _is_variant(self, name1: str, name2: str) -> bool:
         """Check if names are common variants."""
@@ -419,7 +421,7 @@ class MatchMergeAgent:
         }
 
         for base, var_list in variants.items():
-            all_names = [base] + var_list
+            all_names = [base, *var_list]
             if name1 in all_names and name2 in all_names:
                 return True
         return False
@@ -550,7 +552,7 @@ async def evaluate_match_with_review(
     Returns:
         Decision with verdict and reasoning
     """
-    team, agents = create_match_merge_team(model=model)
+    team, _agents = create_match_merge_team(model=model)
 
     task = f"""Evaluate this proposed person against existing candidates:
 
@@ -613,7 +615,6 @@ def confidence_to_action(confidence: float) -> MergeAction:
     """
     if confidence >= 0.85:
         return MergeAction.MERGE
-    elif confidence >= 0.50:
+    if confidence >= 0.50:
         return MergeAction.NEEDS_HUMAN
-    else:
-        return MergeAction.CREATE
+    return MergeAction.CREATE

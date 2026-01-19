@@ -1,11 +1,14 @@
 """Synthesis Agent - produces narratives and proof summaries."""
+from __future__ import annotations
 
 import json
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from ..models.fact import Fact
 from ..models.gps import PillarStatus
 from .base import BaseAgent
+
+if TYPE_CHECKING:
+    from ..models.fact import Fact
 
 
 class SynthesisAgent(BaseAgent):

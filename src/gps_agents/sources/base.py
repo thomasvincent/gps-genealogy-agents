@@ -1,11 +1,13 @@
 """Base interface for genealogy data sources."""
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import httpx
 
-from ..models.search import RawRecord, SearchQuery
+if TYPE_CHECKING:
+    from ..models.search import RawRecord, SearchQuery
 
 
 @runtime_checkable
@@ -63,17 +65,14 @@ class BaseSource(ABC):
     @abstractmethod
     async def search(self, query: SearchQuery) -> list[RawRecord]:
         """Search for records matching the query."""
-        pass
 
     @abstractmethod
     async def get_record(self, record_id: str) -> RawRecord | None:
         """Retrieve a specific record by ID."""
-        pass
 
     @abstractmethod
     def requires_auth(self) -> bool:
         """Check if this source requires authentication."""
-        pass
 
     def is_configured(self) -> bool:
         """Check if this source is properly configured."""

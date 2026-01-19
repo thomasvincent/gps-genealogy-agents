@@ -1,4 +1,5 @@
 """Pydantic data models."""
+from __future__ import annotations
 
 from .confidence import ConfidenceDelta
 from .fact import Fact, FactStatus
@@ -8,15 +9,15 @@ from .search import RawRecord, SearchQuery
 from .source import EvidenceType, SourceCitation
 
 __all__ = [
+    "ConfidenceDelta",
+    "Conflict",
+    "EvidenceType",
     "Fact",
     "FactStatus",
-    "SourceCitation",
-    "EvidenceType",
-    "Provenance",
-    "ConfidenceDelta",
     "GPSEvaluation",
     "PillarStatus",
-    "Conflict",
-    "SearchQuery",
+    "Provenance",
     "RawRecord",
+    "SearchQuery",
+    "SourceCitation",
 ]

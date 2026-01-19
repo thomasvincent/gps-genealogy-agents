@@ -7,13 +7,15 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from autogen_agentchat.agents import AssistantAgent
-from autogen_core.models import ChatCompletionClient
-from semantic_kernel import Kernel
 
 from gps_agents.sk.kernel import get_service_id_for_agent
+
+if TYPE_CHECKING:
+    from autogen_core.models import ChatCompletionClient
+    from semantic_kernel import Kernel
 
 
 def _load_prompt(prompt_name: str) -> str:
@@ -137,7 +139,7 @@ def create_model_client(
             temperature=temperature,
         )
 
-    elif provider == "openai":
+    if provider == "openai":
         from autogen_ext.models.openai import OpenAIChatCompletionClient
 
         return OpenAIChatCompletionClient(
@@ -146,7 +148,7 @@ def create_model_client(
             temperature=temperature,
         )
 
-    elif provider == "azure":
+    if provider == "azure":
         from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 
         return AzureOpenAIChatCompletionClient(
@@ -158,7 +160,7 @@ def create_model_client(
             temperature=temperature,
         )
 
-    elif provider == "ollama":
+    if provider == "ollama":
         from autogen_ext.models.openai import OpenAIChatCompletionClient
 
         # Ollama uses OpenAI-compatible API
@@ -169,11 +171,10 @@ def create_model_client(
             temperature=temperature,
         )
 
-    else:
-        raise ValueError(
-            f"Unknown LLM provider: {provider}. "
-            f"Choose from: anthropic, openai, azure, ollama"
-        )
+    raise ValueError(
+        f"Unknown LLM provider: {provider}. "
+        f"Choose from: anthropic, openai, azure, ollama"
+    )
 
 
 def get_model_client_for_agent(agent_name: str) -> ChatCompletionClient:
@@ -186,8 +187,7 @@ def get_model_client_for_agent(agent_name: str) -> ChatCompletionClient:
 
     if service_id == "claude":
         return create_model_client("anthropic", temperature=0.1)
-    else:
-        return create_model_client("openai", temperature=0.1)
+    return create_model_client("openai", temperature=0.1)
 
 
 class GPSAssistantAgent(AssistantAgent):

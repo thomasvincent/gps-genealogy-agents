@@ -1,4 +1,5 @@
 """CLI interface for GPS Genealogy Agents using Semantic Kernel + AutoGen."""
+from __future__ import annotations
 
 import asyncio
 import json
@@ -49,10 +50,10 @@ def get_kernel_config():
 
 @app.command()
 def research(
-    query: str = typer.Argument(..., help="Research query in natural language"),  # noqa: B008
+    query: str = typer.Argument(..., help="Research query in natural language"),
     output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),  # noqa: B008
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
-    max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),  # noqa: B008
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
+    max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),
 ) -> None:
     """Run a genealogical research query using the GPS multi-agent system."""
     config = get_config()
@@ -174,7 +175,7 @@ def translate(
 @app.command()
 def load_gedcom(
     file_path: Path = typer.Argument(..., help="Path to GEDCOM file"),  # noqa: B008
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
 ) -> None:
     """Load a GEDCOM file into the system."""
     from gps_agents.models.search import SearchQuery

@@ -1,11 +1,14 @@
 """GPS Standards Critic - evaluates Pillars 1 and 2."""
+from __future__ import annotations
 
 import json
-from typing import Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
-from ..models.fact import Fact
 from ..models.gps import PillarStatus
 from .base import BaseAgent
+
+if TYPE_CHECKING:
+    from ..models.fact import Fact
 
 
 class GPSStandardsCritic(BaseAgent):
@@ -22,7 +25,7 @@ class GPSStandardsCritic(BaseAgent):
     default_provider = "anthropic"  # Claude for complex reasoning
 
     # Major source classes by region/time
-    MAJOR_SOURCE_CLASSES = {
+    MAJOR_SOURCE_CLASSES: ClassVar[dict[str, list[str]]] = {
         "us_1850_plus": [
             "federal_census",
             "state_census",

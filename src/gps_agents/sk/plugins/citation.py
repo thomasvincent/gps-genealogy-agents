@@ -1,4 +1,5 @@
 """Semantic Kernel plugin for citation formatting (Evidence Explained style)."""
+from __future__ import annotations
 
 import json
 from typing import Annotated

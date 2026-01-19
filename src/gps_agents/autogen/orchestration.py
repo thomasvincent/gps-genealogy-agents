@@ -5,10 +5,8 @@ Uses the modern autogen_agentchat teams API with intelligent agent selection.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from autogen_agentchat.agents import BaseChatAgent
-from autogen_agentchat.base import TaskResult
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 from autogen_agentchat.messages import TextMessage
 from autogen_agentchat.teams import SelectorGroupChat
@@ -19,6 +17,10 @@ from gps_agents.autogen.agents import (
     create_model_client,
 )
 from gps_agents.sk.kernel import KernelConfig, create_kernel
+
+if TYPE_CHECKING:
+    from autogen_agentchat.agents import BaseChatAgent
+    from autogen_agentchat.base import TaskResult
 
 GPS_COORDINATOR_PROMPT = """You are the GPS Research Coordinator managing genealogical research.
 
@@ -99,7 +101,7 @@ async def run_research_session(
     Returns:
         Dictionary with research results
     """
-    team, agents = await create_gps_research_team(kernel_config, max_messages)
+    team, _agents = await create_gps_research_team(kernel_config, max_messages)
 
     # Format initial message
     initial_task = f"""Research Request:
@@ -195,7 +197,7 @@ async def evaluate_fact_gps(
     Returns:
         GPS evaluation results with pillar assessments
     """
-    team, agents = await create_focused_research_team(
+    team, _agents = await create_focused_research_team(
         ["gps_standards_critic", "gps_reasoning_critic", "workflow_agent"],
         kernel_config,
         max_messages=10,
@@ -242,7 +244,7 @@ async def translate_record(
     Returns:
         Translation results with cultural context
     """
-    team, agents = await create_focused_research_team(
+    team, _agents = await create_focused_research_team(
         ["translation_agent"],
         kernel_config,
         max_messages=5,
@@ -283,7 +285,7 @@ async def create_citation(
     Returns:
         Citation in Evidence Explained format
     """
-    team, agents = await create_focused_research_team(
+    team, _agents = await create_focused_research_team(
         ["citation_agent"],
         kernel_config,
         max_messages=5,
@@ -329,7 +331,7 @@ async def synthesize_proof(
     Returns:
         Proof argument suitable for GPS Pillar 5
     """
-    team, agents = await create_focused_research_team(
+    team, _agents = await create_focused_research_team(
         ["synthesis_agent", "gps_reasoning_critic"],
         kernel_config,
         max_messages=10,

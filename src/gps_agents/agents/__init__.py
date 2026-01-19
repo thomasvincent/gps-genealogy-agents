@@ -1,4 +1,5 @@
 """Agent implementations."""
+from __future__ import annotations
 
 from .base import BaseAgent
 from .citation import CitationAgent
@@ -14,14 +15,14 @@ from .workflow import WorkflowAgent
 
 __all__ = [
     "BaseAgent",
-    "WorkflowAgent",
-    "ResearchAgent",
-    "DataQualityAgent",
-    "GPSStandardsCritic",
-    "GPSReasoningCritic",
-    "TranslationAgent",
     "CitationAgent",
-    "SynthesisAgent",
     "DNAAgent",
+    "DataQualityAgent",
+    "GPSReasoningCritic",
+    "GPSStandardsCritic",
+    "ResearchAgent",
     "SearchOrchestratorAgent",
+    "SynthesisAgent",
+    "TranslationAgent",
+    "WorkflowAgent",
 ]

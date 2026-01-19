@@ -1,11 +1,15 @@
 """SQLite read projection for fast queries."""
+from __future__ import annotations
 
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from ..models.fact import Fact, FactStatus
+
+if TYPE_CHECKING:
+    from uuid import UUID
 
 
 class SQLiteProjection:

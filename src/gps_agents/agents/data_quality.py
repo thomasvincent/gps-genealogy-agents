@@ -1,11 +1,14 @@
 """Data Quality Agent - performs mechanical validation."""
+from __future__ import annotations
 
 import json
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from ..models.fact import Fact
 from .base import BaseAgent
+
+if TYPE_CHECKING:
+    from ..models.fact import Fact
 
 
 class DataQualityAgent(BaseAgent):
