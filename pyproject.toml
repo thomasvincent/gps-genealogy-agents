@@ -107,11 +107,13 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.1.0",
-    "ruff>=0.5.0",
+    "hypothesis>=6.100.0",  # Property-based testing for edge cases
+    "ruff>=0.8.0",  # Best-in-class linter/formatter (replaces flake8, black, isort)
     "mypy>=1.10.0",
     "pre-commit>=3.6.0",
     "types-PyYAML>=6.0.0",
     "types-python-dateutil>=2.8.0",
+    "types-beautifulsoup4>=4.12.0",
 ]
 
 # All optional dependencies (excludes chromadb which requires Python <3.14)
@@ -152,16 +154,72 @@ select = [
     "UP",     # pyupgrade
     "ARG",    # flake8-unused-arguments
     "SIM",    # flake8-simplify
+    "S",      # flake8-bandit (security)
+    "A",      # flake8-builtins
+    "COM",    # flake8-commas
+    "DTZ",    # flake8-datetimez
+    "T10",    # flake8-debugger
+    "ISC",    # flake8-implicit-str-concat
+    "ICN",    # flake8-import-conventions
+    "PIE",    # flake8-pie
+    "PT",     # flake8-pytest-style
+    "Q",      # flake8-quotes
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "SLF",    # flake8-self
+    "TCH",    # flake8-type-checking
+    "RUF",    # Ruff-specific rules
+    "PERF",   # Perflint
+    "FURB",   # refurb
+    "LOG",    # flake8-logging
+    "TRY",    # tryceratops
 ]
-ignore = ["E501"]  # line length handled by formatter
+ignore = [
+    "E501",    # line length handled by formatter
+    "S101",    # assert is fine in tests
+    "COM812",  # trailing comma conflicts with formatter
+    "ISC001",  # conflicts with formatter
+    "TRY003",  # long messages in exceptions are fine
+    "PERF401", # list comprehension in loop - often less readable
+    "S608",    # SQL injection - we use parameterized queries
+    "S112",    # try-except-continue - acceptable in some cases
+    "RUF001",  # ambiguous unicode - en-dash is intentional
+    "TC001",   # Pydantic needs runtime imports, not TYPE_CHECKING
+    "TC002",   # same as TC001
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",   # assert is expected in tests
+    "ARG",    # unused arguments in fixtures
+    "SLF001", # private member access in tests
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["gps_agents"]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning:datetime",
+    "ignore::pydantic.warnings.PydanticDeprecatedSince20",
+]
+
+[tool.hypothesis]
+# Property-based testing configuration
+max_examples = 100
+deadline = 5000  # 5 seconds
+suppress_health_check = ["too_slow"]
 
 [tool.mypy]
 python_version = "3.13"
@@ -169,3 +227,15 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+# Per-module overrides for gradual typing
+[[tool.mypy.overrides]]
+module = [
+    "gps_agents.graph",
+    "gps_agents.cli",
+    "gps_agents.autogen.*",
+    "gps_agents.sk.*",
+    "gps_agents.sources.*",
+]
+# Allow less strict typing for complex modules being gradually typed
+disallow_untyped_defs = false
+disallow_untyped_calls = false
