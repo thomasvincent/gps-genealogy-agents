@@ -61,6 +61,15 @@ repos:
     hooks:
       - id: validate-pyproject
 
+  # Local test subset to keep commits healthy
+  - repo: local
+    hooks:
+      - id: pytest-idempotency
+        name: pytest (idempotency subset)
+        entry: pytest -q tests/test_idempotency.py
+        language: system
+        pass_filenames: false
+
 ci:
   autofix_commit_msg: |
     [pre-commit.ci] auto fixes from pre-commit hooks

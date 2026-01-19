@@ -278,6 +278,21 @@ def test_person_fingerprint_stable_under_whitespace_and_case():
     assert fingerprint_person(p1).value == fingerprint_person(p2).value
 
 
+def test_upsert_person_dry_run_no_writes(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    from gps_agents.gramps.models import Name, Person as GPerson
+
+    p = GPerson(names=[Name(given="Dry", surname="Run")])
+    r = upsert_person(gc, proj, p, dry_run=True)
+    assert r.action in {"create", "merge"}
+    with sqlite3.connect(db) as conn:
+        n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
+        assert n == 0
+
 # ---------------------- Concurrency tests ----------------------
 
 def test_upsert_person_parallel_no_duplicates(env_tmp: Path):

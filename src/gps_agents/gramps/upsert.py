@@ -28,6 +28,8 @@ logger = structlog.get_logger(__name__)
 class UpsertResult:
     handle: str
     created: bool
+    action: str | None = None  # reuse|created|blocked|merge
+    reason: str | None = None
 
 
 # ---------------------------- Person ----------------------------
@@ -92,6 +94,7 @@ def upsert_person(
     *,
     matcher_factory: Callable[[GrampsClient], PersonMatcher] | None = None,
     run_id: str | None = None,
+    dry_run: bool = False,
 ) -> UpsertResult:
     """Idempotent person upsert with fingerprint and matcher fallback.
 
@@ -112,7 +115,14 @@ def upsert_person(
     existing = projection.get_gramps_handle_by_fingerprint(fp.value)
     if existing:
         log.info("upsert_person.reuse", fingerprint=fp.value, handle=existing)
-        return UpsertResult(handle=existing, created=False)
+        return UpsertResult(handle=existing, created=False, action="reuse")
+    if dry_run:
+        # Would create or merge depending on matcher outcome
+        matcher = matcher_factory(client) if matcher_factory else PersonMatcher(client)
+        matches = matcher.find_matches(person, threshold=50.0, limit=1)
+        if matches and (matches[0].match_score / 100.0) >= CONFIG.merge_threshold:
+            return UpsertResult(handle=matches[0].matched_handle or "", created=False, action="merge")
+        return UpsertResult(handle="", created=False, action="create")
 
     # timeline sanity
     _validate_timeline(person, client)
@@ -134,7 +144,7 @@ def upsert_person(
             log.info("upsert_person.automerge", score=score)
             projection.save_fingerprint("person", fp.value, m.matched_handle)
             projection.set_external_ids(fp.value, gramps_handle=m.matched_handle)
-            return UpsertResult(handle=m.matched_handle or "", created=False)
+            return UpsertResult(handle=m.matched_handle or "", created=False, action="merge")
         if CONFIG.review_low <= score < CONFIG.review_high:
             raise IdempotencyBlock(
                 reason="Probable duplicate requires review",
@@ -156,7 +166,7 @@ def upsert_person(
             if claimed == 0:
                 # Lost race; reuse winner
                 reuse = projection.get_gramps_handle_by_fingerprint(fp.value)
-                return UpsertResult(handle=reuse or handle, created=False)
+            return UpsertResult(handle=reuse or handle, created=False, action="reuse")
             projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
             return UpsertResult(handle=handle, created=True)
     except Exception:

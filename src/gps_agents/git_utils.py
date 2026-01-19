@@ -42,7 +42,7 @@ def _index_file_bytes(repo: Path, relpath: str) -> bytes | None:
         return None
 
 
-def safe_commit(repo: Path | str, files: Iterable[Path | str], message: str) -> bool:
+def safe_commit(repo: Path | str, files: Iterable[Path | str], message: str, *, sign: bool = False) -> bool:
     """Commit only if staged file content differs from HEAD for any given file.
 
     Steps:
@@ -68,6 +68,7 @@ def safe_commit(repo: Path | str, files: Iterable[Path | str], message: str) -> 
         logger.info("git.nochange", files=paths)
         return False
 
-    subprocess.check_call(["git", "commit", "-m", message], cwd=str(repo))
+    cmd = ["git", "commit"] + (["-S"] if sign else []) + ["-m", message]
+    subprocess.check_call(cmd, cwd=str(repo))
     logger.info("git.committed", files=paths)
     return True
