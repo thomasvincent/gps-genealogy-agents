@@ -52,8 +52,8 @@ class GedcomSource(BaseSource):
         self._individuals = {}
         self._families = {}
 
-        current_record = None
-        current_id = None
+        current_record: dict[str, Any] | None = None
+        current_id: str | None = None
 
         with open(path, encoding="utf-8-sig") as f:
             for line in f:

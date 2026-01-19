@@ -47,7 +47,7 @@ class DataQualityAgent(BaseAgent):
         state["quality_flags"] = quality_flags
         return state
 
-    async def _validate_fact(self, fact: Fact) -> dict:
+    async def _validate_fact(self, fact: Fact) -> dict[str, Any]:
         """Validate a single fact.
 
         Args:
@@ -56,7 +56,7 @@ class DataQualityAgent(BaseAgent):
         Returns:
             Dictionary of validation flags
         """
-        flags = {
+        flags: dict[str, Any] = {
             "date_issues": [],
             "name_issues": [],
             "geographic_issues": [],
