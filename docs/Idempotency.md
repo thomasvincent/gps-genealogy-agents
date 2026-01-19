@@ -46,13 +46,13 @@ This document summarizes the idempotency rules implemented in gps-genealogy-agen
 
 ## Config
 - `src/gps_agents/idempotency/config.py` with env overrides:
-  - `IDEMPOTENCY_MERGE_THRESHOLD` (default 0.95)
-  - `IDEMPOTENCY_REVIEW_LOW` (0.80)
-  - `IDEMPOTENCY_REVIEW_HIGH` (0.95)
-  - `IDEMPOTENCY_MIN_PARENT_AGE` (12)
-  - `IDEMPOTENCY_MAX_PARENT_AGE` (60)
-  - `IDEMPOTENCY_MAX_LIFESPAN` (120)
-  - `IDEMPOTENCY_LOCK_TTL` (300)
+- `IDEMPOTENCY_MERGE_THRESHOLD` (default 0.95)
+- `IDEMPOTENCY_REVIEW_LOW` (0.8)
+- `IDEMPOTENCY_REVIEW_HIGH` (0.95)
+- `IDEMPOTENCY_MIN_PARENT_AGE` (12)
+- `IDEMPOTENCY_MAX_PARENT_AGE` (60)
+- `IDEMPOTENCY_MAX_LIFESPAN` (120)
+- `IDEMPOTENCY_LOCK_TTL` (300)
 
 ## Backfill
 - `gps-agents backfill idempotency <path-to-gramps-db>` populates fingerprints and mappings for existing data.

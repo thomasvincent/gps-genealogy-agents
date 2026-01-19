@@ -8,14 +8,18 @@ on:
 
 jobs:
   lint-and-test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ['3.13', '3.14']
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -24,6 +28,17 @@ jobs:
         run: ruff check .
       - name: Pytest (idempotency subset)
         run: pytest -q tests/test_idempotency.py
+
+  docs-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Run idempotency docs check
+        run: |
+          python scripts/check_idempotency_doc.py
 
   commitlint:
     runs-on: ubuntu-latest

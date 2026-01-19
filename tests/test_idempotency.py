@@ -305,7 +305,28 @@ def test_decide_upsert_person(env_tmp: Path):
 
     p = GPerson(names=[Name(given="Decide", surname="Only")])
     d = decide_upsert_person(gc, proj, p)
-    assert d.action in {"create", "merge", "reuse", "review"}
+assert d.action in {"create", "merge", "reuse", "review"}
+
+
+def test_decide_upsert_event_source_place(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    from gps_agents.idempotency.decision import decide_upsert_event, decide_upsert_source, decide_upsert_place
+    from gps_agents.gramps.models import Event as GEvent, EventType as GEventType, GrampsDate, Source as GSource, Place as GPlace
+
+    ev = GEvent(event_type=GEventType.BIRTH, date=GrampsDate(year=1800))
+    so = GSource(title="Foo")
+    pl = GPlace(name="Somewhere")
+
+    de = decide_upsert_event(gc, proj, ev)
+    ds = decide_upsert_source(gc, proj, so)
+    dp = decide_upsert_place(gc, proj, pl)
+    assert de.action == "create"
+    assert ds.action == "create"
+    assert dp.action == "create"
 
 # ---------------------- Concurrency tests ----------------------
 

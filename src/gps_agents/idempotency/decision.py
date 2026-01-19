@@ -4,9 +4,14 @@ from dataclasses import dataclass
 from typing import Optional
 
 from gps_agents.gramps.merge import PersonMatcher
-from gps_agents.gramps.models import Person
+from gps_agents.gramps.models import Person, Event, Source, Place
 from gps_agents.idempotency.config import CONFIG
-from gps_agents.idempotency.fingerprint import fingerprint_person
+from gps_agents.idempotency.fingerprint import (
+    fingerprint_person,
+    fingerprint_event,
+    fingerprint_source,
+    fingerprint_place,
+)
 
 
 @dataclass
@@ -48,3 +53,27 @@ def decide_upsert_person(client, projection, person: Person) -> UpsertDecision:
     if CONFIG.review_low <= score < CONFIG.review_high:
         return UpsertDecision(action="review", score=score, fingerprint=fp.value, existing_handle=m.matched_handle, reason="Probable duplicate")
     return UpsertDecision(action="create", score=score, fingerprint=fp.value)
+
+
+def decide_upsert_event(client, projection, event: Event) -> UpsertDecision:
+    fp = fingerprint_event(event)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
+    return UpsertDecision(action="create", score=0.0, fingerprint=fp.value)
+
+
+def decide_upsert_source(client, projection, source: Source) -> UpsertDecision:
+    fp = fingerprint_source(source)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
+    return UpsertDecision(action="create", score=0.0, fingerprint=fp.value)
+
+
+def decide_upsert_place(client, projection, place: Place) -> UpsertDecision:
+    fp = fingerprint_place(place)
+    existing = projection.get_gramps_handle_by_fingerprint(fp.value)
+    if existing:
+        return UpsertDecision(action="reuse", score=1.0, fingerprint=fp.value, existing_handle=existing)
+    return UpsertDecision(action="create", score=0.0, fingerprint=fp.value)
