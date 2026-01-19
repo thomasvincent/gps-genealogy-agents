@@ -18,7 +18,7 @@ class LedgerPlugin:
     Only the workflow_agent should have write permissions in practice.
     """
 
-    def __init__(self, ledger: FactLedger, projection: SQLiteProjection):
+    def __init__(self, ledger: FactLedger, projection: SQLiteProjection) -> None:
         self.ledger = ledger
         self.projection = projection
 

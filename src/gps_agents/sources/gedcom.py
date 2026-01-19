@@ -16,7 +16,7 @@ class GedcomSource(BaseSource):
 
     name = "GEDCOM"
 
-    def __init__(self, file_path: str | Path | None = None):
+    def __init__(self, file_path: str | Path | None = None) -> None:
         """Initialize GEDCOM source.
 
         Args:

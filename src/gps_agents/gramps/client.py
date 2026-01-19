@@ -57,7 +57,7 @@ class GrampsClient:
         "tag": "tag",
     }
 
-    def __init__(self, db_path: str | Path | None = None):
+    def __init__(self, db_path: str | Path | None = None) -> None:
         """
         Initialize Gramps client.
 
@@ -190,7 +190,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._person_from_gramps(row["handle"], data)
 
-    def _person_from_gramps(self, _handle: str, data: dict) -> Person:
+    def _person_from_gramps(self, _handle: str, data: dict[str, Any]) -> Person:
         """Convert Gramps person data to our Person model."""
         person = Person(
             gramps_id=data.get("gramps_id"),
@@ -226,7 +226,7 @@ class GrampsClient:
 
         return person
 
-    def _get_primary_surname(self, name_data: dict) -> str:
+    def _get_primary_surname(self, name_data: dict[str, Any]) -> str:
         """Extract primary surname from Gramps name structure."""
         surnames = name_data.get("surname_list", [])
         if surnames:
@@ -352,7 +352,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._family_from_gramps(handle, data)
 
-    def _family_from_gramps(self, _handle: str, data: dict) -> Family:
+    def _family_from_gramps(self, _handle: str, data: dict[str, Any]) -> Family:
         """Convert Gramps family data to our Family model."""
         return Family(
             gramps_id=data.get("gramps_id"),
@@ -382,7 +382,7 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._source_from_gramps(handle, data)
 
-    def _source_from_gramps(self, _handle: str, data: dict) -> Source:
+    def _source_from_gramps(self, _handle: str, data: dict[str, Any]) -> Source:
         """Convert Gramps source data to our Source model."""
         return Source(
             gramps_id=data.get("gramps_id"),
@@ -477,11 +477,16 @@ class GrampsClient:
 
         return backup_file
 
-    def __enter__(self):
+    def __enter__(self) -> GrampsClient:
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any,
+    ) -> bool:
         """Context manager exit."""
         self.close()
         return False

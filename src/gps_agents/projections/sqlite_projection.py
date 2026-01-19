@@ -15,7 +15,7 @@ class SQLiteProjection:
     the authoritative RocksDB ledger and optimized for queries.
     """
 
-    def __init__(self, db_path: str | Path):
+    def __init__(self, db_path: str | Path) -> None:
         """Initialize the projection.
 
         Args:

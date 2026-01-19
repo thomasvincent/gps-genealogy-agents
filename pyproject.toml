@@ -30,8 +30,7 @@ classifiers = [
 
 dependencies = [
     # Semantic Kernel + AutoGen multi-agent framework
-    "semantic-kernel>=1.0.0",
-    "pyautogen>=0.2.0",
+    "semantic-kernel>=1.39.0",
     "autogen-ext[anthropic,openai]>=0.7.5",
     "tenacity>=8.2.0",
     # LLM providers
@@ -60,6 +59,7 @@ dependencies = [
     # UUID7 support (built-in Python 3.14+, polyfill for 3.13)
     "uuid-utils>=0.9.0",
     "werkzeug>=3.1.5",
+    "autogen-agentchat>=0.4.0",
 ]
 
 [project.optional-dependencies]

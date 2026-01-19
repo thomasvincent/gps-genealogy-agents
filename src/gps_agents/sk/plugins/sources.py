@@ -22,7 +22,7 @@ class SourcesPlugin:
     to support reasonably exhaustive research (GPS Pillar 1).
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._sources = {
             "familysearch": FamilySearchSource(),
             "wikitree": WikiTreeSource(),

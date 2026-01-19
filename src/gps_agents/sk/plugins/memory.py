@@ -28,7 +28,7 @@ class MemoryPlugin:
     SOURCES_COLLECTION = "sources"
     RESEARCH_COLLECTION = "research_context"
 
-    def __init__(self, persist_directory: str):
+    def __init__(self, persist_directory: str) -> None:
         self.persist_directory = persist_directory
 
         if CHROMA_AVAILABLE:

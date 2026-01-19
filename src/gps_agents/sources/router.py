@@ -122,7 +122,7 @@ class SearchRouter:
         RecordType.CHURCH: ["familysearch", "geneanet"],
     }
 
-    def __init__(self, config: RouterConfig | None = None):
+    def __init__(self, config: RouterConfig | None = None) -> None:
         """Initialize the search router."""
         self.config = config or RouterConfig()
         self._sources: dict[str, GenealogySource] = {}

@@ -200,7 +200,7 @@ class GPSAssistantAgent(AssistantAgent):
         system_message: str,
         model_client: ChatCompletionClient | None = None,
         description: str = "",
-    ):
+    ) -> None:
         """Initialize GPS Assistant Agent.
 
         Args:

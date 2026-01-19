@@ -160,7 +160,7 @@ class MatchMergeAgent:
         self,
         matcher: PersonMatcher | None = None,
         model: str = "gpt-4o-mini",
-    ):
+    ) -> None:
         """Initialize the match-merge agent.
 
         Args:

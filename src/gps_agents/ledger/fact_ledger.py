@@ -20,7 +20,7 @@ class FactLedger:
     Facts are immutable - updates create new versions.
     """
 
-    def __init__(self, db_path: str | Path):
+    def __init__(self, db_path: str | Path) -> None:
         """Initialize the ledger.
 
         Args:

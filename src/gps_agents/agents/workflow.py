@@ -26,7 +26,7 @@ class WorkflowAgent(BaseAgent):
     prompt_file = "workflow_agent.txt"
     default_provider = "anthropic"
 
-    def __init__(self, ledger=None, projection=None, **kwargs):
+    def __init__(self, ledger=None, projection=None, **kwargs) -> None:
         """Initialize workflow agent.
 
         Args:

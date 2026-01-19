@@ -160,7 +160,7 @@ class ReviewerMemory:
     they tend to make (e.g., "DataEngineer keeps hallucinating QIDs").
     """
 
-    def __init__(self, persist_path: Path | None = None):
+    def __init__(self, persist_path: Path | None = None) -> None:
         """Initialize reviewer memory.
 
         Args:
@@ -1361,7 +1361,7 @@ def parse_review_issues(messages: list[dict]) -> list[ReviewIssue]:
 # CLI Entry Point
 # =============================================================================
 
-async def main():
+async def main() -> None:
     """Example usage of the wiki publishing team."""
     article = """
     # Paul Janvrin Vincent (1931-2023)

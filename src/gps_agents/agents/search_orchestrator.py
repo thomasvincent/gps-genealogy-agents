@@ -129,7 +129,7 @@ class SearchOrchestratorAgent(BaseAgent):
         router: SearchRouter | None = None,
         gramps_client: GrampsClient | None = None,
         **kwargs,
-    ):
+    ) -> None:
         """Initialize the orchestrator.
 
         Args:

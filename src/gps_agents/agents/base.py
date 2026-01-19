@@ -25,7 +25,7 @@ class BaseAgent(ABC):
     prompt_file: str = ""
     default_provider: str = "anthropic"  # Override in subclasses
 
-    def __init__(self, config: AgentConfig | None = None):
+    def __init__(self, config: AgentConfig | None = None) -> None:
         """Initialize the agent.
 
         Args:

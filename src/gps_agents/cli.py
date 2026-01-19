@@ -53,7 +53,7 @@ def research(
     output: Path = typer.Option(None, "--output", "-o", help="Output file for results"),  # noqa: B008
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
     max_rounds: int = typer.Option(50, "--max-rounds", "-r", help="Maximum conversation rounds"),  # noqa: B008
-):
+) -> None:
     """Run a genealogical research query using the GPS multi-agent system."""
     config = get_config()
 
@@ -100,7 +100,7 @@ def research(
 def evaluate(
     fact_id: str = typer.Argument(..., help="Fact UUID to evaluate"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),
-):
+) -> None:
     """Evaluate a fact against GPS standards."""
     config = get_config()
 
@@ -149,7 +149,7 @@ def evaluate(
 def translate(
     text: str = typer.Argument(..., help="Text to translate"),
     language: str = typer.Option("auto", "--language", "-l", help="Source language"),
-):
+) -> None:
     """Translate a genealogical record."""
     config = get_config()
 
@@ -175,7 +175,7 @@ def translate(
 def load_gedcom(
     file_path: Path = typer.Argument(..., help="Path to GEDCOM file"),  # noqa: B008
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed output"),  # noqa: B008
-):
+) -> None:
     """Load a GEDCOM file into the system."""
     from gps_agents.models.search import SearchQuery
     from gps_agents.sources.gedcom import GedcomSource
@@ -221,7 +221,7 @@ def load_gedcom(
 def list_facts(
     status: str = typer.Option(None, "--status", "-s", help="Filter by status"),
     limit: int = typer.Option(20, "--limit", "-l", help="Maximum results"),
-):
+) -> None:
     """List facts from the ledger."""
     config = get_config()
 
@@ -265,7 +265,7 @@ def list_facts(
 
 
 @app.command()
-def stats():
+def stats() -> None:
     """Show statistics about the research database."""
     config = get_config()
 
@@ -311,7 +311,7 @@ def search(
     term: str = typer.Argument(..., help="Search term"),
     semantic: bool = typer.Option(False, "--semantic", "-s", help="Use semantic search"),
     limit: int = typer.Option(20, "--limit", "-l", help="Maximum results"),
-):
+) -> None:
     """Search fact statements."""
     config = get_config()
 
@@ -368,7 +368,7 @@ def search(
 
 
 @app.command()
-def memory_stats():
+def memory_stats() -> None:
     """Show semantic memory statistics."""
     config = get_config()
 
@@ -392,7 +392,7 @@ def memory_stats():
     console.print(f"[dim]Persist directory: {stats.get('persist_directory')}[/dim]")
 
 
-def _display_chat_results(result: dict, verbose: bool):
+def _display_chat_results(result: dict, verbose: bool) -> None:
     """Display research chat results."""
     chat_history = result.get("chat_history", [])
 
@@ -424,7 +424,7 @@ def _display_chat_results(result: dict, verbose: bool):
         console.print(f"\n[dim]Total cost: ${result['cost']:.4f}[/dim]")
 
 
-def _save_results(result: dict, output: Path):
+def _save_results(result: dict, output: Path) -> None:
     """Save results to file."""
     output_data = {
         "query": result.get("query"),

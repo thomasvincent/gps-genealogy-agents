@@ -1,6 +1,7 @@
 """Search query and raw record models."""
 
-from datetime import datetime
+from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -45,11 +46,11 @@ class RawRecord(BaseModel):
     record_id: str = Field(description="ID within the source")
     record_type: str = Field(description="Type of record")
     url: str | None = Field(default=None)
-    raw_data: dict = Field(default_factory=dict, description="Original response data")
+    raw_data: dict[str, Any] = Field(default_factory=dict, description="Original response data")
     extracted_fields: dict[str, str | None] = Field(
         default_factory=dict, description="Parsed fields from the record"
     )
-    accessed_at: datetime = Field(default_factory=datetime.utcnow)
+    accessed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     confidence_hint: float | None = Field(
         default=None, description="Source's own confidence if provided"
     )

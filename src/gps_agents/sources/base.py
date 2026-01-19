@@ -49,7 +49,7 @@ class BaseSource(ABC):
     name: str = "base"
     base_url: str = ""
 
-    def __init__(self, api_key: str | None = None):
+    def __init__(self, api_key: str | None = None) -> None:
         """Initialize the source.
 
         Args:
@@ -129,7 +129,7 @@ class BaseSource(ABC):
         response.raise_for_status()
         return response.json()
 
-    async def close(self):
+    async def close(self) -> None:
         """Close HTTP client connection."""
         if self._client:
             await self._client.aclose()

@@ -28,7 +28,7 @@ class ResearchAgent(BaseAgent):
     prompt_file = "research_agent.txt"
     default_provider = "openai"  # GPT-4 for structured search tasks
 
-    def __init__(self, sources: list = None, **kwargs):
+    def __init__(self, sources: list = None, **kwargs) -> None:
         """Initialize research agent.
 
         Args:

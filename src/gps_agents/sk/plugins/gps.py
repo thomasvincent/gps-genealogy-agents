@@ -23,7 +23,7 @@ class GPSPlugin:
     5. Soundly reasoned, coherently written conclusion
     """
 
-    def __init__(self, ledger: FactLedger):
+    def __init__(self, ledger: FactLedger) -> None:
         self.ledger = ledger
 
     @kernel_function(

@@ -16,7 +16,7 @@ class FamilySearchSource(BaseSource):
     name = "FamilySearch"
     base_url = "https://api.familysearch.org"
 
-    def __init__(self, client_id: str | None = None, client_secret: str | None = None):
+    def __init__(self, client_id: str | None = None, client_secret: str | None = None) -> None:
         """Initialize FamilySearch source.
 
         Args:

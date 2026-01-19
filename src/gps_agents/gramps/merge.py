@@ -85,7 +85,7 @@ class PersonMatcher:
         "different_parents": -40,
     }
 
-    def __init__(self, client: GrampsClient):
+    def __init__(self, client: GrampsClient) -> None:
         """Initialize matcher with Gramps client."""
         self.client = client
 
@@ -334,7 +334,7 @@ class GrampsMerger:
         client: GrampsClient,
         strategy: MergeStrategy = MergeStrategy.PROMPT_USER,
         on_conflict: Callable[[Person, MatchResult], str] | None = None,
-    ):
+    ) -> None:
         """
         Initialize merger.
 
