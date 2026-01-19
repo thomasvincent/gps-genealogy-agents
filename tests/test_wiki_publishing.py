@@ -7,7 +7,9 @@ from gps_agents.autogen.wiki_publishing import (
     DEVOPS_PROMPT,
     LINGUIST_PROMPT,
     MANAGER_PROMPT,
+    REVIEWER_PROMPT,
     _extract_section,
+    _is_approved,
 )
 
 
@@ -203,3 +205,132 @@ class TestDelegationRules:
         """Manager should delegate to DevOps for git workflow."""
         assert "DevOps" in MANAGER_PROMPT
         assert "commit" in MANAGER_PROMPT.lower()
+
+    def test_reviewer_delegation(self):
+        """Manager should delegate to Reviewer before finalizing."""
+        assert "Reviewer" in MANAGER_PROMPT
+        assert "fact-check" in MANAGER_PROMPT.lower() or "FINAL" in MANAGER_PROMPT
+
+
+class TestReviewerPrompt:
+    """Test Reviewer agent prompt."""
+
+    def test_reviewer_is_adversarial(self):
+        """Reviewer should be explicitly adversarial."""
+        assert "ADVERSARIAL" in REVIEWER_PROMPT
+        assert "find problems" in REVIEWER_PROMPT.lower()
+
+    def test_reviewer_severity_levels(self):
+        """Reviewer should define severity levels."""
+        assert "CRITICAL" in REVIEWER_PROMPT
+        assert "HIGH" in REVIEWER_PROMPT
+        assert "MEDIUM" in REVIEWER_PROMPT
+        assert "LOW" in REVIEWER_PROMPT
+
+    def test_reviewer_checks_fabrications(self):
+        """Reviewer should check for fabrications."""
+        assert "FABRICATIONS" in REVIEWER_PROMPT
+        assert "invented" in REVIEWER_PROMPT.lower() or "Invented" in REVIEWER_PROMPT
+
+    def test_reviewer_checks_logic(self):
+        """Reviewer should check for logical errors."""
+        assert "LOGICAL ERRORS" in REVIEWER_PROMPT
+        assert "death before birth" in REVIEWER_PROMPT.lower()
+
+    def test_reviewer_checks_sources(self):
+        """Reviewer should verify source matching."""
+        assert "SOURCE MISMATCHES" in REVIEWER_PROMPT
+        assert "cited source" in REVIEWER_PROMPT.lower()
+
+    def test_reviewer_output_format(self):
+        """Reviewer should have defined output sections."""
+        assert "REVIEW REPORT" in REVIEWER_PROMPT
+        assert "INTEGRITY SCORE" in REVIEWER_PROMPT
+        assert "BLOCKING ISSUES" in REVIEWER_PROMPT
+
+    def test_reviewer_blocks_critical(self):
+        """Reviewer should block publication on critical issues."""
+        assert "block" in REVIEWER_PROMPT.lower()
+        assert "CRITICAL" in REVIEWER_PROMPT
+
+
+class TestApprovalLogic:
+    """Test the _is_approved helper function."""
+
+    def test_approved_with_none(self):
+        """Test approval when blocking issues is 'None'."""
+        messages = [
+            {"source": "Reviewer", "content": "### ⚠️ BLOCKING ISSUES\nNone - clear to publish"}
+        ]
+        assert _is_approved(messages) is True
+
+    def test_approved_clear_to_publish(self):
+        """Test approval with 'clear to publish' message."""
+        messages = [
+            {"source": "Reviewer", "content": "### ⚠️ BLOCKING ISSUES\nNo blocking issues. Clear to publish."}
+        ]
+        assert _is_approved(messages) is True
+
+    def test_not_approved_with_issues(self):
+        """Test rejection when blocking issues exist."""
+        messages = [
+            {"source": "Reviewer", "content": "### ⚠️ BLOCKING ISSUES\n1. Birth date unsourced\n2. Death date conflicts"}
+        ]
+        assert _is_approved(messages) is False
+
+    def test_not_approved_no_review(self):
+        """Test rejection when no review found."""
+        messages = [
+            {"source": "Manager", "content": "All done!"}
+        ]
+        assert _is_approved(messages) is False
+
+
+class TestReviewerExtraction:
+    """Test extraction of Reviewer output sections."""
+
+    def test_extract_integrity_score(self):
+        """Test extracting integrity score."""
+        messages = [
+            {
+                "source": "Reviewer",
+                "content": """### 🔍 REVIEW REPORT
+Some review content.
+
+### 📊 INTEGRITY SCORE
+85/100
+- Fabrication Check: 100%
+- Logic Check: 90%
+- Source Verification: 70%
+
+### ⚠️ BLOCKING ISSUES
+None - clear to publish
+""",
+            }
+        ]
+
+        score = _extract_section(messages, "INTEGRITY SCORE")
+        assert score is not None
+        assert "85/100" in score
+
+    def test_extract_blocking_issues(self):
+        """Test extracting blocking issues."""
+        messages = [
+            {
+                "source": "Reviewer",
+                "content": """### 📊 INTEGRITY SCORE
+50/100
+
+### ⚠️ BLOCKING ISSUES
+1. CRITICAL: Birth date (1931) not supported by any source
+2. HIGH: Father's name appears to be fabricated
+
+Must fix before publishing.
+""",
+            }
+        ]
+
+        blocking = _extract_section(messages, "BLOCKING ISSUES")
+        assert blocking is not None
+        assert "CRITICAL" in blocking
+        assert "Birth date" in blocking

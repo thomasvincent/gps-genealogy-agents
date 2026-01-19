@@ -68,11 +68,14 @@ Delegation:
 - Ask Linguist for Wikipedia/WikiTree tone + DIFF suggestions.
 - Ask Data Engineer for Wikidata JSON payload.
 - Ask DevOps Specialist for commit message + suggested git commands.
+- Ask Reviewer to fact-check ALL outputs before finalizing.
 
 Hard rules:
 - Never invent sources.
 - If evidence conflicts or is insufficient, ask for clarification or recommend specific additional sources.
-- When finished, include "FINAL" to terminate the session.
+- NEVER say "FINAL" until Reviewer has approved all outputs.
+- If Reviewer finds CRITICAL or HIGH severity issues, they MUST be fixed first.
+- When finished AND Reviewer has cleared the work, include "FINAL" to terminate the session.
 """
 
 LINGUIST_PROMPT = r"""You are the Linguist Agent for genealogy publishing.
@@ -170,6 +173,77 @@ Co-Authored-By: AI Assistant <noreply@example.com>
 ```
 """
 
+REVIEWER_PROMPT = r"""You are the Reviewer Agent - the skeptic who keeps everyone honest.
+
+Your mission is to FIND ERRORS. You are naturally suspicious and assume mistakes exist
+until proven otherwise. You review ALL outputs from other agents and identify:
+
+1. FABRICATIONS (Severity: CRITICAL)
+   - Claims without source support
+   - Invented dates, places, or relationships
+   - Hallucinated Wikidata QIDs or properties
+   - Made-up citations or references
+
+2. LOGICAL ERRORS (Severity: HIGH)
+   - Timeline impossibilities (death before birth, child older than parent)
+   - Geographic impossibilities (born in two places)
+   - Relationship contradictions
+   - Mathematical errors in date calculations
+
+3. SOURCE MISMATCHES (Severity: HIGH)
+   - Claims that don't match the cited source
+   - Over-interpretation of evidence
+   - Treating indirect evidence as direct
+   - Missing qualifiers (circa, approximately)
+
+4. QUALITY ISSUES (Severity: MEDIUM)
+   - Incomplete citations
+   - Ambiguous statements
+   - Missing uncertainty markers
+   - Inconsistent formatting
+
+5. STYLE VIOLATIONS (Severity: LOW)
+   - Wikipedia NPOV violations
+   - WikiTree template errors
+   - Wikidata property misuse
+   - Commit message format issues
+
+For each issue found, report:
+- WHAT is wrong (specific quote or reference)
+- WHY it's wrong (evidence or logic)
+- SEVERITY: CRITICAL / HIGH / MEDIUM / LOW
+- CONFIDENCE: How certain you are (0-100%)
+- FIX: What should be done
+
+Format your output as:
+### 🔍 REVIEW REPORT
+
+#### Fabrication Check
+[List any invented/unsupported claims or "✓ No fabrications detected"]
+
+#### Logic Check
+[List any logical errors or "✓ No logical errors detected"]
+
+#### Source Verification
+[List any source mismatches or "✓ Sources verified"]
+
+#### Quality Issues
+[List any quality problems or "✓ Quality acceptable"]
+
+### 📊 INTEGRITY SCORE
+[0-100 score with breakdown]
+
+### ⚠️ BLOCKING ISSUES
+[List issues that MUST be fixed before publishing, or "None - clear to publish"]
+
+CRITICAL RULES:
+- You are ADVERSARIAL - your job is to find problems, not approve work
+- If you find CRITICAL issues, you MUST block publication
+- Never approve work you haven't thoroughly checked
+- When in doubt, flag it - false positives are better than letting errors through
+- If other agents push back on your findings, demand evidence
+"""
+
 
 # =============================================================================
 # Team Builder
@@ -220,11 +294,19 @@ def create_wiki_publishing_team(
         description="Git workflow specialist for version control",
     )
 
+    reviewer = AssistantAgent(
+        name="Reviewer",
+        model_client=client,
+        system_message=REVIEWER_PROMPT,
+        description="Skeptical fact-checker who finds errors and blocks bad data",
+    )
+
     agents = {
         "manager": manager,
         "linguist": linguist,
         "data_engineer": data_engineer,
         "devops": devops,
+        "reviewer": reviewer,
     }
 
     # Termination when Manager says "FINAL"
@@ -235,14 +317,16 @@ def create_wiki_publishing_team(
 
     # Manager selects which agent speaks next
     team = SelectorGroupChat(
-        participants=[manager, linguist, data_engineer, devops],
+        participants=[manager, linguist, data_engineer, devops, reviewer],
         model_client=client,
         selector_prompt=(
             "Based on the conversation, select the next agent to speak:\n"
             "- Manager: Overall coordination and GPS grading\n"
             "- Linguist: Wikipedia/WikiTree content generation\n"
             "- DataEngineer: Wikidata JSON payloads\n"
-            "- DevOps: Git commands and commit messages\n\n"
+            "- DevOps: Git commands and commit messages\n"
+            "- Reviewer: Fact-checking, error detection, blocking bad data\n\n"
+            "IMPORTANT: Before Manager says FINAL, Reviewer MUST review all outputs.\n"
             "Select the single most appropriate next speaker."
         ),
         termination_condition=termination,
@@ -325,6 +409,9 @@ Please:
         "wikitree_bio": _extract_section(messages, "WIKITREE_BIO"),
         "git_commit": _extract_section(messages, "GIT_COMMIT_MSG"),
         "gps_grade": _extract_section(messages, "GPS Grade Card"),
+        "review_report": _extract_section(messages, "REVIEW REPORT"),
+        "integrity_score": _extract_section(messages, "INTEGRITY SCORE"),
+        "blocking_issues": _extract_section(messages, "BLOCKING ISSUES"),
     }
 
     return outputs
@@ -476,6 +563,90 @@ def _extract_section(messages: list[dict], section_name: str) -> str | None:
     return None
 
 
+async def review_outputs(
+    outputs: dict[str, Any],
+    original_sources: str,
+    model: str = "gpt-4o-mini",
+) -> dict[str, Any]:
+    """Have the Reviewer agent fact-check existing outputs.
+
+    Use this for a second-pass review of previously generated content.
+
+    Args:
+        outputs: Dictionary of outputs to review (wikidata_payload, wikipedia_draft, etc.)
+        original_sources: The original source material to verify against
+        model: Model to use
+
+    Returns:
+        Review report with integrity score and blocking issues
+    """
+    team, agents = create_wiki_publishing_team(model=model, max_messages=10)
+
+    outputs_text = "\n\n".join(
+        f"### {key}\n{value}" for key, value in outputs.items() if value
+    )
+
+    task = f"""REVIEWER: Fact-check the following outputs against the original sources.
+
+Original Sources:
+---
+{original_sources}
+---
+
+Outputs to Review:
+---
+{outputs_text}
+---
+
+Check for:
+1. FABRICATIONS - Any claims not supported by sources
+2. LOGICAL ERRORS - Timeline or relationship impossibilities
+3. SOURCE MISMATCHES - Claims that don't match cited sources
+4. QUALITY ISSUES - Missing citations, ambiguous statements
+
+Provide your REVIEW REPORT with INTEGRITY SCORE and BLOCKING ISSUES.
+"""
+
+    result: TaskResult = await team.run(task=task)
+
+    messages = []
+    for msg in result.messages:
+        if isinstance(msg, TextMessage):
+            messages.append({
+                "source": msg.source,
+                "content": msg.content,
+            })
+
+    return {
+        "messages": messages,
+        "review_report": _extract_section(messages, "REVIEW REPORT"),
+        "integrity_score": _extract_section(messages, "INTEGRITY SCORE"),
+        "blocking_issues": _extract_section(messages, "BLOCKING ISSUES"),
+        "approved": _is_approved(messages),
+    }
+
+
+def _is_approved(messages: list[dict]) -> bool:
+    """Check if the Reviewer approved the outputs.
+
+    Args:
+        messages: List of message dicts
+
+    Returns:
+        True if no blocking issues found
+    """
+    blocking = _extract_section(messages, "BLOCKING ISSUES")
+    if not blocking:
+        return False  # No review found
+
+    blocking_lower = blocking.lower()
+    return (
+        "none" in blocking_lower
+        or "clear to publish" in blocking_lower
+        or "no blocking" in blocking_lower
+    )
+
+
 # =============================================================================
 # CLI Entry Point
 # =============================================================================
@@ -504,6 +675,9 @@ async def main():
     print(f"\nGPS Grade:\n{result.get('gps_grade', 'Not found')}")
     print(f"\nWikidata Payload:\n{result.get('wikidata_payload', 'Not found')}")
     print(f"\nGit Commit:\n{result.get('git_commit', 'Not found')}")
+    print(f"\n=== Review Report ===")
+    print(f"\nIntegrity Score:\n{result.get('integrity_score', 'Not found')}")
+    print(f"\nBlocking Issues:\n{result.get('blocking_issues', 'Not found')}")
 
 
 if __name__ == "__main__":

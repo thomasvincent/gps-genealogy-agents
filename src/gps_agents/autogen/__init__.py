@@ -34,6 +34,7 @@ from gps_agents.autogen.wiki_publishing import (
     generate_wikidata_payload,
     grade_article_gps,
     publish_to_wikis,
+    review_outputs,
 )
 
 __all__ = [
@@ -68,4 +69,5 @@ __all__ = [
     "generate_wikidata_payload",
     "grade_article_gps",
     "publish_to_wikis",
+    "review_outputs",
 ]
