@@ -47,7 +47,24 @@ def _validate_timeline(person: Person) -> None:
             reason=f"Timeline impossible: lifespan exceeds {CONFIG.max_lifespan} years",
             recommended_action="review_life_events",
         )
-    # future extension: event-after-death checks if events carry dates
+    # event after death / marriage before min age
+    if person.events:
+        for ev in person.events:
+            y = ev.date.year if ev and ev.date else None
+            if y is None:
+                continue
+            if dy is not None and y > dy:
+                raise IdempotencyBlock(
+                    reason="Timeline impossible: event after death",
+                    recommended_action="correct_event_dates",
+                )
+            if ev.event_type == EventType.MARRIAGE and by is not None:
+                age = y - by
+                if age < CONFIG.min_parent_age:
+                    raise IdempotencyBlock(
+                        reason=f"Timeline impossible: marriage before age {CONFIG.min_parent_age}",
+                        recommended_action="review_marriage_date_or_birth",
+                    )
 
 
 def upsert_person(
@@ -56,6 +73,7 @@ def upsert_person(
     person: Person,
     *,
     matcher_factory: Callable[[GrampsClient], PersonMatcher] | None = None,
+    run_id: str | None = None,
 ) -> UpsertResult:
     """Idempotent person upsert with fingerprint and matcher fallback.
 
@@ -66,6 +84,7 @@ def upsert_person(
        - Raise IdempotencyBlock when 0.80–0.95
     C) Otherwise create new person
     """
+    log = logger.bind(run_id=run_id) if run_id else logger
     fp = fingerprint_person(person)
     # store on model when available
     try:
@@ -74,7 +93,7 @@ def upsert_person(
         pass
     existing = projection.get_gramps_handle_by_fingerprint(fp.value)
     if existing:
-        logger.info("upsert_person.reuse", fingerprint=fp.value, handle=existing)
+        log.info("upsert_person.reuse", fingerprint=fp.value, handle=existing)
         return UpsertResult(handle=existing, created=False)
 
     # timeline sanity
@@ -87,7 +106,7 @@ def upsert_person(
         m = matches[0]
         score = m.match_score / 100.0  # convert to 0-1
         if score >= CONFIG.merge_threshold:
-            logger.info("upsert_person.automerge", score=score)
+            log.info("upsert_person.automerge", score=score)
             projection.save_fingerprint("person", fp.value, m.matched_handle)
             projection.set_external_ids(fp.value, gramps_handle=m.matched_handle)
             return UpsertResult(handle=m.matched_handle or "", created=False)
@@ -187,6 +206,8 @@ def upsert_place(
     client: GrampsClient,
     projection: SQLiteProjection,
     place: "Place",
+    *,
+    run_id: str | None = None,
 ) -> UpsertResult:
     from gps_agents.idempotency.fingerprint import fingerprint_place
     fp = fingerprint_place(place)
@@ -269,6 +290,8 @@ def upsert_relationship(
     a_handle: str,
     b_handle: str,
     context: str | None = None,
+    *,
+    run_id: str | None = None,
 ) -> UpsertResult:
     from gps_agents.idempotency.fingerprint import fingerprint_relationship
     fp = fingerprint_relationship(kind, a_handle, b_handle, context)

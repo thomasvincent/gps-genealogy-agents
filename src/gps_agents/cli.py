@@ -16,6 +16,9 @@ app = typer.Typer(
     help="GPS Genealogical Research Multi-Agent System (SK + AutoGen)",
     add_completion=False,
 )
+
+backfill_app = typer.Typer(help="Backfill utilities")
+app.add_typer(backfill_app, name="backfill")
 console = Console()
 
 
@@ -263,6 +266,78 @@ def list_facts(
     console.print(f"[dim]Showing {count} facts[/dim]")
 
     ledger.close()
+
+
+@backfill_app.command("idempotency")
+def backfill_idempotency(
+    gramps_db: Path = typer.Argument(..., help="Path to Gramps sqlite.db/grampsdb.db"),  # noqa: B008
+) -> None:
+    """Compute and persist fingerprints for existing Gramps records.
+
+    Populates fingerprint_index and external_ids (gramps_handle only) for
+    person/event/source/citation/place. Safe to re-run.
+    """
+    from gps_agents.gramps.client import GrampsClient
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    from gps_agents.idempotency.fingerprint import (
+        fingerprint_person, fingerprint_event, fingerprint_source,
+        fingerprint_citation, fingerprint_place,
+    )
+    from gps_agents.gramps.models import Person as GPerson
+
+    gc = GrampsClient(str(gramps_db))
+    gc.connect(str(gramps_db))
+
+    # Use projection in default data dir for simplicity
+    proj = SQLiteProjection(str(get_config()["data_dir"] / "projection.db"))
+
+    with gc.session():
+        conn = gc._conn  # noqa: SLF001
+        tables = [
+            ("person", fingerprint_person),
+            ("event", fingerprint_event),
+            ("source", fingerprint_source),
+            ("citation", fingerprint_citation),
+            ("place", fingerprint_place),
+        ]
+        for table, fp_fn in tables:
+            try:
+                rows = conn.execute(f"SELECT handle, blob_data FROM {table}").fetchall()
+            except Exception:
+                continue
+            count = 0
+            for row in rows:
+                handle = row["handle"]
+                data = gc._deserialize_blob(row["blob_data"])  # noqa: SLF001
+                # Minimal adapters to models used by fingerprint_* functions
+                if table == "person":
+                    person = gc._person_from_gramps(handle, data)
+                    fp = fp_fn(person)
+                elif table == "event":
+                    from gps_agents.gramps.models import Event as GEvent
+                    ev = GEvent.model_validate({**data}) if isinstance(data, dict) else GEvent()
+                    fp = fp_fn(ev)
+                elif table == "source":
+                    from gps_agents.gramps.models import Source as GSource
+                    s = GSource.model_validate({**data}) if isinstance(data, dict) else GSource()
+                    fp = fp_fn(s)
+                elif table == "citation":
+                    from gps_agents.gramps.models import Citation as GCitation
+                    c = GCitation.model_validate({**data}) if isinstance(data, dict) else GCitation()
+                    fp = fp_fn(c)
+                else:  # place
+                    from gps_agents.gramps.models import Place as GPlace
+                    pl = GPlace.model_validate({**data}) if isinstance(data, dict) else GPlace()
+                    fp = fp_fn(pl)
+                proj.ensure_fingerprint_row(table, fp.value)
+                claimed = proj.claim_fingerprint_handle(fp.value, handle)
+                if claimed == 0:
+                    # someone else claimed; ok
+                    pass
+                else:
+                    proj.set_external_ids(fp.value, gramps_handle=handle)
+                count += 1
+            console.print(f"[green]{table}: backfilled {count} rows[/green]")
 
 
 @app.command()
