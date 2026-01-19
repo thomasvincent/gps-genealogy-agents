@@ -140,18 +140,19 @@ class CitationPlugin:
 
         parts = []
 
-        if source.creator:
-            parts.append(source.creator)
+        # Use informant as creator if available
+        if source.informant:
+            parts.append(source.informant)
 
-        if source.title:
-            parts.append(f'"{source.title}"')
-        elif source.record_type:
-            parts.append(source.record_type)
+        # Use record_type as title
+        if source.record_type:
+            parts.append(f'"{source.record_type}"')
 
         parts.append(source.repository)
 
-        if source.location_in_source:
-            parts.append(source.location_in_source)
+        # Use record_id as location
+        if source.record_id:
+            parts.append(f"record {source.record_id}")
 
         if source.url:
             parts.append(f"({source.url})")
@@ -218,8 +219,7 @@ class CitationPlugin:
 
         is_duplicate = same_repo and (same_id or same_url)
         is_likely_duplicate = same_repo and (
-            (c1.title and c2.title and c1.title.lower() == c2.title.lower())
-            or (c1.record_type and c2.record_type and c1.record_type == c2.record_type)
+            c1.record_type and c2.record_type and c1.record_type == c2.record_type
         )
 
         return json.dumps({

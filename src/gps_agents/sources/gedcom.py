@@ -2,6 +2,7 @@
 
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
@@ -24,8 +25,8 @@ class GedcomSource(BaseSource):
         """
         super().__init__()
         self.file_path = Path(file_path) if file_path else None
-        self._individuals: dict[str, dict] = {}
-        self._families: dict[str, dict] = {}
+        self._individuals: dict[str, dict[str, Any]] = {}
+        self._families: dict[str, dict[str, Any]] = {}
         self._loaded = False
 
     def requires_auth(self) -> bool:

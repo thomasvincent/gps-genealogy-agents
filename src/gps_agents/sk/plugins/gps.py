@@ -177,8 +177,8 @@ class GPSPlugin:
             })
 
         conflicts = [Conflict.model_validate(c) for c in conflicts_data]
-        resolved = [c for c in conflicts if c.resolved]
-        unresolved = [c for c in conflicts if not c.resolved]
+        resolved = [c for c in conflicts if c.is_resolved]
+        unresolved = [c for c in conflicts if not c.is_resolved]
 
         if not unresolved:
             status = PillarStatus.SATISFIED

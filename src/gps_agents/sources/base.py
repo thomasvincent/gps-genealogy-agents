@@ -1,7 +1,9 @@
 """Base interface for genealogy data sources."""
 
 from abc import ABC, abstractmethod
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+import httpx
 
 from ..models.search import RawRecord, SearchQuery
 
@@ -56,7 +58,7 @@ class BaseSource(ABC):
             api_key: Optional API key for authenticated sources
         """
         self.api_key = api_key
-        self._client = None
+        self._client: httpx.AsyncClient | None = None
 
     @abstractmethod
     async def search(self, query: SearchQuery) -> list[RawRecord]:
@@ -106,7 +108,9 @@ class BaseSource(ABC):
 
         return list(set(variants))
 
-    async def _make_request(self, url: str, params: dict | None = None) -> dict:
+    async def _make_request(
+        self, url: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Make an HTTP request to the source API.
 
         Args:
@@ -116,18 +120,17 @@ class BaseSource(ABC):
         Returns:
             JSON response as dict
         """
-        import httpx
-
         if self._client is None:
             self._client = httpx.AsyncClient(timeout=30.0)
 
-        headers = {}
+        headers: dict[str, str] = {}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
         response = await self._client.get(url, params=params, headers=headers)
         response.raise_for_status()
-        return response.json()
+        result: dict[str, Any] = response.json()
+        return result
 
     async def close(self) -> None:
         """Close HTTP client connection."""
