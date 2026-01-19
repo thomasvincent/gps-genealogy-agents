@@ -1,4 +1,4 @@
-"""SQLite read projection for fast queries."""
+"""SQLite read projection + durable idempotency mapping store."""
 from __future__ import annotations
 
 import sqlite3
@@ -13,25 +13,22 @@ if TYPE_CHECKING:
 
 
 class SQLiteProjection:
-    """SQLite-based read model for fast queries.
+    """SQLite-based read model and durable idempotency mapping.
 
-    This is the read store in the CQRS architecture. It's rebuilt from
-    the authoritative RocksDB ledger and optimized for queries.
+    Responsibilities:
+    - Fast queries over facts (read model)
+    - Durable mapping store for idempotency:
+      * external_ids(fingerprint -> gramps_handle, wikidata_qid, wikitree_id, familysearch_id, last_synced_at)
+      * fingerprint_index(fingerprint -> entity_type, gramps_handle)
     """
 
     def __init__(self, db_path: str | Path) -> None:
-        """Initialize the projection.
-
-        Args:
-            db_path: Path to SQLite database file
-        """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_schema()
 
     @contextmanager
     def _get_conn(self):
-        """Get a database connection."""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         try:
@@ -40,9 +37,11 @@ class SQLiteProjection:
             conn.close()
 
     def _init_schema(self) -> None:
-        """Initialize database schema."""
         with self._get_conn() as conn:
-            conn.executescript("""
+            conn.executescript(
+                """
+                PRAGMA journal_mode=WAL;
+
                 CREATE TABLE IF NOT EXISTS facts (
                     fact_id TEXT PRIMARY KEY,
                     version INTEGER NOT NULL,
@@ -85,17 +84,40 @@ class SQLiteProjection:
                 );
 
                 CREATE INDEX IF NOT EXISTS idx_persons_name ON persons(surname, given_name);
-            """)
+
+                -- Durable idempotency mapping tables
+                CREATE TABLE IF NOT EXISTS external_ids (
+                    fingerprint TEXT PRIMARY KEY,
+                    gramps_handle TEXT,
+                    wikidata_qid TEXT,
+                    wikitree_id TEXT,
+                    familysearch_id TEXT,
+                    last_synced_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_external_ids_handles ON external_ids(gramps_handle, wikidata_qid, wikitree_id);
+
+                CREATE TABLE IF NOT EXISTS fingerprint_index (
+                    fingerprint TEXT PRIMARY KEY,
+                    entity_type TEXT NOT NULL,
+                    gramps_handle TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_fingerprint_entity ON fingerprint_index(entity_type);
+
+                -- Wikidata statement fingerprint cache
+                CREATE TABLE IF NOT EXISTS wikidata_statement_cache (
+                    fingerprint TEXT PRIMARY KEY,
+                    guid TEXT NOT NULL,
+                    entity_id TEXT,
+                    property_id TEXT
+                );
+                """
+            )
             conn.commit()
 
-    def upsert_fact(self, fact: Fact) -> None:
-        """Insert or update a fact in the projection.
+    # --------------------------- Facts API ---------------------------
 
-        Args:
-            fact: The fact to upsert
-        """
+    def upsert_fact(self, fact: Fact) -> None:
         with self._get_conn() as conn:
-            # Upsert main fact record
             conn.execute(
                 """
                 INSERT INTO facts (
@@ -131,7 +153,6 @@ class SQLiteProjection:
                 ),
             )
 
-            # Update sources index
             conn.execute("DELETE FROM fact_sources WHERE fact_id = ?", (str(fact.fact_id),))
             for source in fact.sources:
                 conn.execute(
@@ -149,15 +170,68 @@ class SQLiteProjection:
 
             conn.commit()
 
+    # ------------------------ Idempotency mapping --------------------
+
+    def get_external_ids(self, fingerprint: str) -> dict | None:
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT * FROM external_ids WHERE fingerprint = ?",
+                (fingerprint,),
+            ).fetchone()
+            return dict(row) if row else None
+
+    def set_external_ids(
+        self,
+        fingerprint: str,
+        *,
+        gramps_handle: str | None = None,
+        wikidata_qid: str | None = None,
+        wikitree_id: str | None = None,
+        familysearch_id: str | None = None,
+        last_synced_at: str | None = None,
+    ) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT INTO external_ids (
+                    fingerprint, gramps_handle, wikidata_qid, wikitree_id, familysearch_id, last_synced_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(fingerprint) DO UPDATE SET
+                    gramps_handle = COALESCE(excluded.gramps_handle, external_ids.gramps_handle),
+                    wikidata_qid = COALESCE(excluded.wikidata_qid, external_ids.wikidata_qid),
+                    wikitree_id = COALESCE(excluded.wikitree_id, external_ids.wikitree_id),
+                    familysearch_id = COALESCE(excluded.familysearch_id, external_ids.familysearch_id),
+                    last_synced_at = COALESCE(excluded.last_synced_at, external_ids.last_synced_at)
+                """,
+                (fingerprint, gramps_handle, wikidata_qid, wikitree_id, familysearch_id, last_synced_at),
+            )
+            conn.commit()
+
+    def save_fingerprint(self, entity_type: str, fingerprint: str, gramps_handle: str | None) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
+                VALUES (?, ?, ?)
+                ON CONFLICT(fingerprint) DO UPDATE SET
+                    entity_type = excluded.entity_type,
+                    gramps_handle = COALESCE(excluded.gramps_handle, fingerprint_index.gramps_handle)
+                """,
+                (fingerprint, entity_type, gramps_handle),
+            )
+            conn.commit()
+
+    def get_gramps_handle_by_fingerprint(self, fingerprint: str) -> str | None:
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT gramps_handle FROM fingerprint_index WHERE fingerprint = ?",
+                (fingerprint,),
+            ).fetchone()
+            return row["gramps_handle"] if row and row["gramps_handle"] else None
+
+    # --------------------------- Queries -----------------------------
+
     def get_fact(self, fact_id: UUID) -> Fact | None:
-        """Retrieve a fact by ID.
-
-        Args:
-            fact_id: The fact's UUID
-
-        Returns:
-            The Fact or None if not found
-        """
         with self._get_conn() as conn:
             row = conn.execute(
                 "SELECT full_json FROM facts WHERE fact_id = ?", (str(fact_id),)
@@ -176,20 +250,6 @@ class SQLiteProjection:
         limit: int = 100,
         offset: int = 0,
     ) -> list[Fact]:
-        """Query facts with filters.
-
-        Args:
-            status: Filter by status
-            person_id: Filter by person
-            fact_type: Filter by fact type
-            min_confidence: Minimum confidence score
-            repository: Filter by source repository
-            limit: Maximum results
-            offset: Pagination offset
-
-        Returns:
-            List of matching facts
-        """
         conditions = []
         params: list = []
 
@@ -209,7 +269,6 @@ class SQLiteProjection:
         where_clause = "WHERE " + " AND ".join(conditions) if conditions else ""
 
         if repository is not None:
-            # Join with sources table
             query = f"""
                 SELECT DISTINCT f.full_json FROM facts f
                 JOIN fact_sources s ON f.fact_id = s.fact_id
@@ -233,21 +292,8 @@ class SQLiteProjection:
             return [Fact.model_validate_json(row["full_json"]) for row in rows]
 
     def search_statements(self, search_term: str, limit: int = 50) -> list[Fact]:
-        """Full-text search on fact statements.
-
-        Args:
-            search_term: Text to search for
-            limit: Maximum results
-
-        Returns:
-            Matching facts
-        """
-        # Escape LIKE wildcards to prevent search pattern injection
         escaped_term = (
-            search_term
-            .replace("\\", "\\\\")
-            .replace("%", "\\%")
-            .replace("_", "\\_")
+            search_term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
         )
         with self._get_conn() as conn:
             rows = conn.execute(
@@ -262,31 +308,18 @@ class SQLiteProjection:
             return [Fact.model_validate_json(row["full_json"]) for row in rows]
 
     def get_statistics(self) -> dict:
-        """Get summary statistics about the projection.
-
-        Returns:
-            Dictionary of statistics
-        """
         with self._get_conn() as conn:
             stats = {}
-
-            # Count by status
             for status in FactStatus:
                 count = conn.execute(
                     "SELECT COUNT(*) FROM facts WHERE status = ?", (status.value,)
                 ).fetchone()[0]
                 stats[f"count_{status.value}"] = count
-
-            # Total facts
             stats["total_facts"] = conn.execute("SELECT COUNT(*) FROM facts").fetchone()[0]
-
-            # Average confidence
             avg = conn.execute(
                 "SELECT AVG(confidence_score) FROM facts WHERE status = 'accepted'"
             ).fetchone()[0]
             stats["avg_confidence_accepted"] = avg or 0.0
-
-            # Source breakdown
             repos = conn.execute(
                 """
                 SELECT repository, COUNT(*) as cnt
@@ -296,20 +329,36 @@ class SQLiteProjection:
                 """
             ).fetchall()
             stats["sources"] = {row["repository"]: row["cnt"] for row in repos}
-
             return stats
 
     def rebuild_from_ledger(self, ledger) -> int:
-        """Rebuild the projection from the authoritative ledger.
-
-        Args:
-            ledger: FactLedger instance
-
-        Returns:
-            Number of facts processed
-        """
         count = 0
         for fact in ledger.iter_all_facts():
             self.upsert_fact(fact)
             count += 1
         return count
+
+    # --------------------- Wikidata Statement Cache ------------------
+
+    def get_statement_guid(self, fingerprint: str) -> str | None:
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT guid FROM wikidata_statement_cache WHERE fingerprint = ?",
+                (fingerprint,),
+            ).fetchone()
+            return row["guid"] if row else None
+
+    def set_statement_guid(self, fingerprint: str, guid: str, *, entity_id: str | None = None, property_id: str | None = None) -> None:
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT INTO wikidata_statement_cache (fingerprint, guid, entity_id, property_id)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(fingerprint) DO UPDATE SET
+                  guid = excluded.guid,
+                  entity_id = COALESCE(excluded.entity_id, wikidata_statement_cache.entity_id),
+                  property_id = COALESCE(excluded.property_id, wikidata_statement_cache.property_id)
+                """,
+                (fingerprint, guid, entity_id, property_id),
+            )
+            conn.commit()
