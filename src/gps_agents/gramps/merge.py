@@ -76,6 +76,7 @@ class PersonMatcher:
         "birth_place": 15,
         "death_year_exact": 15,
         "death_year_close": 8,
+        "death_place": 15,  # Match birth_place weight
         "sex_match": 5,
         "parent_match": 20,
         "spouse_match": 15,
@@ -262,7 +263,8 @@ class PersonMatcher:
                     conflicts.append(f"{event_type.title()} years far apart: {year1} vs {year2}")
 
         if event1.place and event2.place and str(event1.place).lower() == str(event2.place).lower():
-            score += self.WEIGHTS[f"{event_type}_place"]
+            place_weight = self.WEIGHTS.get(f"{event_type}_place", 10)  # Default weight if key missing
+            score += place_weight
             reasons.append(f"{event_type.title()} place match: {event1.place}")
 
         return score, reasons, conflicts
@@ -471,17 +473,20 @@ class GrampsMerger:
         return not (e1.date and e2.date and e1.date.year != e2.date.year)
 
 
-# Convenience function for async contexts
-async def smart_add_person(
+# Convenience function for adding persons with duplicate detection
+def smart_add_person(
     client: GrampsClient,
     person: Person,
     strategy: MergeStrategy = MergeStrategy.CREATE_NOTE,
 ) -> MergeResult:
     """
-    Add a person with duplicate detection (async wrapper).
+    Add a person with duplicate detection.
 
     This is the recommended entry point for adding persons
-    from async contexts like AutoGen agents.
+    when duplicate detection is desired.
+
+    Note: This is a synchronous function. For async contexts,
+    use asyncio.to_thread() to run off the event loop.
     """
     merger = GrampsMerger(client, strategy)
     return merger.add_person(person)

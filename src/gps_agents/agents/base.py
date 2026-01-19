@@ -111,7 +111,20 @@ class BaseAgent(ABC):
         ]
 
         response = await llm.ainvoke(messages)
-        return response.content
+
+        # Handle various response content types
+        content = response.content
+        if content is None:
+            return ""
+        if isinstance(content, str):
+            return content
+        # Handle list of content blocks (e.g., from Claude)
+        if isinstance(content, list):
+            return "".join(
+                block.get("text", "") if isinstance(block, dict) else str(block)
+                for block in content
+            )
+        return str(content)
 
     @abstractmethod
     async def process(self, state: dict[str, Any]) -> dict[str, Any]:

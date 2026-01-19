@@ -187,9 +187,9 @@ class SourcesPlugin:
         sources = {}
         for name, source in self._sources.items():
             sources[name] = {
-                "available": source.is_available(),
-                "requires_auth": source.requires_auth,
-                "description": source.description,
+                "configured": source.is_configured(),
+                "requires_auth": source.requires_auth(),
+                "name": source.name,
             }
         return json.dumps(sources)
 
