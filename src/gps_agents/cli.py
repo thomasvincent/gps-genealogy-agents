@@ -341,6 +341,54 @@ def backfill_idempotency(
 
 
 @app.command()
+def db_health(
+    db_path: Path = typer.Option(None, "--db", help="Path to projection.db"),  # noqa: B008
+    vacuum: bool = typer.Option(False, "--vacuum", help="VACUUM the database"),
+    analyze: bool = typer.Option(False, "--analyze", help="ANALYZE the database"),
+) -> None:
+    """Show SQLite projection health and optionally VACUUM/ANALYZE."""
+    cfg = get_config()
+    proj_path = db_path or (cfg["data_dir"] / "projection.db")
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+    import sqlite3
+
+    projection = SQLiteProjection(str(proj_path))
+    with projection._get_conn() as conn:  # noqa: SLF001
+        # PRAGMAs
+        pragmas = {
+            "foreign_keys": conn.execute("PRAGMA foreign_keys").fetchone()[0],
+            "journal_mode": conn.execute("PRAGMA journal_mode").fetchone()[0],
+            "busy_timeout": conn.execute("PRAGMA busy_timeout").fetchone()[0],
+            "page_count": conn.execute("PRAGMA page_count").fetchone()[0],
+            "freelist_count": conn.execute("PRAGMA freelist_count").fetchone()[0],
+        }
+        # Counts
+        tables = [
+            "facts", "fact_sources", "persons", "external_ids", "fingerprint_index", "wikidata_statement_cache",
+        ]
+        counts = {}
+        for t in tables:
+            try:
+                counts[t] = conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+            except sqlite3.OperationalError:
+                counts[t] = "N/A"
+        # Maintenance
+        if vacuum:
+            conn.execute("VACUUM")
+        if analyze:
+            conn.execute("ANALYZE")
+
+    table = Table(title=f"DB Health: {proj_path}")
+    table.add_column("Metric")
+    table.add_column("Value")
+    for k, v in pragmas.items():
+        table.add_row(k, str(v))
+    for k, v in counts.items():
+        table.add_row(k, str(v))
+    console.print(table)
+
+
+@app.command()
 def stats() -> None:
     """Show statistics about the research database."""
     config = get_config()

@@ -30,6 +30,7 @@ def make_gramps_db(tmp: Path) -> Path:
         c.execute("CREATE TABLE event (handle TEXT PRIMARY KEY, gramps_id TEXT, blob_data BLOB)")
         c.execute("CREATE TABLE source (handle TEXT PRIMARY KEY, gramps_id TEXT, blob_data BLOB)")
         c.execute("CREATE TABLE citation (handle TEXT PRIMARY KEY, gramps_id TEXT, blob_data BLOB)")
+        c.execute("CREATE TABLE family (handle TEXT PRIMARY KEY, gramps_id TEXT, blob_data BLOB)")
         conn.commit()
     finally:
         conn.close()
@@ -122,6 +123,62 @@ def test_upsert_person_impossible_timeline_blocks(env_tmp: Path):
     with pytest.raises(IdempotencyBlock) as ei:
         upsert_person(gc, proj, p)
     assert "Timeline impossible" in str(ei.value)
+
+
+def test_parent_age_block(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    # Insert father (born 1900), child (born 1909) -> parent age 9 (block)
+    father_handle = "FATH1"
+    child_handle = "CHLD1"
+    fam_handle = "FAM1"
+
+    # Build blobs via client serializer
+    father_blob = gc._serialize_blob({"handle": father_handle, "gramps_id": "I100", "primary_name": {}, "gender": 1, "parent_family_list": [], "family_list": [], "private": False, "event_ref_list": [], "alternate_names": [], "citation_list": [], "note_list": [], "media_list": [], "tag_list": [], "birth": None})
+    # Embed birth year in blob_data JSON-like structure understood by _person_from_gramps
+    father_blob = gc._serialize_blob({"gramps_id": "I100", "primary_name": {}, "gender": 1, "parent_family_list": [], "family_list": [], "private": False, "event_ref_list": [], "alternate_names": [], "citation_list": [], "note_list": [], "media_list": [], "tag_list": [], "birth": {"date": {"year": 1900}}})
+    child_blob = gc._serialize_blob({"gramps_id": "I200", "primary_name": {}, "gender": 1, "parent_family_list": [fam_handle], "family_list": [], "private": False, "event_ref_list": [], "alternate_names": [], "citation_list": [], "note_list": [], "media_list": [], "tag_list": [], "birth": {"date": {"year": 1909}}})
+    fam_blob = gc._serialize_blob({"gramps_id": "F1", "father_handle": father_handle, "mother_handle": None, "child_ref_list": [child_handle]})
+
+    with gc.session():
+        gc._conn.execute("INSERT INTO person (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (father_handle, "I100", father_blob))
+        gc._conn.execute("INSERT INTO person (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (child_handle, "I200", child_blob))
+        gc._conn.execute("INSERT INTO family (handle, gramps_id, blob_data) VALUES (?, ?, ?)", (fam_handle, "F1", fam_blob))
+
+    from gps_agents.gramps.models import Name, Person as GPerson, Event as GEvent, EventType as GEventType, GrampsDate
+
+    child_person = GPerson(names=[Name(given="Kid", surname="Test")], parent_family_ids=[fam_handle], birth=GEvent(event_type=GEventType.BIRTH, date=GrampsDate(year=1909)))
+
+    with pytest.raises(IdempotencyBlock) as ei:
+        upsert_person(gc, proj, child_person)
+    assert "parent age" in str(ei.value)
+
+
+def test_weak_evidence_downgrade_blocks_auto_merge(env_tmp: Path):
+    db = make_gramps_db(env_tmp)
+    gc = GrampsClient(db)
+    gc.connect(db)
+    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+
+    from gps_agents.gramps.models import Name, Person as GPerson, Event as GEvent, EventType as GEventType, GrampsDate
+
+    p = GPerson(names=[Name(given="YOnly", surname="Merge")], birth=GEvent(event_type=GEventType.BIRTH, date=GrampsDate(year=1850)))
+
+    class FakeMatcher:
+        def __init__(self, *_args, **_kwargs):
+            pass
+        def find_matches(self, person, threshold=50.0, limit=1):
+            class M:
+                match_score = 96.0  # 0.96
+                matched_person = None
+                matched_handle = None
+            return [M()]
+
+    with pytest.raises(IdempotencyBlock):
+        upsert_person(gc, proj, p, matcher_factory=lambda c: FakeMatcher())
 
 
 def test_citation_dedup_by_fingerprint(env_tmp: Path):

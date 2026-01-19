@@ -32,7 +32,7 @@ class UpsertResult:
 
 # ---------------------------- Person ----------------------------
 
-def _validate_timeline(person: Person) -> None:
+def _validate_timeline(person: Person, client: GrampsClient | None = None) -> None:
     # death before birth
     by = person.birth.date.year if person.birth and person.birth.date else None
     dy = person.death.date.year if person.death and person.death.date else None
@@ -64,6 +64,24 @@ def _validate_timeline(person: Person) -> None:
                     raise IdempotencyBlock(
                         reason=f"Timeline impossible: marriage before age {CONFIG.min_parent_age}",
                         recommended_action="review_marriage_date_or_birth",
+                    )
+    # parent age at child's birth (if parent known)
+    if client is not None and person.parent_family_ids and person.birth and person.birth.date and person.birth.date.year:
+        child_year = person.birth.date.year
+        for fam_handle in person.parent_family_ids:
+            fam = client.get_family(fam_handle)
+            if not fam:
+                continue
+            parent_handles = [h for h in [fam.husband_id, fam.wife_id] if h]
+            for ph in parent_handles:
+                parent = client.get_person(ph)
+                if not parent or not parent.birth or not parent.birth.date or not parent.birth.date.year:
+                    continue
+                age = child_year - parent.birth.date.year
+                if age < CONFIG.min_parent_age or age > CONFIG.max_parent_age:
+                    raise IdempotencyBlock(
+                        reason=f"Timeline impossible: parent age {age} at birth outside [{CONFIG.min_parent_age},{CONFIG.max_parent_age}]",
+                        recommended_action="review_parent_or_child_birth",
                     )
 
 
@@ -97,7 +115,7 @@ def upsert_person(
         return UpsertResult(handle=existing, created=False)
 
     # timeline sanity
-    _validate_timeline(person)
+    _validate_timeline(person, client)
 
     # matcher path
     matcher = matcher_factory(client) if matcher_factory else PersonMatcher(client)
@@ -105,7 +123,14 @@ def upsert_person(
     if matches:
         m = matches[0]
         score = m.match_score / 100.0  # convert to 0-1
-        if score >= CONFIG.merge_threshold:
+        # Weak-evidence downgrade: if only year precision on key dates, require slightly higher score
+        def _year_only(ev: Event | None) -> bool:
+            if not ev or not ev.date:
+                return False
+            return ev.date.year is not None and ev.date.month is None and ev.date.day is None
+        weak = CONFIG.weak_evidence_downgrade and (_year_only(person.birth) or _year_only(person.death))
+        threshold = CONFIG.merge_threshold + (CONFIG.weak_evidence_margin if weak else 0.0)
+        if score >= threshold:
             log.info("upsert_person.automerge", score=score)
             projection.save_fingerprint("person", fp.value, m.matched_handle)
             projection.set_external_ids(fp.value, gramps_handle=m.matched_handle)

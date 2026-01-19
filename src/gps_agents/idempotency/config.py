@@ -23,6 +23,8 @@ class IdempotencyConfig:
     merge_threshold: float = _f("IDEMPOTENCY_MERGE_THRESHOLD", 0.95)
     review_low: float = _f("IDEMPOTENCY_REVIEW_LOW", 0.80)
     review_high: float = _f("IDEMPOTENCY_REVIEW_HIGH", 0.95)
+    weak_evidence_downgrade: bool = bool(int(os.getenv("IDEMPOTENCY_WEAK_EVIDENCE_DOWNGRADE", "1")))
+    weak_evidence_margin: float = _f("IDEMPOTENCY_WEAK_EVIDENCE_MARGIN", 0.03)
 
     # Timeline limits
     min_parent_age: int = _i("IDEMPOTENCY_MIN_PARENT_AGE", 12)
