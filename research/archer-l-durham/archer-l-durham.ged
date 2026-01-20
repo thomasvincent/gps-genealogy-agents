@@ -21,6 +21,7 @@
 2 DATE 9 JUN 1932
 2 PLAC Los Angeles County, California, USA
 2 SOUR @S4@
+1 FAMC @F1@
 1 EDUC
 2 DATE 1960
 2 PLAC Utah State University, Logan, Utah, USA
@@ -71,6 +72,64 @@
 1 SOUR @S1@
 1 SOUR @S2@
 1 SOUR @S3@
+0 @I2@ INDI
+1 NAME /Durham/
+2 SURN Durham
+1 SEX M
+1 NOTE Father of Archer L. Durham. Given name unknown.
+2 CONT Surname confirmed from children's birth records in California Birth Index.
+1 FAMS @F1@
+1 SOUR @S4@
+0 @I3@ INDI
+1 NAME /Sorrell/
+2 SURN Sorrell
+1 SEX F
+1 NOTE Mother of Archer L. Durham. Given name unknown.
+2 CONT Maiden name Sorrell confirmed from California Birth Index.
+1 FAMS @F1@
+1 SOUR @S4@
+0 @I4@ INDI
+1 NAME Barbara Camille /Durham/
+2 GIVN Barbara Camille
+2 SURN Durham
+1 SEX F
+1 BIRT
+2 DATE 1926
+2 PLAC Los Angeles County, California, USA
+2 SOUR @S4@
+1 FAMC @F1@
+1 NOTE Older sister of Archer L. Durham.
+2 CONT Found in California Birth Index 1905-1995.
+1 SOUR @S4@
+0 @I5@ INDI
+1 NAME Barney /Durham/
+2 GIVN Barney
+2 SURN Durham
+1 SEX M
+1 BIRT
+2 DATE 1929
+2 PLAC Los Angeles County, California, USA
+2 SOUR @S4@
+1 FAMC @F1@
+1 NOTE Sibling of Archer L. Durham (older brother).
+2 CONT Found in California Birth Index 1905-1995.
+1 SOUR @S4@
+0 @F1@ FAM
+1 HUSB @I2@
+1 WIFE @I3@
+1 CHIL @I4@
+1 CHIL @I5@
+1 CHIL @I1@
+1 MARR
+2 PLAC California, USA
+2 DATE BEF 1926
+2 NOTE Marriage inferred from children's birth records
+1 NOTE Durham family of Los Angeles County, California.
+2 CONT Three children identified from California Birth Index:
+2 CONT - Barbara Camille (b. 1926)
+2 CONT - Barney (b. 1929)
+2 CONT - Archer Lyman (b. 9 Jun 1932)
+1 SOUR @S4@
 0 @S1@ SOUR
 1 TITL USAF Official Biography - Major General Archer L. Durham
 1 AUTH United States Air Force
@@ -93,6 +152,10 @@
 1 TITL California Birth Index, 1905-1995
 1 AUTH State of California
 1 PUBL California Department of Health Services
-1 NOTE Birth record showing Archer Lyman Durham, born June 9, 1932, Los Angeles County, mother's maiden name Sorrell
+1 NOTE Birth records for Durham children in Los Angeles County:
+2 CONT - Barbara Camille Durham (1926)
+2 CONT - Barney Durham (1929)
+2 CONT - Archer Lyman Durham (9 Jun 1932)
+2 CONT Mother's maiden name: Sorrell
 1 REFN https://californiabirthindex.org
 0 TRLR
