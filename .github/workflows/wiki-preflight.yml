@@ -1,0 +1,61 @@
+name: wiki-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'research/wiki_plans/**'
+      - 'schemas/**'
+      - 'src/**'
+      - '.github/workflows/wiki-preflight.yml'
+
+jobs:
+  preflight:
+    name: Wiki Bundle Preflight
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install -e .[dev]
+
+      - name: Find wiki bundles
+        id: find_bundles
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -d research/wiki_plans ]; then
+            echo "bundles=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          bundles=$(find research/wiki_plans -type f -name plan.json -print0 | xargs -0 -n1 dirname | sort -u)
+          echo "bundles=$bundles" >> "$GITHUB_OUTPUT"
+
+      - name: Run preflight checks
+        if: steps.find_bundles.outputs.bundles != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          for dir in ${{ steps.find_bundles.outputs.bundles }}; do
+            echo "Checking bundle: $dir"
+            if ! gps-agents wiki check --bundle "$dir" --json; then
+              echo "Preflight failed for $dir"
+              failed=1
+            fi
+          done
+          if [ "$failed" -ne 0 ]; then
+            echo "One or more wiki bundles failed preflight gates."
+            exit 2
+          fi
+
+      - name: No bundles changed
+        if: steps.find_bundles.outputs.bundles == ''
+        run: echo "No wiki bundles detected; skipping preflight"
