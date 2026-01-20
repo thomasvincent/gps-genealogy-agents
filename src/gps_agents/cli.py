@@ -809,6 +809,69 @@ def wiki_show(
     console.print(table)
 
 
+@wiki_app.command("check")
+def wiki_check(
+    bundle_dir: Path = typer.Option(..., "--bundle"),  # noqa: B008
+    json_out: bool = typer.Option(False, "--json"),
+) -> None:
+    """Run pre-apply quality gates without applying.
+
+    Checks:
+    - Wikipedia draft Grade >= 9
+    - Wikipedia draft contains RESEARCH_NOTES
+    - Wikidata payload includes multilingual labels/descriptions (en, es, fr, de, it, nl)
+    """
+    import re
+    if not bundle_dir.exists():
+        console.print(f"[red]Bundle dir not found: {bundle_dir}[/red]")
+        raise typer.Exit(1)
+
+    result = {"grade_ok": False, "notes_ok": False, "wikidata_langs_ok": False, "missing_langs": []}
+
+    # Wikipedia checks
+    wiki_md = (bundle_dir / "wikipedia_draft.md").read_text(encoding="utf-8") if (bundle_dir / "wikipedia_draft.md").exists() else ""
+    if wiki_md:
+        m = re.search(r"(?i)(gps\s*grade\s*card).*?(\b(\d{1,2})(?:/10)?\b)", wiki_md, re.S)
+        if m:
+            try:
+                g = int(re.search(r"\d{1,2}", m.group(2)).group(0))  # type: ignore
+                result["grade_ok"] = g >= 9
+            except Exception:
+                result["grade_ok"] = False
+        result["notes_ok"] = bool(re.search(r"(?i)^(#+\s*)?(research[_\s-]?notes)\b", wiki_md, re.M))
+
+    # Wikidata multilingual checks
+    payload_path = bundle_dir / "wikidata_payload.json"
+    if payload_path.exists():
+        payload = json.loads(payload_path.read_text(encoding="utf-8"))
+        required_langs = {"en", "es", "fr", "de", "it", "nl"}
+        labels = payload.get("labels") or {}
+        descs = payload.get("descriptions") or {}
+        have = {k for k in labels.keys()} | {k for k in descs.keys()}
+        missing = sorted(list(required_langs - have))
+        result["missing_langs"] = missing
+        result["wikidata_langs_ok"] = len(missing) == 0
+
+    if json_out:
+        console.print(json.dumps(result, indent=2))
+        raise typer.Exit(0 if all([result["grade_ok"], result["notes_ok"], result["wikidata_langs_ok"]]) else 2)
+
+    # Human-readable output
+    def flag(ok: bool) -> str:
+        return "[green]OK[/green]" if ok else "[red]FAIL[/red]"
+
+    console.print(Panel("Wiki Preflight Check", title="wiki check"))
+    console.print(f"Grade >= 9: {flag(result['grade_ok'])}")
+    console.print(f"RESEARCH_NOTES present: {flag(result['notes_ok'])}")
+    console.print(f"Wikidata multilingual (en,es,fr,de,it,nl): {flag(result['wikidata_langs_ok'])}")
+    if result["missing_langs"]:
+        console.print(f"Missing languages: {', '.join(result['missing_langs'])}")
+
+    ok_all = all([result["grade_ok"], result["notes_ok"], result["wikidata_langs_ok"]])
+    if not ok_all:
+        raise typer.Exit(2)
+
+
 @wiki_app.command("apply")
 def wiki_apply(
     bundle_dir: Path = typer.Option(..., "--bundle"),  # noqa: B008
