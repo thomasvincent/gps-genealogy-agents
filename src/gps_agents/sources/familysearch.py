@@ -37,7 +37,35 @@ class FamilySearchSource(BaseSource):
         return True
 
     def is_configured(self) -> bool:
-        return self.client_id is not None and self.client_secret is not None
+        """Check if FamilySearch source is properly configured.
+
+        Returns True if:
+        - OAuth credentials (client_id + client_secret) are provided, OR
+        - Access token is available via env var or token file
+        """
+        import os
+        from pathlib import Path
+
+        # OAuth flow credentials
+        if self.client_id is not None and self.client_secret is not None:
+            return True
+
+        # Check for access token in env var
+        if os.getenv("FAMILYSEARCH_ACCESS_TOKEN"):
+            return True
+
+        # Check for access token in token file
+        try:
+            p = Path(self._token_file)
+            if p.exists():
+                import json
+                data = json.loads(p.read_text())
+                if data.get("access_token"):
+                    return True
+        except Exception:
+            pass
+
+        return False
 
     async def _ensure_token(self) -> None:
         """Ensure we have a valid access token.
@@ -95,10 +123,10 @@ class FamilySearchSource(BaseSource):
             params["givenName"] = query.given_name
         if query.surname:
             params["surname"] = query.surname
-            # Add variants
-            for variant in self._build_name_variants(query.surname):
-                if variant != query.surname:
-                    params["surname.variants"] = variant
+            # Add variants - collect all then join (API expects comma-separated)
+            variants = [v for v in self._build_name_variants(query.surname) if v != query.surname]
+            if variants:
+                params["surname.variants"] = ",".join(variants)
 
         if query.birth_year:
             params["birthLikeDate.from"] = str(query.birth_year - query.birth_year_range)

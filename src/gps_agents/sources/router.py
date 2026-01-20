@@ -7,6 +7,7 @@ with parallel search execution and result aggregation.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -65,6 +66,7 @@ class SourceSearchResult:
     total_count: int
     search_time_ms: float
     error: str | None = None
+    error_details: dict | None = None  # Structured error info (e.g., timeout_seconds)
 
 
 @dataclass
@@ -160,30 +162,47 @@ class SearchRouter:
         self,
         region: Region | None = None,
         record_type: RecordType | None = None,
+        record_types: list[str] | None = None,
     ) -> list[str]:
-        """Get recommended sources for a region and/or record type.
+        """Get recommended sources for a region and/or record type(s).
+
+        Computes: recommended = region_sources ∪ union_of_sources_for_each(record_type)
 
         Args:
             region: Geographic region to search
-            record_type: Type of record to find
+            record_type: Single type of record to find (deprecated, use record_types)
+            record_types: List of record type names to find
 
         Returns:
-            List of source names to search
+            List of source names to search, deterministically ordered
         """
         recommended = set()
 
+        # Add region-specific sources
         if region:
             recommended.update(self.REGION_SOURCES.get(region, []))
 
+        # Add single record_type sources (backward compatibility)
         if record_type:
             recommended.update(self.RECORD_TYPE_SOURCES.get(record_type, []))
+
+        # Add sources for each record type in the list
+        if record_types:
+            for rt_name in record_types:
+                try:
+                    rt = RecordType(rt_name.lower())
+                    recommended.update(self.RECORD_TYPE_SOURCES.get(rt, []))
+                except ValueError:
+                    # Unknown record type, skip
+                    pass
 
         if not recommended:
             # Default to worldwide sources
             recommended.update(self.REGION_SOURCES[Region.WORLDWIDE])
 
-        # Filter to only registered sources
-        return [s for s in recommended if s in self._sources]
+        # Filter to only registered sources and sort deterministically
+        available = [s for s in recommended if s in self._sources]
+        return sorted(available)  # Deterministic ordering
 
     async def search(
         self,
@@ -206,8 +225,12 @@ class SearchRouter:
         # Determine which sources to search
         if sources:
             active_sources = {k: v for k, v in self._sources.items() if k in sources}
-        elif region:
-            recommended = self.get_recommended_sources(region)
+        elif region or query.record_types:
+            # Use record-type-aware routing: region_sources ∪ record_type_sources
+            recommended = self.get_recommended_sources(
+                region=region,
+                record_types=query.record_types,
+            )
             active_sources = {k: v for k, v in self._sources.items() if k in recommended}
         else:
             active_sources = self._sources
@@ -259,6 +282,14 @@ class SearchRouter:
             total_search_time_ms=total_time,
         )
 
+    def _get_stable_jitter(self, name: str) -> float:
+        """Calculate deterministic jitter based on source name.
+
+        Uses MD5 hash for stable, reproducible jitter across runs.
+        """
+        stable_hash = int(hashlib.md5(name.encode()).hexdigest()[:8], 16)
+        return min(self.config.start_jitter_seconds, 1.0) * (stable_hash % 5) / 5
+
     async def _search_parallel(
         self,
         query: SearchQuery,
@@ -272,7 +303,7 @@ class SearchRouter:
             start = time.time()
             try:
                 # Stagger task start to avoid bursts
-                await asyncio.sleep(min(self.config.start_jitter_seconds, 1.0) * (hash(name) % 5) / 5)
+                await asyncio.sleep(self._get_stable_jitter(name))
                 async with sem:
                     records = await asyncio.wait_for(
                         source.search(query),
@@ -288,13 +319,14 @@ class SearchRouter:
                     total_count=len(records),
                     search_time_ms=(time.time() - start) * 1000,
                 )
-            except TimeoutError:
+            except (asyncio.TimeoutError, TimeoutError):
                 return name, SourceSearchResult(
                     source_name=name,
                     records=[],
                     total_count=0,
                     search_time_ms=(time.time() - start) * 1000,
-                    error="Search timed out",
+                    error="timeout",
+                    error_details={"timeout_seconds": self.config.timeout_per_source},
                 )
             except Exception as e:
                 return name, SourceSearchResult(
@@ -333,13 +365,14 @@ class SearchRouter:
                     total_count=len(records),
                     search_time_ms=(time.time() - start) * 1000,
                 )
-            except TimeoutError:
+            except (asyncio.TimeoutError, TimeoutError):
                 results[name] = SourceSearchResult(
                     source_name=name,
                     records=[],
                     total_count=0,
                     search_time_ms=(time.time() - start) * 1000,
-                    error="Search timed out",
+                    error="timeout",
+                    error_details={"timeout_seconds": self.config.timeout_per_source},
                 )
             except Exception as e:
                 results[name] = SourceSearchResult(
@@ -353,17 +386,77 @@ class SearchRouter:
         return results
 
     def _deduplicate_records(self, records: list[RawRecord]) -> list[RawRecord]:
-        """Remove duplicate records based on source + record_id."""
-        seen = set()
+        """Remove duplicate records using multi-tier deduplication.
+
+        Uses three levels of deduplication keys:
+        1. URL (most specific - same URL = definitely same record)
+        2. Source + record_id (traditional approach)
+        3. Content fingerprint (catches cross-source duplicates)
+        """
+        seen_urls: set[str] = set()
+        seen_source_ids: set[tuple[str, str]] = set()
+        seen_fingerprints: set[str] = set()
         unique = []
 
         for record in records:
-            key = (record.source, record.record_id)
-            if key not in seen:
-                seen.add(key)
-                unique.append(record)
+            # Level 1: URL-based dedup (highest priority)
+            if record.url:
+                normalized_url = self._normalize_url(record.url)
+                if normalized_url in seen_urls:
+                    continue
+                seen_urls.add(normalized_url)
+
+            # Level 2: Source + record_id
+            source_id_key = (record.source, record.record_id)
+            if source_id_key in seen_source_ids:
+                continue
+            seen_source_ids.add(source_id_key)
+
+            # Level 3: Content fingerprint (catches cross-source duplicates)
+            fingerprint = self._compute_record_fingerprint(record)
+            if fingerprint and fingerprint in seen_fingerprints:
+                continue
+            if fingerprint:
+                seen_fingerprints.add(fingerprint)
+
+            unique.append(record)
 
         return unique
+
+    def _normalize_url(self, url: str) -> str:
+        """Normalize URL for deduplication comparison."""
+        # Remove protocol, trailing slashes, query params for comparison
+        normalized = url.lower()
+        for prefix in ("https://", "http://", "www."):
+            if normalized.startswith(prefix):
+                normalized = normalized[len(prefix):]
+        return normalized.rstrip("/").split("?")[0]
+
+    def _compute_record_fingerprint(self, record: RawRecord) -> str | None:
+        """Compute content fingerprint for cross-source deduplication.
+
+        Creates a stable hash from key identifying fields.
+        """
+        fields = record.extracted_fields
+        if not fields:
+            return None
+
+        # Extract key identifying information
+        parts = []
+        for key in ("full_name", "given_name", "surname", "birth_date", "birth_year", "birth_place"):
+            val = fields.get(key)
+            if val:
+                # Normalize: lowercase, strip whitespace, remove punctuation
+                normalized = str(val).lower().strip()
+                parts.append(f"{key}:{normalized}")
+
+        if len(parts) < 2:
+            # Not enough identifying info for reliable fingerprint
+            return None
+
+        # Create stable hash
+        content = "|".join(sorted(parts))
+        return hashlib.md5(content.encode()).hexdigest()
 
     async def search_person(
         self,

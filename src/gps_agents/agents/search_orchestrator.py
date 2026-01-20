@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any
 from pydantic import BaseModel, Field
 
 from gps_agents.agents.base import BaseAgent
+from gps_agents.utils.normalize import normalize_name, normalize_place
 from gps_agents.gramps.merge import (
     MatchConfidence,
     MatchResult,
@@ -71,6 +72,26 @@ class OrchestratorResult(BaseModel):
     source_type: SourceType = Field(default=SourceType.AUTHORED)
 
 
+class ContestedField(BaseModel):
+    """A field with conflicting evidence."""
+
+    field: str
+    values: list[dict] = Field(default_factory=list)  # [{value, source, confidence, source_type}]
+    best_value: Any = None
+    consensus_score: float = Field(default=0.0, ge=0.0, le=1.0)
+
+
+class SynthesizedEvidence(BaseModel):
+    """Synthesized evidence from multiple sources per GPS Pillar 4."""
+
+    best_estimate: dict = Field(default_factory=dict, description="Best estimate for each field")
+    supporting_records: list[str] = Field(default_factory=list, description="Citations supporting the estimate")
+    contested_fields: list[ContestedField] = Field(default_factory=list, description="Fields with conflicting evidence")
+    consensus_fields: list[str] = Field(default_factory=list, description="Fields with agreement")
+    overall_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    synthesis_notes: str = Field(default="")
+
+
 class OrchestratorResponse(BaseModel):
     """JSON response from the orchestrator agent."""
 
@@ -83,6 +104,12 @@ class OrchestratorResponse(BaseModel):
     # Optional fields for match/conflict cases
     gramps_match: MatchResult | None = None
     conflicts: list[dict] | None = None
+
+    # Evidence synthesis results (GPS Pillar 4)
+    synthesized: SynthesizedEvidence | None = None
+
+    # Source errors (timeouts, auth failures, etc.)
+    source_errors: list[dict] = Field(default_factory=list)
 
 
 # Region mapping for search routing
@@ -198,6 +225,28 @@ class SearchOrchestratorAgent(BaseAgent):
         Returns:
             OrchestratorResponse with results or match info
         """
+        # C) Query guardrails: require surname unless strong identifiers present
+        has_strong_identifiers = bool(
+            (given_name and birth_year and birth_place)  # Full identity
+            or (birth_year and birth_place and region)   # Narrow scope
+        )
+        if not surname or not surname.strip():
+            if not has_strong_identifiers:
+                return OrchestratorResponse(
+                    action=OrchestratorAction.NEEDS_HUMAN_DECISION,
+                    parameters={
+                        "given_name": given_name,
+                        "birth_year": birth_year,
+                        "birth_place": birth_place,
+                    },
+                    results=[],
+                    justification=(
+                        "Surname is required for search unless strong identifiers "
+                        "(given_name + birth_year + birth_place) are provided"
+                    ),
+                    next_step="Provide surname or additional identifying information",
+                )
+
         # Build search query with expanded parameters per GPS Pillar 1
         query = self._build_exhaustive_query(
             surname=surname,
@@ -256,6 +305,9 @@ class SearchOrchestratorAgent(BaseAgent):
         # Calculate overall confidence
         overall_confidence = self._calculate_overall_confidence(results)
 
+        # Synthesize evidence (GPS Pillar 4)
+        synthesized = self._synthesize_evidence(results, conflicts)
+
         # Determine action and next step
         if conflicts:
             if self._can_resolve_conflicts(conflicts):
@@ -266,6 +318,7 @@ class SearchOrchestratorAgent(BaseAgent):
                     results=resolved_results,
                     justification="Conflicts resolved using evidence quality weighting",
                     next_step=self._recommend_next_step(overall_confidence, sources_searched),
+                    synthesized=synthesized,
                 )
             return OrchestratorResponse(
                 action=OrchestratorAction.NEEDS_HUMAN_DECISION,
@@ -274,6 +327,7 @@ class SearchOrchestratorAgent(BaseAgent):
                 justification="Conflicting evidence requires human review",
                 next_step="Present options to researcher for decision",
                 conflicts=[self._conflict_to_dict(c) for c in conflicts],
+                synthesized=synthesized,
             )
 
         return OrchestratorResponse(
@@ -286,6 +340,7 @@ class SearchOrchestratorAgent(BaseAgent):
             results=results,
             justification=f"Found {len(results)} records from {len(sources_searched)} sources",
             next_step=self._recommend_next_step(overall_confidence, sources_searched),
+            synthesized=synthesized,
         )
 
     def _build_exhaustive_query(
@@ -312,6 +367,35 @@ class SearchOrchestratorAgent(BaseAgent):
             birth_place=birth_place,
             record_types=record_types or ["birth", "death", "marriage", "census"],
         )
+
+    def _get_fingerprint(self, record: RawRecord) -> str:
+        """Create a groupable identity fingerprint for entity matching.
+
+        Uses normalization to ensure "NY" and "New York" or
+        "John Smith" and "john smith..." produce the same fingerprint.
+        """
+        import re
+
+        fields = record.extracted_fields
+        if not fields:
+            return f"{record.source}:{record.record_id}"
+
+        # Normalize name
+        full_name = fields.get("full_name", "")
+        name_norm = normalize_name(full_name) if full_name else ""
+        name_key = re.sub(r"\W+", "", name_norm)
+
+        # Extract year from birth date
+        birth_date = fields.get("birth_date", "") or fields.get("birth_year", "")
+        year_match = re.search(r"\b(1\d{3}|20\d{2})\b", str(birth_date))
+        year_key = year_match.group(0) if year_match else ""
+
+        # Normalize place (first 10 chars for grouping)
+        birth_place = fields.get("birth_place", "")
+        place_norm = normalize_place(birth_place) if birth_place else ""
+        place_key = re.sub(r"\W+", "", place_norm)[:10]
+
+        return f"{name_key}|{year_key}|{place_key}"
 
     def _generate_name_variants(self, name: str) -> list[str]:
         """Generate phonetic and spelling variants of a name."""
@@ -486,12 +570,125 @@ class SearchOrchestratorAgent(BaseAgent):
     def _resolve_conflicts(
         self,
         results: list[OrchestratorResult],
-        _conflicts: list[ConflictInfo],
+        conflicts: list[ConflictInfo],
     ) -> list[OrchestratorResult]:
         """Resolve conflicts by preferring higher-confidence sources."""
-        # For now, just sort by confidence and return
-        # A more sophisticated approach would merge data
+        # Sort by confidence and return
         return sorted(results, key=lambda r: r.confidence, reverse=True)
+
+    def _synthesize_evidence(
+        self,
+        results: list[OrchestratorResult],
+        conflicts: list[ConflictInfo],
+    ) -> SynthesizedEvidence:
+        """Synthesize evidence from multiple results into best estimate (GPS Pillar 4).
+
+        Produces:
+        - best_estimate: Weighted merge of all evidence
+        - supporting_records: Citations that support the best estimate
+        - contested_fields: Fields with conflicting evidence
+        - consensus_fields: Fields with agreement across sources
+        """
+        # Source type weights for evidence evaluation
+        source_weights = {
+            SourceType.ORIGINAL: 3.0,
+            SourceType.DERIVATIVE: 2.0,
+            SourceType.AUTHORED: 1.0,
+        }
+
+        # Collect all field values with their weights
+        field_candidates: dict[str, list[dict]] = {}
+        all_citations: list[str] = []
+
+        for result in results:
+            weight = source_weights.get(result.source_type, 1.0) * result.confidence
+            all_citations.append(result.source_citation)
+
+            for field, value in result.data.items():
+                if value is None:
+                    continue
+                if field not in field_candidates:
+                    field_candidates[field] = []
+                field_candidates[field].append({
+                    "value": value,
+                    "weight": weight,
+                    "source": result.source_citation,
+                    "confidence": result.confidence,
+                    "source_type": result.source_type.value,
+                })
+
+        # Build best estimate by selecting highest-weighted value for each field
+        best_estimate: dict = {}
+        contested_fields: list[ContestedField] = []
+        consensus_fields: list[str] = []
+
+        for field, candidates in field_candidates.items():
+            # Group by value and sum weights
+            value_weights: dict[str, float] = {}
+            for c in candidates:
+                val_key = str(c["value"]).lower().strip()
+                value_weights[val_key] = value_weights.get(val_key, 0) + c["weight"]
+
+            # Sort by total weight
+            sorted_values = sorted(value_weights.items(), key=lambda x: x[1], reverse=True)
+
+            if len(sorted_values) == 1:
+                # Consensus - only one value
+                consensus_fields.append(field)
+                best_estimate[field] = candidates[0]["value"]
+            elif len(sorted_values) > 1:
+                # Check if there's clear consensus (top value significantly higher)
+                top_weight = sorted_values[0][1]
+                second_weight = sorted_values[1][1]
+                total_weight = sum(w for _, w in sorted_values)
+
+                consensus_score = top_weight / total_weight if total_weight > 0 else 0
+
+                # Best value is the original (not lowercased) from highest-weighted candidate
+                best_val = None
+                for c in sorted(candidates, key=lambda x: x["weight"], reverse=True):
+                    if str(c["value"]).lower().strip() == sorted_values[0][0]:
+                        best_val = c["value"]
+                        break
+
+                best_estimate[field] = best_val
+
+                if consensus_score < 0.7:  # Contested if top value has <70% of weight
+                    contested_fields.append(ContestedField(
+                        field=field,
+                        values=candidates,
+                        best_value=best_val,
+                        consensus_score=consensus_score,
+                    ))
+                else:
+                    consensus_fields.append(field)
+
+        # Calculate overall confidence
+        if results:
+            overall_confidence = sum(r.confidence for r in results) / len(results)
+            # Reduce confidence if there are contested fields
+            if contested_fields:
+                overall_confidence *= (1 - 0.1 * len(contested_fields))
+            overall_confidence = max(0.0, min(1.0, overall_confidence))
+        else:
+            overall_confidence = 0.0
+
+        # Build synthesis notes
+        notes_parts = []
+        if contested_fields:
+            notes_parts.append(f"{len(contested_fields)} field(s) have conflicting evidence")
+        if consensus_fields:
+            notes_parts.append(f"{len(consensus_fields)} field(s) have consensus")
+        notes_parts.append(f"Synthesized from {len(results)} source(s)")
+
+        return SynthesizedEvidence(
+            best_estimate=best_estimate,
+            supporting_records=list(set(all_citations)),
+            contested_fields=contested_fields,
+            consensus_fields=consensus_fields,
+            overall_confidence=overall_confidence,
+            synthesis_notes="; ".join(notes_parts),
+        )
 
     def _conflict_to_dict(self, conflict: ConflictInfo) -> dict:
         """Convert conflict info to dictionary for JSON output."""
