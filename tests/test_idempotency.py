@@ -291,7 +291,7 @@ def test_upsert_person_dry_run_no_writes(env_tmp: Path):
     assert r.action in {"create", "merge"}
     with sqlite3.connect(db) as conn:
         n = conn.execute("SELECT COUNT(*) FROM person").fetchone()[0]
-assert n == 0
+    assert n == 0
 
 
 def test_decide_upsert_person(env_tmp: Path):
@@ -305,7 +305,7 @@ def test_decide_upsert_person(env_tmp: Path):
 
     p = GPerson(names=[Name(given="Decide", surname="Only")])
     d = decide_upsert_person(gc, proj, p)
-assert d.action in {"create", "merge", "reuse", "review"}
+    assert d.action in {"create", "merge", "reuse", "review"}
 
 
 def test_decide_upsert_event_source_place(env_tmp: Path):
@@ -326,7 +326,7 @@ def test_decide_upsert_event_source_place(env_tmp: Path):
     dp = decide_upsert_place(gc, proj, pl)
     assert de.action == "create"
     assert ds.action == "create"
-assert dp.action == "create"
+    assert dp.action == "create"
 
 
 def test_decide_upsert_citation_relationship(env_tmp: Path):

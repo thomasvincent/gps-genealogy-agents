@@ -26,3 +26,8 @@ __all__ = [
     "TranslationAgent",
     "WorkflowAgent",
 ]
+
+
+# Agentic pipeline components are available via direct import:
+# from gps_agents.agents.pipeline import AgentPipelineManager, ...
+# from gps_agents.agents.schemas import SearchPlan, ...

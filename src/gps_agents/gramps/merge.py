@@ -13,8 +13,9 @@ from pydantic import BaseModel, Field
 
 from gps_agents.gramps.models import Event, Name, Person
 from gps_agents.idempotency.exceptions import IdempotencyBlock
-from gps_agents.gramps.upsert import upsert_person
 from gps_agents.projections.sqlite_projection import SQLiteProjection
+
+# Note: upsert_person is imported inside add_person() to avoid circular import
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -379,6 +380,10 @@ class GrampsMerger:
         # Delegate to idempotent upsert which enforces fingerprint + matcher rules
         if not self.projection:
             raise RuntimeError("SQLiteProjection is required for idempotent upsert")
+
+        # Late import to avoid circular import (upsert imports from merge)
+        from gps_agents.gramps.upsert import upsert_person
+
         result = upsert_person(self.client, self.projection, person, matcher_factory=lambda c: self.matcher)
         if result.created:
             return MergeResult(action="created", person=person, handle=result.handle, message="Created via upsert")
