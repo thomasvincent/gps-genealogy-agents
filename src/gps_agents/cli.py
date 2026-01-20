@@ -22,7 +22,18 @@ app.add_typer(backfill_app, name="backfill")
 
 plan_app = typer.Typer(help="Dry-run planners (decision-only)")
 app.add_typer(plan_app, name="plan")
+
+wiki_app = typer.Typer(help="Agentic AI Wiki genealogy commands")
+app.add_typer(wiki_app, name="wiki")
+
+crawl_app = typer.Typer(help="Long-running exhaustive GPS crawlers")
+app.add_typer(crawl_app, name="crawl")
+
 console = Console()
+
+# Graph sub-app
+graph_app = typer.Typer(help="Graph and lineage viewers")
+app.add_typer(graph_app, name="graph")
 
 
 def get_config():
@@ -89,7 +100,7 @@ def research(
             result = await run_research_session(
                 query=query,
                 kernel_config=kernel_config,
-                max_rounds=max_rounds,
+                max_messages=max_rounds,
             )
 
             progress.update(task, completed=True)
@@ -448,6 +459,16 @@ def plan_batch(
         from gps_agents.logging import set_run_id
         set_run_id(run_id)
     data = _json.loads(Path(input).read_text())
+    # Validate input
+    from jsonschema import validate
+    from jsonschema.exceptions import ValidationError
+    import json as _json
+    schema_in = _json.loads(Path("schemas/planner_input.schema.json").read_text())
+    try:
+        validate(data, schema_in)
+    except ValidationError as e:
+        console.print(f"[red]Invalid input JSON: {e.message}[/red]")
+        raise typer.Exit(1)
 
     from gps_agents.projections.sqlite_projection import SQLiteProjection
     from gps_agents.gramps.client import GrampsClient
@@ -484,7 +505,341 @@ def plan_batch(
             decisions.append(decide_upsert_citation(gc, proj, cit).__dict__)
         elif et == "relationship":
             decisions.append(decide_upsert_relationship(gc, proj, item.get("kind",""), item.get("a",""), item.get("b",""), item.get("context")).__dict__)
-    console.print(_json.dumps(decisions, indent=2))
+    # Validate output
+    schema_out = _json.loads(Path("schemas/planner_output.schema.json").read_text())
+    try:
+        validate(decisions, schema_out)
+    except ValidationError as e:
+        console.print(f"[red]Planner output failed schema validation: {e.message}[/red]")
+        raise typer.Exit(1)
+console.print(_json.dumps(decisions, indent=2))
+
+
+@wiki_app.command("plan")
+def wiki_plan(
+    subject: str = typer.Option(..., "--subject", help="Subject name"),
+    article_file: Path = typer.Option(None, "--article", help="Path to article text"),  # noqa: B008
+    gramps_id: str = typer.Option(None, "--gramps-id"),
+    wikidata_qid: str = typer.Option(None, "--wikidata-qid"),
+    wikitree_id: str = typer.Option(None, "--wikitree-id"),
+    engine: str = typer.Option("sk", "--engine", help="Planner engine: sk|autogen"),
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    """Dry-run planner that invokes the Agentic wiki publishing team.
+
+    Uses existing IDs if provided; otherwise returns payloads without side effects.
+    """
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+    article_text = ""
+    if article_file and article_file.exists():
+        article_text = article_file.read_text(encoding="utf-8")
+
+    async def run_plan_autogen():
+        from gps_agents.autogen.wiki_publishing import publish_to_wikis
+        return await publish_to_wikis(
+            article_text=article_text,
+            subject_name=subject,
+            gramps_id=gramps_id,
+            wikidata_qid=wikidata_qid,
+            wikitree_id=wikitree_id,
+        )
+
+    async def run_plan_sk():
+        from gps_agents.sk.pipelines.wiki import plan_wiki_subject
+        return await plan_wiki_subject(
+            article_text=article_text,
+            subject_name=subject,
+            kernel_config=None,
+        )
+
+    if engine == "autogen":
+        result = asyncio.run(run_plan_autogen())
+    else:
+        result = asyncio.run(run_plan_sk())
+    console.print(Panel("Wiki plan complete (dry-run)", title="Wiki Planner"))
+    # Print a compact summary
+    import json as _json
+console.print(_json.dumps(result, indent=2, default=str))
+
+
+@wiki_app.command("run")
+def wiki_run(
+    subject: str = typer.Option(..., "--subject"),
+    article_file: Path = typer.Option(None, "--article"),  # noqa: B008
+    outdir: Path = typer.Option(Path("research/wiki_plans"), "--outdir"),  # noqa: B008
+    run_id: str = typer.Option(None, "--run-id"),
+    open_pr: bool = typer.Option(False, "--open-pr"),
+) -> None:
+    """Orchestrate SK wiki pipeline (dry-run) and write a deterministic bundle, then commit via safe_commit."""
+    if run_id is None:
+        import uuid
+        run_id = str(uuid.uuid4())
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+    article_text = ""
+    if article_file and article_file.exists():
+        article_text = article_file.read_text(encoding="utf-8")
+
+    async def run_plan():
+        from gps_agents.sk.pipelines.wiki import plan_wiki_subject
+        return await plan_wiki_subject(
+            article_text=article_text,
+            subject_name=subject,
+            kernel_config=None,
+        )
+
+    result = asyncio.run(run_plan())
+
+    from gps_agents.wiki.bundles import write_wiki_bundle
+    bundle = write_wiki_bundle(outdir, run_id, subject, result)
+
+    # Git track
+    from gps_agents.git_utils import safe_commit
+    repo = Path.cwd()
+    created = safe_commit(
+        repo,
+        [
+            bundle.plan_json,
+            bundle.summary_md,
+            bundle.facts_json,
+            bundle.review_json,
+            bundle.wikidata_payload_json,
+            bundle.wikipedia_md,
+            bundle.wikitree_md,
+            bundle.wikitree_yaml,
+            bundle.gedcom_file,
+        ],
+        f"feat(wiki): run SK bundle for {subject} (run {run_id})\n\nCo-Authored-By: Warp <agent@warp.dev>",
+    )
+    console.print(f"[green]Wrote bundle in {bundle.dir}[/green]")
+
+    if open_pr:
+        try:
+            import subprocess
+            subprocess.check_call(["gh", "pr", "create", "--fill"], cwd=str(repo))
+        except Exception:
+            console.print("[yellow]gh not available; skipping PR creation[/yellow]")
+
+
+@wiki_app.command("stage")
+def wiki_stage(
+    subject: str = typer.Option(..., "--subject"),
+    article_file: Path = typer.Option(None, "--article"),  # noqa: B008
+    outdir: Path = typer.Option(Path("research/wiki_plans"), "--outdir"),  # noqa: B008
+    engine: str = typer.Option("sk", "--engine", help="Planner engine: sk|autogen"),
+    run_id: str = typer.Option(None, "--run-id"),
+    open_pr: bool = typer.Option(False, "--open-pr"),
+) -> None:
+    """Generate a wiki bundle (full artifacts) and commit it to Git for review."""
+    if run_id is None:
+        import uuid
+        run_id = str(uuid.uuid4())
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+    article_text = ""
+    if article_file and article_file.exists():
+        article_text = article_file.read_text(encoding="utf-8")
+
+    artifacts: dict
+    if engine == "autogen":
+        try:
+            from gps_agents.autogen.wiki_publishing import publish_to_wikis
+        except Exception:
+            console.print("[red]AutoGen wiki publishing module not available. Ensure optional deps installed.[/red]")
+            raise typer.Exit(1)
+
+        async def run_plan_autogen():
+            return await publish_to_wikis(
+                article_text=article_text,
+                subject_name=subject,
+            )
+
+        result = asyncio.run(run_plan_autogen())
+        # Normalize to artifacts shape
+        try:
+            wd = result.get("wikidata_payload")
+            wikidata_payload = json.loads(wd) if isinstance(wd, str) else (wd or {})
+        except Exception:
+            wikidata_payload = {}
+        artifacts = {
+            "subject": subject,
+            "wikipedia_draft": result.get("wikipedia_draft") or "",
+            "wikitree_bio": result.get("wikitree_bio") or "",
+            "wikidata_payload": wikidata_payload,
+            "facts": [],
+            "review": {"status": "pending", "checks": []},
+            "wikitree_profile": {"Name": subject, "Biography": "Draft pending review."},
+            "gedcom": "",
+            "messages": result.get("messages", []),
+        }
+    else:
+        async def run_plan_sk():
+            from gps_agents.sk.pipelines.wiki import plan_wiki_subject
+            return await plan_wiki_subject(
+                article_text=article_text,
+                subject_name=subject,
+                kernel_config=None,
+            )
+
+        artifacts = asyncio.run(run_plan_sk())
+
+    from gps_agents.wiki.bundles import write_wiki_bundle
+    bundle = write_wiki_bundle(outdir, run_id, subject, artifacts)
+
+    # Git track
+    from gps_agents.git_utils import safe_commit
+    repo = Path.cwd()
+    created = safe_commit(
+        repo,
+        [
+            bundle.plan_json,
+            bundle.summary_md,
+            bundle.facts_json,
+            bundle.review_json,
+            bundle.wikidata_payload_json,
+            bundle.wikipedia_md,
+            bundle.wikitree_md,
+            bundle.wikitree_yaml,
+            bundle.gedcom_file,
+        ],
+        f"feat(wiki): stage bundle for {subject} (run {run_id}, engine {engine})\n\nCo-Authored-By: Warp <agent@warp.dev>",
+    )
+    console.print(f"[green]Staged bundle in {bundle.dir}[/green]")
+
+    if open_pr:
+        try:
+            import subprocess
+            subprocess.check_call(["gh", "pr", "create", "--fill"], cwd=str(repo))
+        except Exception:
+            console.print("[yellow]gh not available; skipping PR creation[/yellow]")
+
+
+@wiki_app.command("show")
+def wiki_show(
+    bundle_dir: Path = typer.Option(..., "--bundle"),  # noqa: B008
+    json_out: bool = typer.Option(False, "--json"),
+    validate: bool = typer.Option(True, "--validate/--no-validate"),
+) -> None:
+    """Show a concise summary of a staged wiki bundle and optionally validate it."""
+    if not bundle_dir.exists():
+        console.print(f"[red]Bundle dir not found: {bundle_dir}[/red]")
+        raise typer.Exit(1)
+
+    import json as _json
+
+    def _read(p: Path):
+        return _json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+
+    plan = _read(bundle_dir / "plan.json") or {}
+    payload = _read(bundle_dir / "wikidata_payload.json") or {}
+    facts = _read(bundle_dir / "facts.json") or []
+    review = _read(bundle_dir / "review.json") or {}
+
+    subject = plan.get("subject") or bundle_dir.name
+    qid = payload.get("entity") if isinstance(payload, dict) else None
+    claims = payload.get("claims") if isinstance(payload, dict) else None
+
+    summary = {
+        "bundle": str(bundle_dir),
+        "run_id": plan.get("run_id") or bundle_dir.name,
+        "subject": subject,
+        "drafts": {
+            "wikipedia": (bundle_dir / "wikipedia_draft.md").exists(),
+            "wikitree": (bundle_dir / "wikitree_bio.md").exists(),
+        },
+        "wikidata": {
+            "qid": qid,
+            "has_qid": bool(isinstance(qid, str) and qid.upper().startswith("Q")),
+            "claim_count": len(claims) if isinstance(claims, list) else 0,
+        },
+        "facts_count": len(facts) if isinstance(facts, list) else 0,
+        "review_status": review.get("status"),
+        "approved": (bundle_dir / "approved.yaml").exists(),
+    }
+
+    if validate:
+        try:
+            from jsonschema import validate as _validate  # type: ignore
+            import json as _json
+            errors = []
+            try:
+                facts_schema = _json.loads(Path("schemas/wiki_facts.schema.json").read_text())
+                _validate(facts or [], facts_schema)
+            except Exception as e:
+                errors.append({"file": "facts.json", "error": str(e)})
+            try:
+                review_schema = _json.loads(Path("schemas/wiki_review.schema.json").read_text())
+                _validate(review or {}, review_schema)
+            except Exception as e:
+                errors.append({"file": "review.json", "error": str(e)})
+            try:
+                payload_schema = _json.loads(Path("schemas/wikidata_payload.schema.json").read_text())
+                _validate(payload or {}, payload_schema)
+            except Exception as e:
+                errors.append({"file": "wikidata_payload.json", "error": str(e)})
+            summary["validation"] = {"ok": len(errors) == 0, "errors": errors}
+        except Exception:
+            summary["validation"] = {"ok": True, "errors": []}  # best-effort
+
+    if json_out:
+        console.print(json.dumps(summary, indent=2))
+        return
+
+    table = Table(title=f"Wiki Bundle: {subject}")
+    table.add_column("Key")
+    table.add_column("Value")
+    table.add_row("Bundle", summary["bundle"])
+    table.add_row("Run ID", summary["run_id"])
+    table.add_row("Has Wikipedia Draft", str(summary["drafts"]["wikipedia"]))
+    table.add_row("Has WikiTree Draft", str(summary["drafts"]["wikitree"]))
+    table.add_row("Wikidata QID", str(summary["wikidata"]["qid"]))
+    table.add_row("Claims", str(summary["wikidata"]["claim_count"]))
+    table.add_row("Facts", str(summary["facts_count"]))
+    table.add_row("Review Status", str(summary["review_status"]))
+    table.add_row("Approved.yaml present", str(summary["approved"]))
+
+    if "validation" in summary:
+        v = summary["validation"]
+        table.add_row("Validation", "OK" if v["ok"] else f"Errors: {len(v['errors'])}")
+
+    console.print(table)
+
+
+@wiki_app.command("apply")
+def wiki_apply(
+    bundle_dir: Path = typer.Option(..., "--bundle"),  # noqa: B008
+    approval_file: Path = typer.Option(..., "--approval"),  # noqa: B008
+    drafts_root: Path = typer.Option(Path("drafts"), "--drafts-root"),  # noqa: B008
+) -> None:
+    """Validate approval, stage drafts, perform idempotent Wikidata apply, and commit results."""
+    import yaml
+    if not bundle_dir.exists():
+        console.print(f"[red]Bundle dir not found: {bundle_dir}[/red]")
+        raise typer.Exit(1)
+    if not approval_file.exists():
+        console.print(f"[red]Approval file not found: {approval_file}[/red]")
+        raise typer.Exit(1)
+    data = yaml.safe_load(approval_file.read_text(encoding="utf-8"))
+    if not (isinstance(data, dict) and data.get("approved") is True and data.get("reviewer")):
+        console.print("[red]Approval file must contain approved: true and reviewer: ...[/red]")
+        raise typer.Exit(1)
+
+    # Copy approval file into bundle dir as approved.yaml
+    dest = bundle_dir / "approved.yaml"
+    from gps_agents.fs import atomic_write
+    atomic_write(dest, approval_file.read_bytes())
+
+    # Apply and stage drafts
+    from gps_agents.wiki.apply import apply_bundle
+    proj_path = get_config()["data_dir"] / "projection.db"
+    summary = apply_bundle(bundle_dir, projection_db=proj_path, drafts_root=drafts_root)
+
+    console.print(Panel("Apply complete", title="Wiki Apply"))
+    console.print(json.dumps(summary, indent=2))
 
 
 @backfill_app.command("idempotency")
@@ -782,6 +1137,155 @@ def _save_results(result: dict, output: Path) -> None:
 
     with open(output, "w") as f:
         json.dump(output_data, f, indent=2, default=str)
+
+
+@crawl_app.command("person")
+def crawl_person(
+    given: str = typer.Option(..., "--given", help="Given name"),
+    surname: str = typer.Option(..., "--surname", help="Surname"),
+    birth_year: int | None = typer.Option(None, "--birth-year", help="Approximate birth year"),
+    birth_place: str | None = typer.Option(None, "--birth-place", help="Birth place"),
+    max_duration: int = typer.Option(3600, "--max-duration", help="Max seconds to run"),
+    max_iterations: int = typer.Option(500, "--max-iterations", help="Max loop iterations"),
+    tree_out: Path = typer.Option(Path("research/trees/seed/tree.json"), "--tree-out", help="Output family tree JSON"),
+    checkpoint_every: int = typer.Option(25, "--checkpoint-every", help="Write checkpoint every N iterations"),
+    until_gps: bool = typer.Option(True, "--until-gps/--no-until-gps", help="Stop early when GPS-quality coverage reached"),
+    no_authored_sources: bool = typer.Option(False, "--no-authored-sources", help="Exclude authored/user-tree sources from searches"),
+    expand_family: bool = typer.Option(True, "--expand-family/--no-expand-family", help="After confirming seed, expand to ancestors/descendants"),
+    max_generations: int = typer.Option(1, "--max-generations", help="Generations to expand (up and down)"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+    run_id: str | None = typer.Option(None, "--run-id"),
+) -> None:
+    """Run an exhaustive crawl seeded by a person, iterating until exhaustion/time/caps."""
+    if run_id:
+        from gps_agents.logging import set_run_id
+        set_run_id(run_id)
+
+    async def run():
+        from gps_agents.crawl.engine import run_crawl_person, CrawlConfig, SeedPerson
+        kernel_config = get_kernel_config()
+
+        seed = SeedPerson(given=given, surname=surname, birth_year=birth_year, birth_place=birth_place)
+        cfg = CrawlConfig(
+            max_duration_seconds=max_duration,
+            max_iterations=max_iterations,
+            checkpoint_every=checkpoint_every,
+            tree_out=str(tree_out),
+            verbose=verbose,
+            until_gps=until_gps,
+            exclude_authored=no_authored_sources,
+            expand_family=expand_family,
+            max_generations=max_generations,
+        )
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task("Crawling primary sources...", total=None)
+            summary = await run_crawl_person(seed, cfg, kernel_config)
+            progress.update(task, completed=True)
+            return summary
+
+    result = asyncio.run(run())
+    console.print(Panel("Crawl complete", title="GPS Exhaustive Crawl"))
+    if verbose:
+        console.print(json.dumps(result, indent=2, default=str))
+
+
+@graph_app.command("family")
+def graph_family(
+    root: str = typer.Option("", "--root", help="Substring to focus on a person name"),
+    limit: int = typer.Option(200, "--limit", help="Max relationships to print"),
+) -> None:
+    """Print a simple family graph (parents/spouses/children) from ACCEPTED relationship facts."""
+    from gps_agents.ledger.fact_ledger import FactLedger
+    from gps_agents.models.fact import FactStatus
+
+    cfg = get_config()
+    ledger = FactLedger(str(cfg["data_dir"] / "ledger"))
+
+    edges: list[tuple[str, str, str]] = []  # (kind, A, B)
+    names: set[str] = set()
+
+    count = 0
+    for fact in ledger.iter_all_facts(FactStatus.ACCEPTED):
+        if fact.fact_type != "relationship":
+            continue
+        kind = fact.relation_kind or "relationship"
+        a = fact.relation_subject or ""
+        b = fact.relation_object or ""
+        if not a or not b:
+            # fallback parse from statement
+            stmt = fact.statement.lower()
+            if " is child of " in stmt:
+                kind = "child_of"
+                parts = fact.statement.split(" is child of ", 1)
+                a, b = parts[0], parts[1]
+            elif " is spouse of " in stmt:
+                kind = "spouse_of"
+                parts = fact.statement.split(" is spouse of ", 1)
+                a, b = parts[0], parts[1]
+            elif " is parent of " in stmt:
+                kind = "parent_of"
+                parts = fact.statement.split(" is parent of ", 1)
+                a, b = parts[0], parts[1]
+        if not a or not b:
+            continue
+        if root and (root.lower() not in a.lower() and root.lower() not in b.lower()):
+            continue
+        edges.append((kind, a.strip(), b.strip()))
+        names.update([a.strip(), b.strip()])
+        count += 1
+        if count >= limit:
+            break
+
+    if not edges:
+        console.print("[yellow]No relationship edges found (try relaxing --root)[/yellow]")
+        return
+
+    console.print(Panel(f"Found {len(edges)} edges across {len(names)} people", title="Family Graph"))
+
+    # Print adjacency by person
+    from collections import defaultdict
+    parents = defaultdict(list)
+    children = defaultdict(list)
+    spouses = defaultdict(list)
+
+    for kind, a, b in edges:
+        if kind == "child_of":
+            # a is child of b
+            parents[a].append(b)
+            children[b].append(a)
+        elif kind == "parent_of":
+            children[a].append(b)
+            parents[b].append(a)
+        elif kind == "spouse_of":
+            spouses[a].append(b)
+            spouses[b].append(a)
+
+    def _uniq(lst):
+        seen = set()
+        out = []
+        for x in lst:
+            if x not in seen:
+                seen.add(x)
+                out.append(x)
+        return out
+
+    # Show focused root first if provided
+    ordered = [n for n in sorted(names)]
+    if root:
+        focus = [n for n in ordered if root.lower() in n.lower()]
+        others = [n for n in ordered if root.lower() not in n.lower()]
+        ordered = focus + others
+
+    for n in ordered:
+        p = ", ".join(_uniq(parents[n])) or "-"
+        c = ", ".join(_uniq(children[n])) or "-"
+        s = ", ".join(_uniq(spouses[n])) or "-"
+        console.print(f"[bold]{n}[/bold]\n  parents: {p}\n  spouses: {s}\n  children: {c}\n")
 
 
 if __name__ == "__main__":

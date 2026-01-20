@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import logging
+import os
+import random
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter, retry_if_exception_type
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
@@ -113,26 +116,57 @@ class BaseSource(ABC):
     async def _make_request(
         self, url: str, params: dict[str, Any] | None = None
     ) -> dict[str, Any]:
-        """Make an HTTP request to the source API.
-
-        Args:
-            url: Request URL
-            params: Query parameters
-
-        Returns:
-            JSON response as dict
-        """
+        """Make a polite HTTP request to the source API with rate limiting and circuit breaking."""
         if self._client is None:
             self._client = httpx.AsyncClient(timeout=30.0)
+
+        # Resolve per-source guard configs (env overrides or safe defaults)
+        from gps_agents.net import GUARDS, RateLimitConfig
+
+        key = getattr(self, "name", "source").lower()
+        # Defaults: 1 req / 1.5s; window 5s
+        rl_default = RateLimitConfig(
+            max_calls=int(os.getenv(f"RATE_{key.upper()}_MAX", os.getenv("RATE_DEFAULT_MAX", "1"))),
+            window_seconds=float(os.getenv(f"RATE_{key.upper()}_WINDOW", os.getenv("RATE_DEFAULT_WINDOW", "5"))),
+            min_interval=float(os.getenv(f"RATE_{key.upper()}_MIN_INTERVAL", os.getenv("RATE_DEFAULT_MIN_INTERVAL", "1.5"))),
+        )
+        limiter = GUARDS.get_limiter(key, rl_default)
+        breaker = GUARDS.get_breaker(
+            key,
+            max_failures=int(os.getenv(f"CB_{key.upper()}_THRESHOLD", os.getenv("CB_DEFAULT_THRESHOLD", "5"))),
+            window_seconds=float(os.getenv(f"CB_{key.upper()}_WINDOW", os.getenv("CB_DEFAULT_WINDOW", "60"))),
+            cooldown_seconds=float(os.getenv(f"CB_{key.upper()}_COOLDOWN", os.getenv("CB_DEFAULT_COOLDOWN", "300"))),
+        )
+
+        if not breaker.allow_call():
+            raise httpx.HTTPError(f"circuit_open:{key}")
+
+        await limiter.acquire()
 
         headers: dict[str, str] = {}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
-        response = await self._client.get(url, params=params, headers=headers)
-        response.raise_for_status()
-        result: dict[str, Any] = response.json()
-        return result
+        @retry(
+            reraise=True,
+            stop=stop_after_attempt(3),
+            wait=wait_exponential_jitter(initial=0.5, max=4.0),
+            retry=retry_if_exception_type((httpx.TimeoutException, httpx.HTTPStatusError, httpx.TransportError)),
+        )
+        async def _do() -> dict[str, Any]:
+            # Small jitter to avoid herding
+            await asyncio.sleep(random.uniform(0.05, 0.2))
+            resp = await self._client.get(url, params=params, headers=headers)
+            resp.raise_for_status()
+            return resp.json()
+
+        try:
+            result = await _do()
+            breaker.record_success()
+            return result
+        except Exception as e:
+            breaker.record_failure()
+            raise
 
     async def close(self) -> None:
         """Close HTTP client connection."""

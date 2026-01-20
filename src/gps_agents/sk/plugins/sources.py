@@ -12,8 +12,12 @@ from gps_agents.sources.familysearch import FamilySearchSource
 from gps_agents.sources.findmypast import FindMyPastSource
 from gps_agents.sources.gedcom import GedcomSource
 from gps_agents.sources.jerripedia import JerripediaSource
+from gps_agents.sources.findagrave import FindAGraveSource
+from gps_agents.sources.freebmd import FreeBMDSource
 from gps_agents.sources.myheritage import MyHeritageSource
 from gps_agents.sources.wikitree import WikiTreeSource
+from gps_agents.sources.nara1950 import Nara1950Source
+from gps_agents.sources.nara1940 import Nara1940Source
 
 
 class SourcesPlugin:
@@ -31,6 +35,10 @@ class SourcesPlugin:
             "myheritage": MyHeritageSource(),
             "accessgenealogy": AccessGenealogySource(),
             "jerripedia": JerripediaSource(),
+            "findagrave": FindAGraveSource(),
+            "freebmd": FreeBMDSource(),
+            "nara1950": Nara1950Source(),
+            "nara1940": Nara1940Source(),
         }
         self._gedcom_source = GedcomSource()
 

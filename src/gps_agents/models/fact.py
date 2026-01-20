@@ -80,7 +80,18 @@ class Fact(BaseModel):
     )
     fact_type: str = Field(
         default="general",
-        description="birth, death, marriage, residence, occupation, etc.",
+        description="birth, death, marriage, residence, occupation, relationship, etc.",
+    )
+
+    # Optional typed relationship metadata (used when fact_type == "relationship")
+    relation_kind: str | None = Field(
+        default=None, description="parent_of | child_of | spouse_of"
+    )
+    relation_subject: str | None = Field(
+        default=None, description="Display name of subject in relation"
+    )
+    relation_object: str | None = Field(
+        default=None, description="Display name of object in relation"
     )
 
     def apply_confidence_delta(self, delta: ConfidenceDelta) -> Fact:

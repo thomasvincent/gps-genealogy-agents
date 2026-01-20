@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gps-agents.dev/schemas/planner_output.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["action", "score", "fingerprint"],
+    "properties": {
+      "action": {"type": "string", "enum": ["reuse", "merge", "review", "create"]},
+      "score": {"type": "number"},
+      "fingerprint": {"type": "string"},
+      "existing_handle": {"type": "string"},
+      "reason": {"type": "string"}
+    }
+  }
+}

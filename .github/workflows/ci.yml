@@ -26,8 +26,8 @@ jobs:
           pip install .[dev]
       - name: Ruff (lint)
         run: ruff check .
-      - name: Pytest (idempotency subset)
-        run: pytest -q tests/test_idempotency.py
+- name: Pytest (core)
+        run: pytest -q tests/test_idempotency.py tests/test_wiki_pipeline.py tests/test_cli_wiki.py
 
   docs-consistency:
     runs-on: ubuntu-latest

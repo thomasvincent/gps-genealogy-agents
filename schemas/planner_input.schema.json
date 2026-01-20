@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gps-agents.dev/schemas/planner_input.schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["entity"],
+    "properties": {
+      "entity": {"type": "string", "enum": ["person", "event", "source", "place", "citation", "relationship"]},
+      "given": {"type": "string"},
+      "surname": {"type": "string"},
+      "type": {"type": "string"},
+      "year": {"type": "integer"},
+      "title": {"type": "string"},
+      "name": {"type": "string"},
+      "city": {"type": "string"},
+      "state": {"type": "string"},
+      "country": {"type": "string"},
+      "source_id": {"type": "string"},
+      "page": {"type": "string"},
+      "a": {"type": "string"},
+      "b": {"type": "string"},
+      "context": {"type": "string"}
+    }
+  }
+}

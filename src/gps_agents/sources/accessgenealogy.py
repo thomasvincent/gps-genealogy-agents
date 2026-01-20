@@ -26,24 +26,31 @@ class AccessGenealogySource(BaseSource):
         return False
 
     async def search(self, query: SearchQuery) -> list[RawRecord]:
-        """Search AccessGenealogy for Native American records.
+        """Search AccessGenealogy for Native American records, rolls, and census.
 
         Args:
-            query: Search parameters
+            query: Search parameters (record_types may include "census" or "roll")
 
         Returns:
             List of matching records
         """
         import httpx
 
-        records = []
+        records: list[RawRecord] = []
 
-        # Build search URL - AccessGenealogy uses simple search
-        search_terms = []
+        # Build base search terms
+        search_terms: list[str] = []
         if query.surname:
             search_terms.append(query.surname)
         if query.given_name:
             search_terms.append(query.given_name)
+        # Heuristics: if user asked for specific record types, bias keywords
+        rt = {t.lower() for t in (query.record_types or [])}
+        if "census" in rt:
+            search_terms.append("census")
+        # Rolls keywords capture Dawes/tribal enrollments
+        if any(k in rt for k in {"roll", "rolls", "tribal", "native", "dawes"}):
+            search_terms.extend(["roll", "enrollment", "dawes"])  # broaden
 
         if not search_terms:
             return []
@@ -51,33 +58,46 @@ class AccessGenealogySource(BaseSource):
         search_query = "+".join(search_terms)
 
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                # Search the site
-                url = f"{self.base_url}/?s={search_query}"
-                response = await client.get(url)
-                response.raise_for_status()
+            async with httpx.AsyncClient(timeout=45.0) as client:
+                # 1) Site-wide search
+                urls: list[str] = [f"{self.base_url}/?s={search_query}"]
 
-                soup = BeautifulSoup(response.text, "html.parser")
-                records.extend(self._parse_search_page(soup))
-
-                # Also search specific Native American databases
-                native_urls = [
+                # 2) Targeted sections for Native American rolls
+                targeted = [
                     f"{self.base_url}/native/dawes-rolls/?s={search_query}",
                     f"{self.base_url}/native/cherokee/?s={search_query}",
+                    f"{self.base_url}/native/?s={search_query}",
                 ]
+                urls.extend(targeted)
 
-                for native_url in native_urls:
+                # 3) If census requested, hit common census category pages
+                if "census" in rt:
+                    urls.append(f"{self.base_url}/census-records/?s={search_query}")
+
+                for url in urls:
                     try:
-                        response = await client.get(native_url)
-                        if response.status_code == 200:
-                            soup = BeautifulSoup(response.text, "html.parser")
-                            records.extend(self._parse_search_page(soup))
+                        response = await client.get(url)
+                        if response.status_code != 200:
+                            continue
+                        soup = BeautifulSoup(response.text, "html.parser")
+                        records.extend(self._parse_search_page(soup))
                     except Exception:
                         continue
 
         except Exception as e:
             logger.warning("AccessGenealogy search error: %s", e)
 
+        # Post-process: classify record types by URL/title hints and enrich table metadata
+        for r in records:
+            lower_url = (r.url or "").lower()
+            title = (r.raw_data.get("title") or "").lower()
+            if any(k in lower_url for k in ["dawes", "roll"]) or any(k in title for k in ["roll", "enrollment"]):
+                r.record_type = "roll"
+            elif "census" in lower_url or "census" in title:
+                r.record_type = "census"
+            else:
+                # keep whatever default (article)
+                pass
         return records
 
     async def get_record(self, record_id: str) -> RawRecord | None:
@@ -114,12 +134,12 @@ class AccessGenealogySource(BaseSource):
         Returns:
             List of records found
         """
-        records = []
+        records: list[RawRecord] = []
 
         # Find article entries (typical WordPress structure)
         articles = soup.find_all("article") or soup.find_all("div", class_="post")
 
-        for article in articles[:20]:  # Limit results
+        for article in articles[:30]:  # Slightly higher cap
             title_elem = article.find("h2") or article.find("h3")
             link_elem = article.find("a")
 
@@ -133,10 +153,17 @@ class AccessGenealogySource(BaseSource):
             excerpt = article.find("div", class_="entry-content") or article.find("p")
             summary = excerpt.get_text(strip=True)[:500] if excerpt else ""
 
+            rtype = "article"
+            tl = title.lower()
+            if "census" in tl:
+                rtype = "census"
+            if "roll" in tl or "dawes" in tl or "enrollment" in tl:
+                rtype = "roll"
+
             record = RawRecord(
                 source=self.name,
                 record_id=url,
-                record_type="article",
+                record_type=rtype,
                 url=url,
                 raw_data={"title": title, "summary": summary},
                 extracted_fields={"title": title, "summary": summary},
@@ -164,21 +191,42 @@ class AccessGenealogySource(BaseSource):
 
         # Get content
         content_elem = soup.find("div", class_="entry-content") or soup.find("article")
-        content = content_elem.get_text(strip=True)[:2000] if content_elem else ""
+        content = content_elem.get_text(strip=True)[:4000] if content_elem else ""
 
         # Try to extract structured data (names, dates, etc.)
-        extracted = {"title": title, "content_preview": content[:500]}
+        extracted: dict[str, str] = {"title": title, "content_preview": content[:800]}
 
         # Look for table data (common in rolls/census lists)
         tables = soup.find_all("table")
         if tables:
             extracted["has_tabular_data"] = "true"
             extracted["table_count"] = str(len(tables))
+            # Pull a small preview of the first table
+            first = tables[0]
+            headers = [th.get_text(strip=True) for th in first.find_all("th")]
+            rows = []
+            for tr in first.find_all("tr")[1:6]:
+                cells = [td.get_text(strip=True) for td in tr.find_all(["td", "th"])]
+                if cells:
+                    rows.append(cells)
+            if headers:
+                extracted["table_headers"] = ", ".join(headers[:10])
+            if rows:
+                extracted["table_rows_preview"] = "; ".join([" | ".join(r[:10]) for r in rows])
+
+        # Guess record type
+        rtype = "article"
+        lower_url = url.lower()
+        tl = title.lower()
+        if "census" in lower_url or "census" in tl:
+            rtype = "census"
+        if any(k in lower_url for k in ["dawes", "roll"]) or any(k in tl for k in ["roll", "enrollment"]):
+            rtype = "roll"
 
         return RawRecord(
             source=self.name,
             record_id=url,
-            record_type="article",
+            record_type=rtype,
             url=url,
             raw_data={"title": title, "content": content},
             extracted_fields=extracted,

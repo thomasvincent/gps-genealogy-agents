@@ -56,3 +56,31 @@ This document summarizes the idempotency rules implemented in gps-genealogy-agen
 
 ## Backfill
 - `gps-agents backfill idempotency <path-to-gramps-db>` populates fingerprints and mappings for existing data.
+
+## Agentic Wiki Planner (Dry-run)
+- `gps-agents wiki plan --subject "Name" --article path/to/text.md [--wikidata-qid Qxxxx] [--wikitree-id ...]`
+- Produces structured outputs for Wikipedia/Wikidata/WikiTree without writing.
+- Writes must later use ensure_statement() and mapping lookups to avoid duplicates.
+
+## Agentic Wiki End-to-End (deterministic, gated)
+- `gps-agents wiki run --subject "Name" --article notes.md [--run-id UUID]`
+  - Generates a deterministic bundle under `research/wiki_plans/<RUN_ID>/`:
+    - plan.json, SUMMARY.md, facts.json, review.json, wikidata_payload.json
+    - wikipedia_draft.md, wikitree_bio.md, wikitree_profile.yaml, subject.ged
+  - Commits only when content changes (safe_commit).
+- `gps-agents wiki stage --subject "Name" --article notes.md [--engine sk|autogen] [--run-id UUID]`
+  - Same artifacts as `wiki run`, useful when using AutoGen engine.
+- `gps-agents wiki show --bundle research/wiki_plans/<RUN_ID> [--json]`
+  - Summarize/validate a bundle (best-effort JSON Schema validation).
+- Approval gate (HARD RULE): No external writes without approval.
+  - Create `approved.yaml` in the bundle with:
+    - `approved: true`
+    - `reviewer: <name>`
+- `gps-agents wiki apply --bundle research/wiki_plans/<RUN_ID> --approval approved.yaml [--drafts-root drafts]`
+  - Wikidata: Calls `ensure_statement()` per claim (uses durable cache; never invents QIDs; blocks if `entity != Q*`).
+  - Wikipedia/WikiTree: Stages drafts in Git only at `drafts/wikipedia/<slug>.md` and `drafts/wikitree/<slug>.md`.
+  - Writes `publish.log` JSONL in the bundle (deterministic overwrite) and commits only when changed.
+
+### CI trigger (optional)
+- `.github/workflows/wiki-apply.yml` runs `wiki apply` when `research/wiki_plans/**/approved.yaml` is pushed.
+- Publishes a summary and uploads `publish.log` as an artifact.

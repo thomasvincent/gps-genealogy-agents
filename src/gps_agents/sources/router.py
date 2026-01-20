@@ -83,6 +83,8 @@ class RouterConfig(BaseModel):
     max_results_per_source: int = Field(default=50, description="Max results per source")
     deduplicate: bool = Field(default=True, description="Remove duplicate records")
     sort_by_confidence: bool = Field(default=True, description="Sort results by confidence")
+    max_concurrent_searches: int = Field(default=4, description="Max concurrent source queries")
+    start_jitter_seconds: float = Field(default=0.2, description="Random start jitter per task")
 
 
 class SearchRouter:
@@ -104,10 +106,10 @@ class SearchRouter:
         Region.FRANCE: ["familysearch", "geneanet", "wikitree"],
         Region.IRELAND: ["familysearch", "findmypast", "wikitree"],
         Region.SCOTLAND: ["familysearch", "findmypast", "wikitree"],
-        Region.ENGLAND: ["familysearch", "findmypast", "wikitree", "findagrave"],
-        Region.WALES: ["familysearch", "findmypast", "wikitree"],
+        Region.ENGLAND: ["familysearch", "findmypast", "wikitree", "findagrave", "freebmd"],
+        Region.WALES: ["familysearch", "findmypast", "wikitree", "freebmd"],
         Region.CHANNEL_ISLANDS: ["jerripedia", "familysearch", "wikitree"],
-        Region.USA: ["familysearch", "wikitree", "findagrave", "accessgenealogy"],
+        Region.USA: ["familysearch", "wikitree", "findagrave", "accessgenealogy", "nara1950", "nara1940"],
         Region.CANADA: ["familysearch", "wikitree", "findagrave"],
         Region.WORLDWIDE: ["familysearch", "wikitree", "geneanet", "findagrave"],
     }
@@ -118,7 +120,7 @@ class SearchRouter:
         RecordType.DEATH: ["findagrave", "familysearch", "geneanet"],
         RecordType.BIRTH: ["familysearch", "geneanet"],
         RecordType.MARRIAGE: ["familysearch", "geneanet"],
-        RecordType.CENSUS: ["familysearch", "findmypast"],
+        RecordType.CENSUS: ["familysearch", "findmypast", "accessgenealogy", "nara1950", "nara1940"],
         RecordType.IMMIGRATION: ["familysearch", "accessgenealogy"],
         RecordType.MILITARY: ["familysearch", "accessgenealogy"],
         RecordType.DNA: ["wikitree"],
@@ -132,12 +134,16 @@ class SearchRouter:
         self._connected = False
 
     def register_source(self, source: GenealogySource) -> None:
-        """Register a genealogy source with the router."""
-        self._sources[source.name] = source
+        """Register a genealogy source with the router.
+
+        Normalizes the key to lowercase to match recommendation maps.
+        """
+        key = getattr(source, "name", str(source)).lower()
+        self._sources[key] = source
 
     def unregister_source(self, source_name: str) -> None:
         """Remove a source from the router."""
-        self._sources.pop(source_name, None)
+        self._sources.pop(source_name.lower(), None)
 
     @property
     def available_sources(self) -> list[str]:
@@ -254,13 +260,18 @@ class SearchRouter:
     ) -> dict[str, SourceSearchResult]:
         """Execute searches in parallel."""
 
+        sem = asyncio.Semaphore(self.config.max_concurrent_searches)
+
         async def search_one(name: str, source: GenealogySource) -> tuple[str, SourceSearchResult]:
             start = time.time()
             try:
-                records = await asyncio.wait_for(
-                    source.search(query),
-                    timeout=self.config.timeout_per_source,
-                )
+                # Stagger task start to avoid bursts
+                await asyncio.sleep(min(self.config.start_jitter_seconds, 1.0) * (hash(name) % 5) / 5)
+                async with sem:
+                    records = await asyncio.wait_for(
+                        source.search(query),
+                        timeout=self.config.timeout_per_source,
+                    )
                 # Limit results
                 if len(records) > self.config.max_results_per_source:
                     records = records[:self.config.max_results_per_source]
