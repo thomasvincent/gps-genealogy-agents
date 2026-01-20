@@ -408,10 +408,24 @@ def _write_tree_checkpoint(path: Path, seed: SeedPerson, records: list[dict[str,
     payload = {
         "seed": seed.__dict__,
         "coverage": {
-            "sources": sorted(list(cov["sources"])),
+            "sources": sorted(list(cov.get("sources", []))),
             "records": cov.get("count", 0),
             "primary": cov.get("primary_count", 0),
             "secondary": cov.get("secondary_count", 0),
+            "authored": cov.get("authored_count", 0),
+        },
+        "records": records[:2000],
+    }
+    path.write_text(json.dumps(payload, indent=2))
+
+    # Also emit GEDCOM and Mermaid alongside the tree.json
+    try:
+        from gps_agents.export.gedcom import export_gedcom
+        from gps_agents.export.mermaid import export_mermaid
+        export_gedcom(Path("data/ledger"), path.with_suffix(".ged"))
+        export_mermaid(Path("data/ledger"), path.with_suffix(".mmd"))
+    except Exception:
+        pass
 
 
 async def _evaluate_and_promote_fact(fact: Any, ledger: Any, kernel_config: Any | None) -> str:
