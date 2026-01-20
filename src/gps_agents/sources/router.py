@@ -42,6 +42,7 @@ class RecordType(str, Enum):
     DEATH = "death"
     MARRIAGE = "marriage"
     BURIAL = "burial"
+    CEMETERY = "cemetery"
     CENSUS = "census"
     IMMIGRATION = "immigration"
     EMIGRATION = "emigration"
@@ -51,6 +52,7 @@ class RecordType(str, Enum):
     CHURCH = "church"
     CIVIL = "civil"
     NEWSPAPER = "newspaper"
+    OBITUARY = "obituary"
     DNA = "dna"
     OTHER = "other"
 
@@ -109,22 +111,26 @@ class SearchRouter:
         Region.ENGLAND: ["familysearch", "findmypast", "wikitree", "findagrave", "freebmd"],
         Region.WALES: ["familysearch", "findmypast", "wikitree", "freebmd"],
         Region.CHANNEL_ISLANDS: ["jerripedia", "familysearch", "wikitree"],
-        Region.USA: ["familysearch", "wikitree", "findagrave", "accessgenealogy", "nara1950", "nara1940"],
+        Region.USA: ["familysearch", "wikitree", "findagrave", "accessgenealogy", "usgenweb", "fold3", "rootsweb", "nara1950", "nara1940"],
         Region.CANADA: ["familysearch", "wikitree", "findagrave"],
         Region.WORLDWIDE: ["familysearch", "wikitree", "geneanet", "findagrave"],
     }
 
     # Source recommendations by record type
     RECORD_TYPE_SOURCES: ClassVar[dict[RecordType, list[str]]] = {
-        RecordType.BURIAL: ["findagrave", "familysearch"],
-        RecordType.DEATH: ["findagrave", "familysearch", "geneanet"],
-        RecordType.BIRTH: ["familysearch", "geneanet"],
-        RecordType.MARRIAGE: ["familysearch", "geneanet"],
-        RecordType.CENSUS: ["familysearch", "findmypast", "accessgenealogy", "nara1950", "nara1940"],
+        RecordType.BURIAL: ["findagrave", "familysearch", "accessgenealogy", "usgenweb"],
+        RecordType.CEMETERY: ["findagrave", "accessgenealogy", "usgenweb"],
+        RecordType.DEATH: ["findagrave", "familysearch", "geneanet", "rootsweb"],
+        RecordType.BIRTH: ["familysearch", "geneanet", "usgenweb"],
+        RecordType.MARRIAGE: ["familysearch", "geneanet", "usgenweb"],
+        RecordType.CENSUS: ["familysearch", "findmypast", "accessgenealogy", "usgenweb", "nara1950", "nara1940"],
         RecordType.IMMIGRATION: ["familysearch", "accessgenealogy"],
-        RecordType.MILITARY: ["familysearch", "accessgenealogy"],
+        RecordType.MILITARY: ["familysearch", "fold3", "accessgenealogy", "usgenweb"],
+        RecordType.OBITUARY: ["rootsweb", "findagrave"],
         RecordType.DNA: ["wikitree"],
         RecordType.CHURCH: ["familysearch", "geneanet"],
+        RecordType.LAND: ["usgenweb", "familysearch"],
+        RecordType.PROBATE: ["usgenweb", "familysearch"],
     }
 
     def __init__(self, config: RouterConfig | None = None) -> None:
