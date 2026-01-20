@@ -104,3 +104,17 @@ class NetGuards:
 
 # Global guards instance
 GUARDS = NetGuards()
+
+
+def report_status() -> dict:
+    """Return a snapshot of breaker status and rate config for debugging."""
+    out = {}
+    for key, br in GUARDS._breakers.items():  # noqa: SLF001
+        out.setdefault(key, {})["circuit_open"] = br._opened_at is not None  # noqa: SLF001
+    for key, lim in GUARDS._limiters.items():  # noqa: SLF001
+        out.setdefault(key, {})["rate"] = {
+            "max_calls": lim.cfg.max_calls,
+            "window_seconds": lim.cfg.window_seconds,
+            "min_interval": lim.cfg.min_interval,
+        }
+    return out

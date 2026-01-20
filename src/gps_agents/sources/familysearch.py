@@ -20,7 +20,7 @@ class FamilySearchSource(BaseSource):
     name = "FamilySearch"
     base_url = "https://api.familysearch.org"
 
-    def __init__(self, client_id: str | None = None, client_secret: str | None = None) -> None:
+    def __init__(self, client_id: str | None = None, client_secret: str | None = None, token_file: str | None = None) -> None:
         """Initialize FamilySearch source.
 
         Args:
@@ -31,6 +31,7 @@ class FamilySearchSource(BaseSource):
         self.client_id = client_id
         self.client_secret = client_secret
         self._access_token: str | None = None
+        self._token_file = token_file or "data/fs_token.json"
 
     def requires_auth(self) -> bool:
         return True
@@ -39,6 +40,34 @@ class FamilySearchSource(BaseSource):
         return self.client_id is not None and self.client_secret is not None
 
     async def _ensure_token(self) -> None:
+        """Ensure we have a valid access token.
+
+        Strategy hierarchy:
+        1) Use env FAMILYSEARCH_ACCESS_TOKEN if set.
+        2) Load from token file (JSON with {"access_token": "..."}).
+        3) If neither available, raise and instruct user to set a token.
+        """
+        import os
+        import json as _json
+        if self._access_token:
+            return
+        env_token = os.getenv("FAMILYSEARCH_ACCESS_TOKEN")
+        if env_token:
+            self._access_token = env_token.strip()
+            return
+        try:
+            from pathlib import Path as _Path
+            p = _Path(self._token_file)
+            if p.exists():
+                data = _json.loads(p.read_text())
+                tok = data.get("access_token")
+                if tok:
+                    self._access_token = tok
+                    return
+        except Exception:
+            pass
+        # Could implement OAuth flows here; for now, require a token
+        raise RuntimeError("FamilySearch access token not configured. Set FAMILYSEARCH_ACCESS_TOKEN or place {\"access_token\":\"...\"} in data/fs_token.json.")
         """Ensure we have a valid access token."""
         if self._access_token is None:
             # In production, implement OAuth2 flow
@@ -91,7 +120,14 @@ class FamilySearchSource(BaseSource):
 
         try:
             url = f"{self.base_url}/platform/tree/search"
-            data = await self._make_request(url, params)
+            # Use BaseSource client to add token header
+            if self._client is None:
+                import httpx
+                self._client = httpx.AsyncClient(timeout=30.0)
+            headers = {"Authorization": f"Bearer {self._access_token}", "Accept": "application/json"}
+            response = await self._client.get(url, params=params, headers=headers)
+            response.raise_for_status()
+            data = response.json()
             return self._parse_results(data)
         except Exception as e:
             # Log error and return empty results

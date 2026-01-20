@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List, DefaultDict
+from collections import defaultdict
 
 from gps_agents.ledger.fact_ledger import FactLedger
 from gps_agents.models.fact import Fact, FactStatus
@@ -115,7 +116,46 @@ def export_gedcom(ledger_dir: Path, out_file: Path, root_filter: str = "") -> Pa
             # We'll add child links in pass 3
             pass
 
-    # Emit FAM records for spouses
+    # Collect child links per family
+    fam_children: DefaultDict[str, List[str]] = defaultdict(list)
+    for fact in accepted:
+        if fact.fact_type != "relationship":
+            continue
+        kind = (fact.relation_kind or "").lower()
+        a = (fact.relation_subject or "").strip()
+        b = (fact.relation_object or "").strip()
+        if not a or not b:
+            continue
+        ia = _ensure_indi(a)
+        ib = _ensure_indi(b)
+        if kind == "spouse_of":
+            key = tuple(sorted([ia, ib]))
+            if key not in fam_ids:
+                fam_ids[key] = f"@F{len(fam_ids)+1}@"
+        elif kind in ("parent_of", "child_of"):
+            # Use synthetic family per parent (single-parent fam)
+            parent = ia if kind == "parent_of" else ib
+            child = ib if kind == "parent_of" else ia
+            fid = fam_ids.get(tuple(sorted([parent, parent])))
+            if not fid:
+                fid = f"@F{len(fam_ids)+1}@"
+                fam_ids[tuple(sorted([parent, parent]))] = fid
+            fam_children[fid].append(child)
+
+    # Emit FAM records (spouses and single-parent families)
+    for (ia, ib), fid in fam_ids.items():
+        lines.append(f"0 {fid} FAM")
+        # If ia==ib this is single-parent synthetic; place as HUSB by default
+        if ia == ib:
+            lines.append(f"1 HUSB {ia}")
+        else:
+            lines.append(f"1 HUSB {ia}")
+            lines.append(f"1 WIFE {ib}")
+        for c in fam_children.get(fid, []):
+            lines.append(f"1 CHIL {c}")
+
+    # Emit FAMS/FAMC pointers: rebuild INDI sections with pointers is out of scope for minimal exporter
+    # (Advanced enhancement: build INDI map first then output.)
     for (ia, ib), fid in fam_ids.items():
         lines.append(f"0 {fid} FAM")
         lines.append(f"1 HUSB {ia}")

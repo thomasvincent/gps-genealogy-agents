@@ -22,6 +22,8 @@ class SearchQuery(BaseModel):
     death_year_range: int = Field(default=5)
     death_place: str | None = Field(default=None)
     residence: str | None = Field(default=None)
+    state: str | None = Field(default=None, description="US state for state-specific searches")
+    county: str | None = Field(default=None, description="County for county-specific searches")
     spouse_name: str | None = Field(default=None)
     father_name: str | None = Field(default=None)
     mother_name: str | None = Field(default=None)

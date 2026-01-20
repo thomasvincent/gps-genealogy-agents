@@ -1,5 +1,11 @@
 # GPS Genealogy Agents
 
+[![Wiki Preflight](https://github.com/thomasvincent/gps-genealogy-agents/actions/workflows/wiki-preflight.yml/badge.svg)](https://github.com/thomasvincent/gps-genealogy-agents/actions/workflows/wiki-preflight.yml)
+
+Multi-agent AI genealogical research system meeting GPS (Genealogical Proof Standard).
+
+# GPS Genealogy Agents
+
 A multi-agent AI genealogical research system designed to produce conclusions that meet the **Genealogical Proof Standard (GPS)**.
 
 Built with **Semantic Kernel** for plugin orchestration and **AutoGen** for multi-agent coordination, using Claude for complex reasoning and GPT-4 for structured tasks, with CQRS architecture (RocksDB ledger + SQLite projection) and **Gramps** integration.
