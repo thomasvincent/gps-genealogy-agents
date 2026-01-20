@@ -378,7 +378,6 @@ async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: An
                     await _relate_and_maybe_enqueue(fam.get("parents", []), "parent")
                     await _relate_and_maybe_enqueue(fam.get("spouses", []), "spouse")
                     await _relate_and_maybe_enqueue(fam.get("children", []), "child")
-                        pass
 
         # Checkpoint
         if iters % cfg.checkpoint_every == 0:

@@ -312,7 +312,7 @@ def plan_person(
 
     p = GPerson(names=[GName(given=given, surname=surname)])
     dec = decide_upsert_person(gc, proj, p)
-console.print(_json.dumps(dec.__dict__, indent=2))
+    console.print(_json.dumps(dec.__dict__, indent=2))
 
 
 @plan_app.command("event")
@@ -512,7 +512,7 @@ def plan_batch(
     except ValidationError as e:
         console.print(f"[red]Planner output failed schema validation: {e.message}[/red]")
         raise typer.Exit(1)
-console.print(_json.dumps(decisions, indent=2))
+    console.print(_json.dumps(decisions, indent=2))
 
 
 @wiki_app.command("plan")
@@ -561,7 +561,7 @@ def wiki_plan(
     console.print(Panel("Wiki plan complete (dry-run)", title="Wiki Planner"))
     # Print a compact summary
     import json as _json
-console.print(_json.dumps(result, indent=2, default=str))
+    console.print(_json.dumps(result, indent=2, default=str))
 
 
 @wiki_app.command("run")
@@ -1169,6 +1169,26 @@ def search(
             )
 
         console.print(table)
+
+
+@app.command()
+def sources_health() -> None:
+    """Show throttling and circuit breaker status per source."""
+    from gps_agents.net import report_status
+    status = report_status()
+    if not status:
+        console.print("[yellow]No source activity recorded yet[/yellow]")
+        return
+    table = Table(title="Source Health")
+    table.add_column("Source")
+    table.add_column("Circuit")
+    table.add_column("Rate")
+    for k, v in sorted(status.items()):
+        circ = "open" if v.get("circuit_open") else "ok"
+        rate = v.get("rate") or {}
+        rate_str = f"{rate.get('max_calls','?')}/{rate.get('window_seconds','?')}s min {rate.get('min_interval','?')}s"
+        table.add_row(k, circ, rate_str)
+    console.print(table)
 
 
 @app.command()

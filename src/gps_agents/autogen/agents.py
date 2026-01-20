@@ -143,7 +143,7 @@ def create_model_client(
         from autogen_ext.models.openai import OpenAIChatCompletionClient
 
         return OpenAIChatCompletionClient(
-            model=model or "gpt-4-turbo",
+            model=model or "gpt-4o-mini",
             api_key=os.environ.get("OPENAI_API_KEY"),
             temperature=temperature,
         )
@@ -182,12 +182,21 @@ def get_model_client_for_agent(agent_name: str) -> ChatCompletionClient:
 
     - Reasoning agents (critics, synthesis): Claude for nuanced reasoning
     - Structured agents (data quality, workflow): GPT-4 for consistency
+    - Falls back to Anthropic if OpenAI not available
     """
     service_id = get_service_id_for_agent(agent_name)
+    anthropic_available = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    openai_available = bool(os.environ.get("OPENAI_API_KEY"))
 
     if service_id == "claude":
         return create_model_client("anthropic", temperature=0.1)
-    return create_model_client("openai", temperature=0.1)
+    # Prefer OpenAI for structured tasks, but fall back to Anthropic
+    if openai_available and anthropic_available:
+        # Use Anthropic for everything if OpenAI quota might be limited
+        return create_model_client("anthropic", temperature=0.1)
+    elif openai_available:
+        return create_model_client("openai", temperature=0.1)
+    return create_model_client("anthropic", temperature=0.1)
 
 
 class GPSAssistantAgent(AssistantAgent):

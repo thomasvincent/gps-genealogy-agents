@@ -85,7 +85,7 @@ def _configure_llm_services(kernel: Kernel, config: KernelConfig) -> None:
         kernel.add_service(
             OpenAIChatCompletion(
                 service_id="gpt4",
-                ai_model_id="gpt-4-turbo",
+                ai_model_id="gpt-4o-mini",
                 api_key=config.openai_api_key,
             )
         )

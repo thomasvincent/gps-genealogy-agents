@@ -56,7 +56,7 @@ class BaseAgent(ABC):
             from langchain_openai import ChatOpenAI
 
             self._llm = ChatOpenAI(
-                model=self.config.model or "gpt-4-turbo-preview",
+                model=self.config.model or "gpt-4o-mini",
                 temperature=self.config.temperature,
                 max_tokens=self.config.max_tokens,
             )

@@ -69,8 +69,10 @@ async def create_gps_research_team(
     agents = create_all_agents(kernel)
     participant_list: list[BaseChatAgent] = list(agents.values())
 
-    # Create model client for selector
-    selector_model = create_model_client("openai", temperature=0.1)
+    # Create model client for selector - prefer Anthropic if available
+    import os
+    provider = "anthropic" if os.environ.get("ANTHROPIC_API_KEY") else "openai"
+    selector_model = create_model_client(provider, temperature=0.1)
 
     # Define termination conditions
     termination = MaxMessageTermination(max_messages) | TextMentionTermination("TERMINATE")
