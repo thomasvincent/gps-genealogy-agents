@@ -1,0 +1,341 @@
+{
+  "id": "archer-l-durham",
+  "name": {
+    "full": "Archer Lyman Durham",
+    "given": "Archer",
+    "middle_name": "Lyman",
+    "surname": "Durham",
+    "title": "Major General"
+  },
+  "birth": {
+    "date": "1932-06-09",
+    "year": 1932,
+    "county": "Los Angeles County",
+    "city": "Pasadena",
+    "state": "California",
+    "country": "USA",
+    "place_formatted": "Pasadena, Los Angeles County, California, USA",
+    "confidence": 1.0,
+    "sources": {
+      "county": "California Birth Index 1905-1995",
+      "city": "USAF Official Biography (hometown)"
+    },
+    "note": "Birth Index records county; USAF Bio confirms Pasadena as hometown within Los Angeles County"
+  },
+  "death": {
+    "year": null,
+    "place": null,
+    "confidence": 0.0,
+    "note": "No obituary found as of 2026"
+  },
+  "education": [
+    {
+      "institution": "Pasadena High School",
+      "location": "Pasadena, California",
+      "type": "high_school",
+      "year_completed": null,
+      "confidence": 1.0
+    },
+    {
+      "institution": "Utah State University",
+      "location": "Logan, Utah",
+      "degree": "Bachelor of Science",
+      "field": "Political Science",
+      "year_completed": 1960,
+      "confidence": 1.0
+    },
+    {
+      "institution": "George Washington University",
+      "location": "Washington, D.C.",
+      "degree": "Master of Science",
+      "field": "International Affairs",
+      "year_completed": 1975,
+      "confidence": 1.0
+    },
+    {
+      "institution": "Squadron Officer School",
+      "year_completed": 1960,
+      "type": "military_education",
+      "confidence": 1.0
+    },
+    {
+      "institution": "Air Command and Staff College",
+      "year_completed": 1961,
+      "type": "military_education",
+      "confidence": 1.0
+    },
+    {
+      "institution": "Industrial College of the Armed Forces",
+      "year_completed": 1973,
+      "type": "military_education",
+      "confidence": 1.0
+    },
+    {
+      "institution": "National War College",
+      "year_completed": 1975,
+      "honors": "Distinguished Graduate",
+      "type": "military_education",
+      "confidence": 1.0
+    },
+    {
+      "institution": "Columbia University",
+      "program": "Advanced Management Program",
+      "type": "executive_education",
+      "confidence": 1.0
+    },
+    {
+      "institution": "Harvard University, John F. Kennedy School of Government",
+      "program": "Program for Senior Executives in National and International Security",
+      "type": "executive_education",
+      "confidence": 1.0
+    }
+  ],
+  "military_career": {
+    "branch": "United States Air Force",
+    "service_start": "1953-01",
+    "service_end": null,
+    "highest_rank": "Major General",
+    "promotion_date": "1984-06-01",
+    "date_of_rank": "1980-09-01",
+    "rating": "Command Pilot",
+    "flight_hours": 6000,
+    "assignments": [
+      {
+        "dates": "1953-01 to 1954-04",
+        "role": "Aviation Cadet",
+        "location": "Various"
+      },
+      {
+        "dates": "1954-04",
+        "role": "Commissioned, Received Pilot Wings",
+        "location": "Laredo Air Force Base, Texas"
+      },
+      {
+        "dates": "1954-08 to 1955-10",
+        "unit": "744th Troop Carrier Squadron",
+        "role": "Pilot",
+        "location": "Charleston Air Force Base, South Carolina"
+      },
+      {
+        "dates": "1955-10 to 1956-06",
+        "unit": "744th Troop Carrier Squadron",
+        "role": "Pilot",
+        "location": "Kadena Air Base, Okinawa"
+      },
+      {
+        "dates": "1956-06 to 1958-06",
+        "unit": "2720th Maintenance Group",
+        "organization": "Air Force Logistics Command",
+        "role": "Flight Test Maintenance Officer",
+        "location": "Clark Air Base, Philippines"
+      },
+      {
+        "dates": "1958-06 to 1962",
+        "unit": "28th Logistics Support Squadron / 28th Air Transport Squadron",
+        "role": "Aircraft Commander, Squadron Plans and Mobility Officer",
+        "location": "Hill Air Force Base, Utah",
+        "notes": "Squadron redesignated and assigned to Military Airlift Command in 1962"
+      },
+      {
+        "dates": "1963-08 to 1964-06",
+        "unit": "1622nd Support Squadron",
+        "role": "Airlift Command Post Controller",
+        "location": "Paris, France"
+      },
+      {
+        "dates": "1964-07 to 1966-09",
+        "unit": "322nd Air Division",
+        "role": "Plans Officer, Directorate of Plans and Programs",
+        "location": "Chateauroux Air Station, France"
+      },
+      {
+        "dates": "1966-10 to 1968-12",
+        "unit": "Headquarters Military Airlift Command",
+        "role": "Chief, Advanced Programming and Policy Division",
+        "location": "Scott Air Force Base, Illinois"
+      },
+      {
+        "dates": "1969-01 to 1973-06",
+        "unit": "Headquarters U.S. Air Force",
+        "role": "Plans Action Officer; Assistant Deputy Director for Plans and Policy (JCS Matters)",
+        "location": "Washington, D.C."
+      },
+      {
+        "dates": "1973-06 to 1974-06",
+        "unit": "314th Air Division",
+        "role": "Director of Plans and Programs, U.S. Air Forces in Korea",
+        "location": "Osan Air Base, South Korea"
+      },
+      {
+        "dates": "1974-06 to 1975-08",
+        "role": "Student",
+        "location": "National War College"
+      },
+      {
+        "dates": "1975-08 to 1976-02",
+        "role": "Deputy Base Commander",
+        "location": "McGuire Air Force Base, New Jersey"
+      },
+      {
+        "dates": "1976-02 to 1977-07",
+        "role": "Base Commander",
+        "location": "McGuire Air Force Base, New Jersey"
+      },
+      {
+        "dates": "1977-07 to 1979-02",
+        "unit": "1606th Air Base Wing",
+        "role": "Commander",
+        "location": "Kirtland Air Force Base, New Mexico"
+      },
+      {
+        "dates": "1979-02 to 1980-02",
+        "unit": "436th Military Airlift Wing",
+        "role": "Commander",
+        "location": "Dover Air Force Base, Delaware",
+        "notes": "Only all-C-5 wing in the Air Force"
+      },
+      {
+        "dates": "1980-02 to 1982-02",
+        "unit": "76th Military Airlift Division",
+        "role": "Commander",
+        "location": "Andrews Air Force Base, Maryland"
+      },
+      {
+        "dates": "1982-02 to 1984-03",
+        "unit": "Military Traffic Management Command",
+        "role": "Vice Commander",
+        "location": "Washington, D.C."
+      },
+      {
+        "dates": "1984-03 to 1985-04",
+        "unit": "U.S. Readiness Command",
+        "role": "Director of Plans, Programs and Policy (J-5); Inspector General",
+        "location": "MacDill Air Force Base, Florida"
+      },
+      {
+        "dates": "1985-04 to 1987-06",
+        "unit": "Joint Deployment Agency",
+        "role": "Director of Deployment",
+        "location": "MacDill Air Force Base, Florida"
+      },
+      {
+        "dates": "1987-06 onwards",
+        "unit": "U.S. Transportation Command",
+        "role": "Director of Deployment",
+        "location": "MacDill Air Force Base, Florida"
+      }
+    ],
+    "decorations": [
+      "Defense Superior Service Medal",
+      "Legion of Merit with two oak leaf clusters",
+      "Meritorious Service Medal with oak leaf cluster",
+      "Air Force Commendation Medal with oak leaf cluster",
+      "Air Force Outstanding Unit Award with three oak leaf clusters",
+      "Good Conduct Medal",
+      "National Defense Service Medal with service star",
+      "Armed Forces Expeditionary Medal",
+      "Air Force Longevity Service Award Ribbon with six oak leaf clusters",
+      "Armed Forces Reserve Medal",
+      "Small Arms Expert Marksmanship Ribbon"
+    ]
+  },
+  "civilian_career": [
+    {
+      "dates": "circa 1993-1997",
+      "organization": "U.S. Department of Energy",
+      "role": "Assistant Secretary for Human Resources and Administration",
+      "location": "Washington, D.C.",
+      "confidence": 0.9,
+      "source": "Federal Register, 1997 U.S. Government Manual"
+    },
+    {
+      "dates": "circa 1997",
+      "organization": "U.S. Department of Energy",
+      "role": "Acting, Quality Management",
+      "location": "Washington, D.C.",
+      "confidence": 0.9,
+      "source": "1997 Congressional Directory"
+    }
+  ],
+  "family": {
+    "parents": {
+      "father": {
+        "surname": "Durham",
+        "given_name": null,
+        "note": "Surname confirmed from birth index"
+      },
+      "mother": {
+        "maiden_name": "Sorrell",
+        "given_name": null,
+        "source": "California Birth Index 1905-1995"
+      }
+    },
+    "siblings": [
+      {
+        "name": "Barbara Camille Durham",
+        "birth_year": 1926,
+        "relation": "sister",
+        "source": "California Birth Index 1905-1995"
+      },
+      {
+        "name": "Barney Durham",
+        "birth_year": 1929,
+        "relation": "sibling",
+        "source": "California Birth Index 1905-1995"
+      }
+    ],
+    "spouse": null,
+    "children": null,
+    "note": "Mother's maiden name Sorrell; two siblings identified from California Birth Index"
+  },
+  "residences": [
+    {"place": "Pasadena, California", "type": "hometown"},
+    {"place": "Logan, Utah", "type": "education"},
+    {"place": "Laredo, Texas", "type": "military"},
+    {"place": "Charleston, South Carolina", "type": "military"},
+    {"place": "Okinawa, Japan", "type": "military"},
+    {"place": "Clark Air Base, Philippines", "type": "military"},
+    {"place": "Hill AFB, Utah", "type": "military"},
+    {"place": "Paris, France", "type": "military"},
+    {"place": "Chateauroux, France", "type": "military"},
+    {"place": "Scott AFB, Illinois", "type": "military"},
+    {"place": "Washington, D.C.", "type": "military_and_civilian"},
+    {"place": "Osan, South Korea", "type": "military"},
+    {"place": "McGuire AFB, New Jersey", "type": "military"},
+    {"place": "Kirtland AFB, New Mexico", "type": "military"},
+    {"place": "Dover AFB, Delaware", "type": "military"},
+    {"place": "Andrews AFB, Maryland", "type": "military"},
+    {"place": "MacDill AFB, Florida", "type": "military"}
+  ],
+  "sources": [
+    {
+      "title": "California Birth Index 1905-1995",
+      "url": "https://californiabirthindex.org",
+      "accessed": "2026-01-20",
+      "type": "primary",
+      "record_type": "vital_record"
+    },
+    {
+      "title": "USAF Official Biography",
+      "url": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/",
+      "accessed": "2026-01-20",
+      "type": "primary"
+    },
+    {
+      "title": "1997 U.S. Government Manual",
+      "url": "https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf",
+      "type": "primary"
+    },
+    {
+      "title": "1997 Congressional Directory",
+      "url": "https://www.govinfo.gov/content/pkg/CDIR-1997-06-04/pdf/CDIR-1997-06-04-DEPARTMENTS-5.pdf",
+      "type": "primary"
+    }
+  ],
+  "metadata": {
+    "created": "2026-01-20",
+    "last_updated": "2026-01-20",
+    "research_status": "in_progress",
+    "confidence_overall": 0.9
+  }
+}
