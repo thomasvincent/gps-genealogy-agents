@@ -70,16 +70,24 @@
    - https://www.govinfo.gov/content/pkg/CDIR-1997-06-04/pdf/CDIR-1997-06-04-DEPARTMENTS-5.pdf
    - DOE organizational structure
 
+## Existing Wikimedia Commons Photos
+
+Two photos of BGEN Archer Durham already exist on Commons:
+
+1. **[President Sharari of Nigeria greeting](https://commons.wikimedia.org/wiki/File:President_Sharari_of_Nigeria_is_greeted_by_BGEN_Archer_Durham_upon_his_arrival_for_a_visit._Andrews_AFB.jpg)** - Andrews AFB, 1980 (NARA)
+2. **[Turkish Air Force commander visit](https://commons.wikimedia.org/wiki/File:GEN_Sahinkaya,_commander_of_the_Turkish_air_force_is_greeted_by_BGEN_Archer_Durham_upon_his_arrival_for_a_visit_-_DPLA_-_94c675586a26ed81af13dd414afaab2c.jpeg)** - NARA/DPLA
+
 ## Research Gaps
 
 - [x] ~~Birth date~~ → June 9, 1932 (California Birth Index)
 - [x] ~~Mother's maiden name~~ → Sorrell (California Birth Index)
 - [x] ~~Siblings~~ → Barbara Camille (1926), Barney (1929)
+- [x] ~~Photos~~ → 2 photos on Wikimedia Commons
 - [ ] Parents' full names (father's given name unknown)
 - [ ] Spouse information
 - [ ] Children information
 - [ ] Death date and place (no obituary found)
-- [ ] Photos
+- [ ] Official USAF portrait (af.mil blocked; need manual retrieval)
 - [ ] Detailed DOE tenure dates
 - [ ] Post-DOE career/retirement
 
