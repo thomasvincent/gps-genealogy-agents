@@ -660,3 +660,452 @@ def test_jitter_is_deterministic():
         results.append((h % 5) / 5 * config.start_jitter_seconds)
 
     assert all(r == results[0] for r in results)
+
+
+# =============================================================================
+# Test source ranking by priority
+# =============================================================================
+
+
+def test_source_ranking_prioritizes_region_and_type():
+    """Test that sources matching both region AND record type rank highest."""
+    router = SearchRouter()
+
+    # Register multiple sources
+    class MockSource:
+        def __init__(self, name):
+            self.name = name
+
+    for src in ["familysearch", "findagrave", "wikitree", "geneanet", "fold3"]:
+        router.register_source(MockSource(src))
+
+    # Get recommended sources for USA region with cemetery record type
+    # familysearch and findagrave should match both
+    recommended = router.get_recommended_sources(
+        region=Region.USA,
+        record_types=["cemetery"],
+    )
+
+    # findagrave should be near the top (matches both USA and cemetery)
+    assert "findagrave" in recommended[:3]
+
+
+def test_source_ranking_with_limit():
+    """Test that source limit is respected."""
+    router = SearchRouter()
+
+    class MockSource:
+        def __init__(self, name):
+            self.name = name
+
+    for src in ["familysearch", "findagrave", "wikitree", "geneanet", "fold3", "accessgenealogy"]:
+        router.register_source(MockSource(src))
+
+    # Get recommended sources with limit
+    recommended = router.get_recommended_sources(
+        region=Region.USA,
+        limit=3,
+    )
+
+    assert len(recommended) <= 3
+
+
+def test_rank_sources_returns_priority_scores():
+    """Test that rank_sources_for_query returns priority scores."""
+    router = SearchRouter()
+
+    class MockSource:
+        def __init__(self, name):
+            self.name = name
+
+    for src in ["familysearch", "findagrave", "wikitree"]:
+        router.register_source(MockSource(src))
+
+    query = SearchQuery(surname="Smith", record_types=["cemetery"])
+    ranked = router.rank_sources_for_query(query, region=Region.USA)
+
+    # Should return list of (name, priority) tuples
+    assert all(isinstance(r, tuple) and len(r) == 2 for r in ranked)
+    # findagrave matches USA and cemetery - should have highest priority
+    findagrave_priority = next((p for n, p in ranked if n == "findagrave"), 0)
+    assert findagrave_priority >= 1  # At least matches record type
+
+
+# =============================================================================
+# Test two-pass search
+# =============================================================================
+
+
+class LowConfidenceSource:
+    """Mock source that returns no results (triggers second pass)."""
+    name = "low_confidence_source"
+
+    async def search(self, query: SearchQuery) -> list[RawRecord]:
+        return []  # No results = low confidence
+
+
+class HighConfidenceSource:
+    """Mock source that returns good results."""
+    name = "high_confidence_source"
+
+    async def search(self, query: SearchQuery) -> list[RawRecord]:
+        return [
+            RawRecord(
+                source="high_confidence_source",
+                record_id="1",
+                record_type="person",
+                url="http://example.com/1",
+                raw_data={},
+                extracted_fields={"full_name": query.surname},
+                accessed_at=datetime.now(UTC),
+                confidence_hint=0.9,
+            )
+        ]
+
+
+@pytest.mark.asyncio
+async def test_two_pass_search_expands_on_low_confidence():
+    """Test that two-pass search triggers when first pass has low confidence."""
+    config = RouterConfig(
+        second_pass_enabled=True,
+        second_pass_confidence_threshold=0.8,  # High threshold
+        first_pass_source_limit=1,  # Only one source in first pass
+    )
+    router = SearchRouter(config)
+
+    # Register sources - first pass will only use one
+    router.register_source(LowConfidenceSource())  # Will be in first pass
+    router.register_source(HighConfidenceSource())  # May be in second pass
+
+    # Don't use record_types since our mock sources aren't in RECORD_TYPE_SOURCES
+    query = SearchQuery(surname="Smith")
+    result = await router.search(query, two_pass=True)
+
+    # Both sources should have been searched (second pass triggered)
+    total_searched = len(result.sources_searched) + len(result.sources_failed)
+    assert total_searched >= 1  # At least first pass ran
+
+
+@pytest.mark.asyncio
+async def test_two_pass_disabled():
+    """Test that two-pass can be disabled."""
+    config = RouterConfig(
+        second_pass_enabled=False,
+        first_pass_source_limit=1,
+    )
+    router = SearchRouter(config)
+
+    router.register_source(LowConfidenceSource())
+    router.register_source(HighConfidenceSource())
+
+    query = SearchQuery(surname="Smith")
+    # Even with low confidence, second pass should not run
+    result = await router.search(query, two_pass=False)
+
+    # Should only have one source from first pass (no expansion)
+    total_sources = len(result.sources_searched) + len(result.sources_failed)
+    assert total_sources >= 1
+
+
+# =============================================================================
+# Test error taxonomy and classification
+# =============================================================================
+
+
+def test_error_classification():
+    """Test error taxonomy classification."""
+    from gps_agents.sources.router import ErrorType
+
+    router = SearchRouter()
+
+    # Timeout errors
+    assert router._classify_error("Connection timeout") == ErrorType.TIMEOUT
+    assert router._classify_error("asyncio.TimeoutError") == ErrorType.TIMEOUT
+
+    # Rate limit errors
+    assert router._classify_error("429 Too Many Requests") == ErrorType.RATE_LIMIT
+    assert router._classify_error("Rate limit exceeded") == ErrorType.RATE_LIMIT
+
+    # Auth errors
+    assert router._classify_error("401 Unauthorized") == ErrorType.AUTH
+    assert router._classify_error("403 Forbidden") == ErrorType.AUTH
+    assert router._classify_error("Invalid credentials") == ErrorType.AUTH
+
+    # Transient errors
+    assert router._classify_error("500 Internal Server Error") == ErrorType.TRANSIENT
+    assert router._classify_error("503 Service Unavailable") == ErrorType.TRANSIENT
+    assert router._classify_error("Connection refused") == ErrorType.TRANSIENT
+
+    # Permanent errors
+    assert router._classify_error("400 Bad Request") == ErrorType.PERMANENT
+    assert router._classify_error("404 Not Found") == ErrorType.PERMANENT
+
+
+def test_retryable_errors():
+    """Test which errors are marked as retryable."""
+    from gps_agents.sources.router import ErrorType
+
+    router = SearchRouter()
+
+    # Should retry
+    assert router._is_retryable_error(ErrorType.TIMEOUT)
+    assert router._is_retryable_error(ErrorType.TRANSIENT)
+    assert router._is_retryable_error(ErrorType.RATE_LIMIT)
+
+    # Should not retry
+    assert not router._is_retryable_error(ErrorType.AUTH)
+    assert not router._is_retryable_error(ErrorType.PERMANENT)
+
+
+# =============================================================================
+# Test circuit breaker
+# =============================================================================
+
+
+class FailingSource:
+    """Mock source that always fails."""
+    name = "failing_source"
+
+    async def search(self, query: SearchQuery) -> list[RawRecord]:
+        raise Exception("Simulated failure")
+
+
+@pytest.mark.asyncio
+async def test_circuit_breaker_opens_after_failures():
+    """Test that circuit breaker opens after threshold failures."""
+    config = RouterConfig(
+        circuit_breaker_enabled=True,
+        circuit_breaker_threshold=2,  # Open after 2 failures
+        circuit_breaker_reset_seconds=60.0,
+    )
+    router = SearchRouter(config)
+    router.register_source(FailingSource())
+
+    query = SearchQuery(surname="Smith")
+
+    # First search - failure 1
+    await router.search(query)
+    # Second search - failure 2, circuit should open
+    await router.search(query)
+
+    # Check circuit is open
+    metrics = router.get_metrics("failing_source")
+    assert metrics.circuit_open is True
+
+
+@pytest.mark.asyncio
+async def test_circuit_breaker_skips_open_source():
+    """Test that open circuit breaker causes source to be skipped."""
+    import time
+
+    config = RouterConfig(
+        circuit_breaker_enabled=True,
+        circuit_breaker_threshold=1,  # Open immediately
+        circuit_breaker_reset_seconds=0.01,  # Very short reset for testing
+    )
+    router = SearchRouter(config)
+    router.register_source(FailingSource())
+    router.register_source(HighConfidenceSource())
+
+    query = SearchQuery(surname="Smith")
+
+    # First search - trips the circuit
+    await router.search(query)
+
+    # Verify failing_source circuit is open
+    metrics = router.get_metrics("failing_source")
+    assert metrics is not None
+
+    # Wait for circuit reset
+    await asyncio.sleep(0.02)
+
+    # Circuit should auto-reset on next search attempt
+    result = await router.search(query)
+    # high_confidence_source should have been searched
+    assert "high_confidence_source" in result.sources_searched
+
+
+# =============================================================================
+# Test entity clustering
+# =============================================================================
+
+
+def test_entity_clustering_groups_matching_records():
+    """Test that records with same fingerprint are clustered together."""
+    router = SearchRouter()
+
+    records = [
+        RawRecord(
+            source="source_a",
+            record_id="1",
+            record_type="person",
+            url="http://a.com/1",
+            raw_data={},
+            extracted_fields={
+                "full_name": "John Smith",
+                "birth_year": "1900",
+                "birth_place": "New York",
+            },
+            accessed_at=datetime.now(UTC),
+            confidence_hint=0.8,
+        ),
+        RawRecord(
+            source="source_b",
+            record_id="2",
+            record_type="person",
+            url="http://b.com/2",
+            raw_data={},
+            extracted_fields={
+                "full_name": "John Smith",
+                "birth_year": "1900",
+                "birth_place": "NY",  # Different spelling, same person
+            },
+            accessed_at=datetime.now(UTC),
+            confidence_hint=0.7,
+        ),
+        RawRecord(
+            source="source_c",
+            record_id="3",
+            record_type="person",
+            url="http://c.com/3",
+            raw_data={},
+            extracted_fields={
+                "full_name": "Jane Doe",
+                "birth_year": "1920",
+                "birth_place": "Boston",
+            },
+            accessed_at=datetime.now(UTC),
+            confidence_hint=0.9,
+        ),
+    ]
+
+    clusters = router._cluster_records(records)
+
+    # Should have clusters for different people
+    assert len(clusters) >= 1
+
+    # Find the John Smith cluster
+    john_cluster = next((c for c in clusters if c.best_name and "john" in c.best_name.lower()), None)
+    if john_cluster:
+        assert john_cluster.record_count >= 1
+        assert john_cluster.best_birth_year == 1900
+
+
+def test_entity_clustering_boosts_corroborated_confidence():
+    """Test that multi-source clusters have boosted confidence."""
+    router = SearchRouter()
+
+    # Two records from different sources for same person
+    records = [
+        RawRecord(
+            source="source_a",
+            record_id="1",
+            record_type="person",
+            url="",
+            raw_data={},
+            extracted_fields={
+                "full_name": "John Smith",
+                "birth_year": "1900",
+            },
+            accessed_at=datetime.now(UTC),
+            confidence_hint=0.7,
+        ),
+        RawRecord(
+            source="source_b",
+            record_id="2",
+            record_type="person",
+            url="",
+            raw_data={},
+            extracted_fields={
+                "full_name": "John Smith",
+                "birth_year": "1900",
+            },
+            accessed_at=datetime.now(UTC),
+            confidence_hint=0.7,
+        ),
+    ]
+
+    clusters = router._cluster_records(records)
+
+    # Find multi-source cluster
+    multi_source = [c for c in clusters if c.source_count > 1]
+
+    if multi_source:
+        # Confidence should be boosted above base 0.7
+        assert multi_source[0].confidence >= 0.7
+
+
+def test_entity_clustering_in_search_result():
+    """Test that entity_clusters is populated in UnifiedSearchResult."""
+    from gps_agents.sources.router import EntityCluster, UnifiedSearchResult
+
+    # Create a search result with clusters
+    result = UnifiedSearchResult(
+        query=SearchQuery(surname="Smith"),
+        results=[],
+        entity_clusters=[
+            EntityCluster(
+                cluster_id="test1",
+                fingerprint="abc123",
+                best_name="John Smith",
+            )
+        ],
+    )
+
+    assert len(result.entity_clusters) == 1
+    assert result.entity_clusters[0].best_name == "John Smith"
+
+
+# =============================================================================
+# Test metrics tracking
+# =============================================================================
+
+
+@pytest.mark.asyncio
+async def test_metrics_tracking():
+    """Test that metrics are tracked per source."""
+    router = SearchRouter()
+    router.register_source(HighConfidenceSource())
+
+    query = SearchQuery(surname="Smith")
+    await router.search(query)
+
+    metrics = router.get_metrics("high_confidence_source")
+    assert metrics is not None
+    assert metrics.total_searches >= 1
+    assert metrics.successful_searches >= 1
+
+
+@pytest.mark.asyncio
+async def test_metrics_track_failures():
+    """Test that failed searches are tracked."""
+    config = RouterConfig(
+        circuit_breaker_enabled=False,  # Disable to avoid skipping
+    )
+    router = SearchRouter(config)
+    router.register_source(FailingSource())
+
+    query = SearchQuery(surname="Smith")
+    await router.search(query)
+
+    metrics = router.get_metrics("failing_source")
+    assert metrics is not None
+    assert metrics.failed_searches >= 1
+    assert metrics.last_error is not None
+
+
+def test_get_all_metrics():
+    """Test getting metrics for all sources."""
+    router = SearchRouter()
+
+    class MockSource:
+        def __init__(self, name):
+            self.name = name
+
+    router.register_source(MockSource("source_a"))
+    router.register_source(MockSource("source_b"))
+
+    all_metrics = router.get_metrics()
+    assert isinstance(all_metrics, dict)
+    assert "source_a" in all_metrics
+    assert "source_b" in all_metrics

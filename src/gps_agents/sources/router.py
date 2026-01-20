@@ -70,6 +70,30 @@ class SourceSearchResult:
 
 
 @dataclass
+class EntityCluster:
+    """A cluster of records representing the same person entity."""
+    cluster_id: str
+    fingerprint: str
+    records: list[RawRecord] = field(default_factory=list)
+    sources: set[str] = field(default_factory=set)
+    confidence: float = 0.0
+
+    # Best estimate fields derived from cluster
+    best_name: str | None = None
+    best_birth_year: int | None = None
+    best_birth_place: str | None = None
+    best_death_year: int | None = None
+
+    @property
+    def record_count(self) -> int:
+        return len(self.records)
+
+    @property
+    def source_count(self) -> int:
+        return len(self.sources)
+
+
+@dataclass
 class UnifiedSearchResult:
     """Combined result from multiple sources."""
     query: SearchQuery
@@ -78,6 +102,47 @@ class UnifiedSearchResult:
     sources_searched: list[str] = field(default_factory=list)
     sources_failed: list[str] = field(default_factory=list)
     total_search_time_ms: float = 0.0
+    # Entity clusters (grouped records representing same person)
+    entity_clusters: list[EntityCluster] = field(default_factory=list)
+
+
+class ErrorType(str, Enum):
+    """Error taxonomy for resilience tracking."""
+    TIMEOUT = "timeout"
+    RATE_LIMIT = "rate_limit"
+    AUTH = "auth"
+    TRANSIENT = "transient"  # Network errors, 5xx, etc.
+    PERMANENT = "permanent"  # 4xx (not auth), bad request, etc.
+    UNKNOWN = "unknown"
+
+
+@dataclass
+class SourceMetrics:
+    """Metrics tracking for a single source."""
+    total_searches: int = 0
+    successful_searches: int = 0
+    failed_searches: int = 0
+    total_records_returned: int = 0
+    total_latency_ms: float = 0.0
+    error_counts: dict[str, int] = field(default_factory=dict)
+    last_error: str | None = None
+    last_success_time: float | None = None
+    circuit_open: bool = False
+    circuit_open_until: float | None = None
+
+    @property
+    def success_rate(self) -> float:
+        """Calculate success rate."""
+        if self.total_searches == 0:
+            return 1.0
+        return self.successful_searches / self.total_searches
+
+    @property
+    def avg_latency_ms(self) -> float:
+        """Calculate average latency."""
+        if self.successful_searches == 0:
+            return 0.0
+        return self.total_latency_ms / self.successful_searches
 
 
 class RouterConfig(BaseModel):
@@ -89,6 +154,19 @@ class RouterConfig(BaseModel):
     sort_by_confidence: bool = Field(default=True, description="Sort results by confidence")
     max_concurrent_searches: int = Field(default=4, description="Max concurrent source queries")
     start_jitter_seconds: float = Field(default=0.2, description="Random start jitter per task")
+
+    # Two-pass search configuration
+    first_pass_source_limit: int = Field(default=5, description="Max sources for first pass")
+    second_pass_enabled: bool = Field(default=True, description="Enable second pass if confidence low")
+    second_pass_confidence_threshold: float = Field(default=0.7, description="Below this, expand search")
+
+    # Resilience configuration
+    retry_transient_errors: bool = Field(default=True, description="Retry transient errors")
+    max_retries: int = Field(default=2, description="Max retries per source")
+    retry_backoff_base: float = Field(default=1.0, description="Base backoff in seconds")
+    circuit_breaker_enabled: bool = Field(default=True, description="Enable circuit breaker")
+    circuit_breaker_threshold: int = Field(default=3, description="Failures before opening circuit")
+    circuit_breaker_reset_seconds: float = Field(default=60.0, description="Time before circuit reset")
 
 
 class SearchRouter:
@@ -140,6 +218,7 @@ class SearchRouter:
         self.config = config or RouterConfig()
         self._sources: dict[str, GenealogySource] = {}
         self._connected = False
+        self._metrics: dict[str, SourceMetrics] = {}  # Per-source metrics
 
     def register_source(self, source: GenealogySource) -> None:
         """Register a genealogy source with the router.
@@ -148,10 +227,26 @@ class SearchRouter:
         """
         key = getattr(source, "name", str(source)).lower()
         self._sources[key] = source
+        self._metrics[key] = SourceMetrics()
 
     def unregister_source(self, source_name: str) -> None:
         """Remove a source from the router."""
-        self._sources.pop(source_name.lower(), None)
+        key = source_name.lower()
+        self._sources.pop(key, None)
+        self._metrics.pop(key, None)
+
+    def get_metrics(self, source_name: str | None = None) -> dict[str, SourceMetrics] | SourceMetrics | None:
+        """Get metrics for source(s).
+
+        Args:
+            source_name: Optional specific source. None returns all.
+
+        Returns:
+            Metrics dict or single SourceMetrics
+        """
+        if source_name:
+            return self._metrics.get(source_name.lower())
+        return self._metrics.copy()
 
     @property
     def available_sources(self) -> list[str]:
@@ -163,90 +258,201 @@ class SearchRouter:
         region: Region | None = None,
         record_type: RecordType | None = None,
         record_types: list[str] | None = None,
+        limit: int | None = None,
     ) -> list[str]:
         """Get recommended sources for a region and/or record type(s).
 
-        Computes: recommended = region_sources ∪ union_of_sources_for_each(record_type)
+        Ranks sources by priority:
+        1. Sources matching BOTH region AND record_type (highest priority)
+        2. Sources matching region only
+        3. Sources matching record_type only
 
         Args:
             region: Geographic region to search
             record_type: Single type of record to find (deprecated, use record_types)
             record_types: List of record type names to find
+            limit: Max sources to return (None = no limit)
 
         Returns:
-            List of source names to search, deterministically ordered
+            List of source names to search, ranked by priority then deterministically ordered
         """
-        recommended = set()
-
-        # Add region-specific sources
+        # Gather sources from region
+        region_sources = set()
         if region:
-            recommended.update(self.REGION_SOURCES.get(region, []))
+            region_sources.update(self.REGION_SOURCES.get(region, []))
 
-        # Add single record_type sources (backward compatibility)
+        # Gather sources from record types
+        record_type_sources = set()
         if record_type:
-            recommended.update(self.RECORD_TYPE_SOURCES.get(record_type, []))
+            record_type_sources.update(self.RECORD_TYPE_SOURCES.get(record_type, []))
 
-        # Add sources for each record type in the list
         if record_types:
             for rt_name in record_types:
                 try:
                     rt = RecordType(rt_name.lower())
-                    recommended.update(self.RECORD_TYPE_SOURCES.get(rt, []))
+                    record_type_sources.update(self.RECORD_TYPE_SOURCES.get(rt, []))
                 except ValueError:
-                    # Unknown record type, skip
                     pass
 
-        if not recommended:
-            # Default to worldwide sources
-            recommended.update(self.REGION_SOURCES[Region.WORLDWIDE])
+        # Build priority tiers
+        # Tier 1: Both region AND record_type match
+        tier1 = region_sources & record_type_sources
 
-        # Filter to only registered sources and sort deterministically
-        available = [s for s in recommended if s in self._sources]
-        return sorted(available)  # Deterministic ordering
+        # Tier 2: Region only (not in tier 1)
+        tier2 = region_sources - tier1
+
+        # Tier 3: Record type only (not in tier 1)
+        tier3 = record_type_sources - tier1
+
+        # Combine tiers in priority order
+        ranked: list[str] = []
+        for tier in [tier1, tier2, tier3]:
+            # Within each tier, sort deterministically
+            ranked.extend(sorted(tier))
+
+        # If no recommendations, default to worldwide
+        if not ranked:
+            ranked = sorted(self.REGION_SOURCES[Region.WORLDWIDE])
+
+        # Filter to only registered sources (preserve priority order)
+        available = [s for s in ranked if s in self._sources]
+
+        # Apply limit if specified
+        if limit and len(available) > limit:
+            available = available[:limit]
+
+        return available
+
+    def rank_sources_for_query(
+        self,
+        query: SearchQuery,
+        region: Region | None = None,
+    ) -> list[tuple[str, int]]:
+        """Rank sources for a specific query with priority scores.
+
+        Returns:
+            List of (source_name, priority_score) tuples, highest score first.
+            Priority scores: 3 = region+type, 2 = region, 1 = type, 0 = default
+        """
+        region_sources = set()
+        if region:
+            region_sources.update(self.REGION_SOURCES.get(region, []))
+
+        record_type_sources = set()
+        if query.record_types:
+            for rt_name in query.record_types:
+                try:
+                    rt = RecordType(rt_name.lower())
+                    record_type_sources.update(self.RECORD_TYPE_SOURCES.get(rt, []))
+                except ValueError:
+                    pass
+
+        ranked = []
+        for source_name in self._sources:
+            in_region = source_name in region_sources
+            in_record_type = source_name in record_type_sources
+
+            if in_region and in_record_type:
+                priority = 3
+            elif in_region:
+                priority = 2
+            elif in_record_type:
+                priority = 1
+            else:
+                priority = 0
+
+            ranked.append((source_name, priority))
+
+        # Sort by priority (desc), then name (asc) for determinism
+        ranked.sort(key=lambda x: (-x[1], x[0]))
+        return ranked
 
     async def search(
         self,
         query: SearchQuery,
         sources: list[str] | None = None,
         region: Region | None = None,
+        two_pass: bool | None = None,
     ) -> UnifiedSearchResult:
         """Execute a unified search across multiple sources.
+
+        Supports two-pass search:
+        - Pass 1 (Recall): Search limited sources with broad query
+        - Pass 2 (Precision): If confidence low, expand to more sources
 
         Args:
             query: Search parameters
             sources: Specific sources to search (None = auto-select)
             region: Region for source recommendation
+            two_pass: Override config for two-pass search
 
         Returns:
             UnifiedSearchResult with aggregated records
         """
         start_time = time.time()
+        enable_two_pass = two_pass if two_pass is not None else self.config.second_pass_enabled
 
         # Determine which sources to search
         if sources:
-            active_sources = {k: v for k, v in self._sources.items() if k in sources}
+            first_pass_sources = {k: v for k, v in self._sources.items() if k in sources}
+            all_possible_sources = first_pass_sources  # No expansion if explicit sources
         elif region or query.record_types:
-            # Use record-type-aware routing: region_sources ∪ record_type_sources
+            # Use record-type-aware routing with priority ranking
             recommended = self.get_recommended_sources(
                 region=region,
                 record_types=query.record_types,
+                limit=self.config.first_pass_source_limit if enable_two_pass else None,
             )
-            active_sources = {k: v for k, v in self._sources.items() if k in recommended}
+            first_pass_sources = {k: v for k, v in self._sources.items() if k in recommended}
+
+            # Get all possible sources for second pass (no limit)
+            all_recommended = self.get_recommended_sources(
+                region=region,
+                record_types=query.record_types,
+                limit=None,
+            )
+            all_possible_sources = {k: v for k, v in self._sources.items() if k in all_recommended}
         else:
-            active_sources = self._sources
+            first_pass_sources = self._sources
+            all_possible_sources = self._sources
 
         # Filter out sources in exclude list
         if query.exclude_sources:
-            active_sources = {
-                k: v for k, v in active_sources.items()
+            first_pass_sources = {
+                k: v for k, v in first_pass_sources.items()
+                if k not in query.exclude_sources
+            }
+            all_possible_sources = {
+                k: v for k, v in all_possible_sources.items()
                 if k not in query.exclude_sources
             }
 
-        # Execute searches
+        # Filter out sources with open circuit breakers
+        first_pass_sources = self._filter_circuit_breakers(first_pass_sources)
+
+        # Execute first pass
         if self.config.parallel:
-            source_results = await self._search_parallel(query, active_sources)
+            source_results = await self._search_parallel(query, first_pass_sources)
         else:
-            source_results = await self._search_sequential(query, active_sources)
+            source_results = await self._search_sequential(query, first_pass_sources)
+
+        # Check if we need second pass
+        if enable_two_pass:
+            confidence = self._estimate_result_confidence(source_results)
+            if confidence < self.config.second_pass_confidence_threshold:
+                # Execute second pass with remaining sources
+                second_pass_sources = {
+                    k: v for k, v in all_possible_sources.items()
+                    if k not in source_results
+                }
+                second_pass_sources = self._filter_circuit_breakers(second_pass_sources)
+
+                if second_pass_sources:
+                    if self.config.parallel:
+                        more_results = await self._search_parallel(query, second_pass_sources)
+                    else:
+                        more_results = await self._search_sequential(query, second_pass_sources)
+                    source_results.update(more_results)
 
         # Aggregate results
         all_records = []
@@ -264,6 +470,9 @@ class SearchRouter:
         if self.config.deduplicate:
             all_records = self._deduplicate_records(all_records)
 
+        # Cluster records into person entities
+        entity_clusters = self._cluster_records(all_records)
+
         # Sort by confidence if enabled
         if self.config.sort_by_confidence:
             all_records.sort(
@@ -280,7 +489,112 @@ class SearchRouter:
             sources_searched=sources_searched,
             sources_failed=sources_failed,
             total_search_time_ms=total_time,
+            entity_clusters=entity_clusters,
         )
+
+    def _filter_circuit_breakers(
+        self,
+        sources: dict[str, GenealogySource],
+    ) -> dict[str, GenealogySource]:
+        """Filter out sources with open circuit breakers."""
+        if not self.config.circuit_breaker_enabled:
+            return sources
+
+        current_time = time.time()
+        filtered = {}
+
+        for name, source in sources.items():
+            metrics = self._metrics.get(name)
+            if metrics and metrics.circuit_open:
+                # Check if circuit should reset
+                if metrics.circuit_open_until and current_time >= metrics.circuit_open_until:
+                    metrics.circuit_open = False
+                    metrics.circuit_open_until = None
+                else:
+                    continue  # Skip this source
+            filtered[name] = source
+
+        return filtered
+
+    def _estimate_result_confidence(self, results: dict[str, SourceSearchResult]) -> float:
+        """Estimate overall confidence from search results."""
+        if not results:
+            return 0.0
+
+        total_records = 0
+        successful_sources = 0
+
+        for result in results.values():
+            if not result.error:
+                successful_sources += 1
+                total_records += len(result.records)
+
+        if successful_sources == 0:
+            return 0.0
+
+        # Heuristic: confidence based on records found and sources succeeded
+        record_factor = min(1.0, total_records / 10)  # Cap at 10 records
+        source_factor = successful_sources / len(results)
+
+        return (record_factor + source_factor) / 2
+
+    def _classify_error(self, error: str) -> ErrorType:
+        """Classify an error string into ErrorType category."""
+        error_lower = error.lower()
+
+        if "timeout" in error_lower:
+            return ErrorType.TIMEOUT
+        if "rate limit" in error_lower or "429" in error_lower or "too many" in error_lower:
+            return ErrorType.RATE_LIMIT
+        if "auth" in error_lower or "401" in error_lower or "403" in error_lower or "credential" in error_lower:
+            return ErrorType.AUTH
+        if "500" in error_lower or "502" in error_lower or "503" in error_lower or "504" in error_lower:
+            return ErrorType.TRANSIENT
+        if "connect" in error_lower or "network" in error_lower or "dns" in error_lower:
+            return ErrorType.TRANSIENT
+        if "400" in error_lower or "404" in error_lower or "invalid" in error_lower:
+            return ErrorType.PERMANENT
+
+        return ErrorType.UNKNOWN
+
+    def _is_retryable_error(self, error_type: ErrorType) -> bool:
+        """Determine if an error type is retryable."""
+        return error_type in {ErrorType.TIMEOUT, ErrorType.TRANSIENT, ErrorType.RATE_LIMIT}
+
+    def _update_metrics(
+        self,
+        source_name: str,
+        success: bool,
+        latency_ms: float,
+        record_count: int = 0,
+        error: str | None = None,
+    ) -> None:
+        """Update metrics for a source after a search."""
+        metrics = self._metrics.get(source_name)
+        if not metrics:
+            return
+
+        metrics.total_searches += 1
+
+        if success:
+            metrics.successful_searches += 1
+            metrics.total_records_returned += record_count
+            metrics.total_latency_ms += latency_ms
+            metrics.last_success_time = time.time()
+        else:
+            metrics.failed_searches += 1
+            metrics.last_error = error
+
+            if error:
+                error_type = self._classify_error(error).value
+                metrics.error_counts[error_type] = metrics.error_counts.get(error_type, 0) + 1
+
+            # Check circuit breaker threshold
+            if self.config.circuit_breaker_enabled:
+                recent_failures = metrics.failed_searches
+                if recent_failures >= self.config.circuit_breaker_threshold:
+                    metrics.circuit_open = True
+                    metrics.circuit_open_until = time.time() + self.config.circuit_breaker_reset_seconds
 
     def _get_stable_jitter(self, name: str) -> float:
         """Calculate deterministic jitter based on source name.
@@ -295,47 +609,73 @@ class SearchRouter:
         query: SearchQuery,
         sources: dict[str, GenealogySource],
     ) -> dict[str, SourceSearchResult]:
-        """Execute searches in parallel."""
+        """Execute searches in parallel with retry support and metrics tracking."""
 
         sem = asyncio.Semaphore(self.config.max_concurrent_searches)
 
         async def search_one(name: str, source: GenealogySource) -> tuple[str, SourceSearchResult]:
             start = time.time()
-            try:
-                # Stagger task start to avoid bursts
-                await asyncio.sleep(self._get_stable_jitter(name))
-                async with sem:
-                    records = await asyncio.wait_for(
-                        source.search(query),
-                        timeout=self.config.timeout_per_source,
-                    )
-                # Limit results
-                if len(records) > self.config.max_results_per_source:
-                    records = records[:self.config.max_results_per_source]
+            last_error: str | None = None
+            attempts = 0
+            max_attempts = 1 + (self.config.max_retries if self.config.retry_transient_errors else 0)
 
-                return name, SourceSearchResult(
-                    source_name=name,
-                    records=records,
-                    total_count=len(records),
-                    search_time_ms=(time.time() - start) * 1000,
-                )
-            except (asyncio.TimeoutError, TimeoutError):
-                return name, SourceSearchResult(
-                    source_name=name,
-                    records=[],
-                    total_count=0,
-                    search_time_ms=(time.time() - start) * 1000,
-                    error="timeout",
-                    error_details={"timeout_seconds": self.config.timeout_per_source},
-                )
-            except Exception as e:
-                return name, SourceSearchResult(
-                    source_name=name,
-                    records=[],
-                    total_count=0,
-                    search_time_ms=(time.time() - start) * 1000,
-                    error=str(e),
-                )
+            while attempts < max_attempts:
+                attempts += 1
+                try:
+                    # Stagger task start to avoid bursts (only on first attempt)
+                    if attempts == 1:
+                        await asyncio.sleep(self._get_stable_jitter(name))
+                    else:
+                        # Exponential backoff on retry
+                        backoff = self.config.retry_backoff_base * (2 ** (attempts - 2))
+                        await asyncio.sleep(backoff)
+
+                    async with sem:
+                        records = await asyncio.wait_for(
+                            source.search(query),
+                            timeout=self.config.timeout_per_source,
+                        )
+                    # Limit results
+                    if len(records) > self.config.max_results_per_source:
+                        records = records[:self.config.max_results_per_source]
+
+                    latency_ms = (time.time() - start) * 1000
+                    self._update_metrics(name, success=True, latency_ms=latency_ms, record_count=len(records))
+
+                    return name, SourceSearchResult(
+                        source_name=name,
+                        records=records,
+                        total_count=len(records),
+                        search_time_ms=latency_ms,
+                    )
+                except (asyncio.TimeoutError, TimeoutError):
+                    last_error = "timeout"
+                    error_type = ErrorType.TIMEOUT
+                except Exception as e:
+                    last_error = str(e)
+                    error_type = self._classify_error(last_error)
+
+                # Check if we should retry
+                if attempts < max_attempts and self._is_retryable_error(error_type):
+                    continue  # Retry
+                break  # No more retries
+
+            # All attempts failed
+            latency_ms = (time.time() - start) * 1000
+            self._update_metrics(name, success=False, latency_ms=latency_ms, error=last_error)
+
+            error_details = {"attempts": attempts}
+            if last_error == "timeout":
+                error_details["timeout_seconds"] = self.config.timeout_per_source
+
+            return name, SourceSearchResult(
+                source_name=name,
+                records=[],
+                total_count=0,
+                search_time_ms=latency_ms,
+                error=last_error,
+                error_details=error_details,
+            )
 
         tasks = [search_one(name, source) for name, source in sources.items()]
         results = await asyncio.gather(*tasks)
@@ -346,41 +686,69 @@ class SearchRouter:
         query: SearchQuery,
         sources: dict[str, GenealogySource],
     ) -> dict[str, SourceSearchResult]:
-        """Execute searches sequentially with per-source timeout."""
+        """Execute searches sequentially with retry support and metrics tracking."""
         results = {}
 
         for name, source in sources.items():
             start = time.time()
-            try:
-                records = await asyncio.wait_for(
-                    source.search(query),
-                    timeout=self.config.timeout_per_source,
-                )
-                if len(records) > self.config.max_results_per_source:
-                    records = records[:self.config.max_results_per_source]
+            last_error: str | None = None
+            attempts = 0
+            max_attempts = 1 + (self.config.max_retries if self.config.retry_transient_errors else 0)
+
+            while attempts < max_attempts:
+                attempts += 1
+                try:
+                    if attempts > 1:
+                        # Exponential backoff on retry
+                        backoff = self.config.retry_backoff_base * (2 ** (attempts - 2))
+                        await asyncio.sleep(backoff)
+
+                    records = await asyncio.wait_for(
+                        source.search(query),
+                        timeout=self.config.timeout_per_source,
+                    )
+                    if len(records) > self.config.max_results_per_source:
+                        records = records[:self.config.max_results_per_source]
+
+                    latency_ms = (time.time() - start) * 1000
+                    self._update_metrics(name, success=True, latency_ms=latency_ms, record_count=len(records))
+
+                    results[name] = SourceSearchResult(
+                        source_name=name,
+                        records=records,
+                        total_count=len(records),
+                        search_time_ms=latency_ms,
+                    )
+                    break  # Success, move to next source
+
+                except (asyncio.TimeoutError, TimeoutError):
+                    last_error = "timeout"
+                    error_type = ErrorType.TIMEOUT
+                except Exception as e:
+                    last_error = str(e)
+                    error_type = self._classify_error(last_error)
+
+                # Check if we should retry
+                if attempts < max_attempts and self._is_retryable_error(error_type):
+                    continue  # Retry
+                break  # No more retries
+
+            # If we didn't successfully break out, record the error
+            if name not in results:
+                latency_ms = (time.time() - start) * 1000
+                self._update_metrics(name, success=False, latency_ms=latency_ms, error=last_error)
+
+                error_details = {"attempts": attempts}
+                if last_error == "timeout":
+                    error_details["timeout_seconds"] = self.config.timeout_per_source
 
                 results[name] = SourceSearchResult(
                     source_name=name,
-                    records=records,
-                    total_count=len(records),
-                    search_time_ms=(time.time() - start) * 1000,
-                )
-            except (asyncio.TimeoutError, TimeoutError):
-                results[name] = SourceSearchResult(
-                    source_name=name,
                     records=[],
                     total_count=0,
-                    search_time_ms=(time.time() - start) * 1000,
-                    error="timeout",
-                    error_details={"timeout_seconds": self.config.timeout_per_source},
-                )
-            except Exception as e:
-                results[name] = SourceSearchResult(
-                    source_name=name,
-                    records=[],
-                    total_count=0,
-                    search_time_ms=(time.time() - start) * 1000,
-                    error=str(e),
+                    search_time_ms=latency_ms,
+                    error=last_error,
+                    error_details=error_details,
                 )
 
         return results
@@ -457,6 +825,117 @@ class SearchRouter:
         # Create stable hash
         content = "|".join(sorted(parts))
         return hashlib.md5(content.encode()).hexdigest()
+
+    def _cluster_records(self, records: list[RawRecord]) -> list[EntityCluster]:
+        """Cluster records into person entities based on fingerprints.
+
+        Groups records that likely represent the same person, computing
+        best estimates for each cluster's key fields.
+        """
+        import re
+        import uuid
+
+        # Group records by fingerprint
+        clusters_by_fingerprint: dict[str, list[RawRecord]] = {}
+        unclustered: list[RawRecord] = []
+
+        for record in records:
+            fingerprint = self._compute_record_fingerprint(record)
+            if fingerprint:
+                if fingerprint not in clusters_by_fingerprint:
+                    clusters_by_fingerprint[fingerprint] = []
+                clusters_by_fingerprint[fingerprint].append(record)
+            else:
+                unclustered.append(record)
+
+        # Build EntityCluster objects
+        clusters: list[EntityCluster] = []
+
+        for fingerprint, cluster_records in clusters_by_fingerprint.items():
+            cluster = EntityCluster(
+                cluster_id=str(uuid.uuid4())[:8],
+                fingerprint=fingerprint,
+                records=cluster_records,
+                sources={r.source for r in cluster_records},
+            )
+
+            # Compute best estimates from cluster records
+            cluster.best_name = self._best_value_from_records(cluster_records, ["full_name"])
+            cluster.best_birth_place = self._best_value_from_records(cluster_records, ["birth_place"])
+
+            # Extract birth year
+            birth_str = self._best_value_from_records(cluster_records, ["birth_year", "birth_date"])
+            if birth_str:
+                year_match = re.search(r"\b(1\d{3}|20\d{2})\b", str(birth_str))
+                if year_match:
+                    cluster.best_birth_year = int(year_match.group(1))
+
+            # Extract death year
+            death_str = self._best_value_from_records(cluster_records, ["death_year", "death_date"])
+            if death_str:
+                year_match = re.search(r"\b(1\d{3}|20\d{2})\b", str(death_str))
+                if year_match:
+                    cluster.best_death_year = int(year_match.group(1))
+
+            # Compute confidence based on corroboration
+            base_confidence = sum(r.confidence_hint or 0.5 for r in cluster_records) / len(cluster_records)
+            # Boost confidence for multi-source corroboration
+            source_boost = min(0.2, 0.05 * (cluster.source_count - 1))
+            cluster.confidence = min(1.0, base_confidence + source_boost)
+
+            clusters.append(cluster)
+
+        # Create single-record clusters for unclustered records
+        for record in unclustered:
+            cluster = EntityCluster(
+                cluster_id=str(uuid.uuid4())[:8],
+                fingerprint=f"single:{record.source}:{record.record_id}",
+                records=[record],
+                sources={record.source},
+                confidence=record.confidence_hint or 0.5,
+            )
+            fields = record.extracted_fields
+            cluster.best_name = fields.get("full_name")
+            cluster.best_birth_place = fields.get("birth_place")
+
+            birth_str = fields.get("birth_year") or fields.get("birth_date")
+            if birth_str:
+                year_match = re.search(r"\b(1\d{3}|20\d{2})\b", str(birth_str))
+                if year_match:
+                    cluster.best_birth_year = int(year_match.group(1))
+
+            clusters.append(cluster)
+
+        # Sort clusters by confidence (highest first), then by record count
+        clusters.sort(key=lambda c: (-c.confidence, -c.record_count))
+
+        return clusters
+
+    def _best_value_from_records(
+        self,
+        records: list[RawRecord],
+        field_names: list[str],
+    ) -> str | None:
+        """Get the best value for a field from multiple records.
+
+        Prefers values from higher-confidence records.
+        """
+        candidates: list[tuple[str, float]] = []
+
+        for record in records:
+            confidence = record.confidence_hint or 0.5
+            for field in field_names:
+                val = record.extracted_fields.get(field)
+                if val:
+                    candidates.append((str(val), confidence))
+                    break  # Use first matching field
+
+        if not candidates:
+            return None
+
+        # Return value from highest-confidence record
+        candidates.sort(key=lambda x: -x[1])
+        return candidates[0][0]
 
     async def search_person(
         self,
