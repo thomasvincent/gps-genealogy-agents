@@ -815,7 +815,8 @@ def wiki_apply(
     approval_file: Path = typer.Option(..., "--approval"),  # noqa: B008
     drafts_root: Path = typer.Option(Path("drafts"), "--drafts-root"),  # noqa: B008
 ) -> None:
-    """Validate approval, stage drafts, perform idempotent Wikidata apply, and commit results."""
+    """Validate approval, run pre-apply quality gates, stage drafts, perform idempotent Wikidata apply, and commit results."""
+    import re
     import yaml
     if not bundle_dir.exists():
         console.print(f"[red]Bundle dir not found: {bundle_dir}[/red]")
@@ -826,6 +827,44 @@ def wiki_apply(
     data = yaml.safe_load(approval_file.read_text(encoding="utf-8"))
     if not (isinstance(data, dict) and data.get("approved") is True and data.get("reviewer")):
         console.print("[red]Approval file must contain approved: true and reviewer: ...[/red]")
+        raise typer.Exit(1)
+
+    # Pre-apply quality checks
+    # 1) Wikipedia draft Grade >= 9 and contains RESEARCH_NOTES
+    wiki_md = (bundle_dir / "wikipedia_draft.md").read_text(encoding="utf-8") if (bundle_dir / "wikipedia_draft.md").exists() else ""
+    grade_ok = False
+    notes_ok = False
+    if wiki_md:
+        # Try to locate a 'GPS Grade Card' section with an overall grade; tolerate multiple formats
+        m = re.search(r"(?i)(gps\s*grade\s*card).*?(\b(\d{1,2})(?:/10)?\b)", wiki_md, re.S)
+        if m:
+            try:
+                g = int(re.search(r"\d{1,2}", m.group(2)).group(0))  # type: ignore
+                grade_ok = g >= 9
+            except Exception:
+                grade_ok = False
+        # Research notes section
+        notes_ok = bool(re.search(r"(?i)^(#+\s*)?(research[_\s-]?notes)\b", wiki_md, re.M))
+    if not grade_ok:
+        console.print("[red]Pre-apply failed: Wikipedia draft does not show Grade >= 9/10.[/red]")
+        raise typer.Exit(1)
+    if not notes_ok:
+        console.print("[red]Pre-apply failed: Wikipedia draft missing RESEARCH_NOTES section.[/red]")
+        raise typer.Exit(1)
+
+    # 2) Wikidata payload has multilingual labels/descriptions/aliases
+    payload_path = bundle_dir / "wikidata_payload.json"
+    if not payload_path.exists():
+        console.print("[red]Pre-apply failed: wikidata_payload.json missing.[/red]")
+        raise typer.Exit(1)
+    payload = json.loads(payload_path.read_text(encoding="utf-8"))
+    required_langs = {"en", "es", "fr", "de", "it", "nl"}
+    labels = payload.get("labels") or {}
+    descs = payload.get("descriptions") or {}
+    have = {k for k in labels.keys()} | {k for k in descs.keys()}
+    missing = required_langs - have
+    if missing:
+        console.print(f"[red]Pre-apply failed: Wikidata payload missing languages: {sorted(missing)}[/red]")
         raise typer.Exit(1)
 
     # Copy approval file into bundle dir as approved.yaml
