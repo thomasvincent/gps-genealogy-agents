@@ -24,4 +24,7 @@ def __getattr__(name: str):
     if name == "sk":
         from gps_agents import sk
         return sk
+    if name == "research":
+        from gps_agents import research
+        return research
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
