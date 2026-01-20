@@ -34,8 +34,8 @@ class ChroniclingAmericaSource(BaseSource):
     """
 
     name = "ChroniclingAmerica"
-    base_url = "https://chroniclingamerica.loc.gov"
-    api_url = f"{base_url}/search/pages/results"
+    base_url = "https://www.loc.gov"
+    api_url = f"{base_url}/collections/chronicling-america/search"
 
     def requires_auth(self) -> bool:
         """Chronicling America is completely free, no login required."""
@@ -60,29 +60,27 @@ class ChroniclingAmericaSource(BaseSource):
         if not search_terms:
             return []
 
-        # API parameters
+        # API parameters - new LOC Collections API format
         params: dict[str, Any] = {
-            "andtext": " ".join(search_terms),
-            "format": "json",
-            "rows": 20,
+            "q": " ".join(search_terms),
+            "fo": "json",  # format = json
+            "c": 20,  # count
         }
 
         # Add date range based on birth/death years
         # Newspapers covered: 1777-1963
         if query.birth_year:
             # Search from a few years before birth to find birth announcements
-            # and family context
-            params["dateFilterType"] = "range"
             start_year = max(1777, query.birth_year - 5)
             end_year = min(1963, (query.death_year or query.birth_year) + 50)
-            params["date1"] = f"{start_year}"
-            params["date2"] = f"{end_year}"
+            # LOC uses dates[] parameter
+            params["dates"] = f"{start_year}/{end_year}"
 
-        # Add state filter if provided
+        # Add state filter if provided (LOC uses fa parameter for facets)
         if query.state:
-            state_codes = self._get_state_code(query.state)
-            if state_codes:
-                params["state"] = state_codes
+            state_name = self._get_state_code(query.state)
+            if state_name:
+                params["fa"] = f"location:{state_name}"
 
         try:
             async with httpx.AsyncClient(
@@ -105,7 +103,8 @@ class ChroniclingAmericaSource(BaseSource):
         """Parse API JSON response into RawRecords."""
         records: list[RawRecord] = []
 
-        items = data.get("items", [])
+        # LOC Collections API returns "results" instead of "items"
+        items = data.get("results", []) or data.get("items", [])
         for item in items[:20]:
             try:
                 record = self._item_to_record(item)
@@ -119,26 +118,39 @@ class ChroniclingAmericaSource(BaseSource):
 
     def _item_to_record(self, item: dict[str, Any]) -> RawRecord:
         """Convert a Chronicling America result to RawRecord."""
-        # Extract key fields
-        record_id = item.get("id", "")
-        url = item.get("url", "") or f"{self.base_url}{record_id}"
+        # Extract key fields - LOC Collections API format
+        record_id = item.get("id", "") or item.get("pk", "")
+        url = item.get("url", "") or item.get("link", "") or f"{self.base_url}{record_id}"
 
-        # Newspaper info
-        title = item.get("title", "Unknown Newspaper")
-        date = item.get("date", "")  # YYYYMMDD format
-        place = item.get("city", [])
-        state = item.get("state", [])
+        # Newspaper info - try multiple field names
+        title = (
+            item.get("title", "")
+            or item.get("item", {}).get("title", "")
+            or item.get("partof_title", "")
+            or "Unknown Newspaper"
+        )
+        date = item.get("date", "") or item.get("date_issued", "")
+
+        # Location from various possible fields
+        place = item.get("city", []) or item.get("location_city", [])
+        state = item.get("state", []) or item.get("location_state", [])
+        location_field = item.get("location", [])
 
         # Format date nicely
-        date_formatted = ""
-        if date and len(date) == 8:
+        date_formatted = str(date)
+        if date and isinstance(date, str) and len(date) == 8 and date.isdigit():
             try:
                 date_formatted = f"{date[:4]}-{date[4:6]}-{date[6:8]}"
             except (IndexError, ValueError):
                 date_formatted = date
 
-        # OCR text snippet
-        ocr_text = item.get("ocr_eng", "")[:500] if item.get("ocr_eng") else ""
+        # OCR text snippet - try multiple fields
+        ocr_text = (
+            item.get("ocr_eng", "")
+            or item.get("description", "")
+            or item.get("extract", "")
+            or ""
+        )[:500]
 
         # Location
         location_parts = []
@@ -146,7 +158,9 @@ class ChroniclingAmericaSource(BaseSource):
             location_parts.extend(place if isinstance(place, list) else [place])
         if state:
             location_parts.extend(state if isinstance(state, list) else [state])
-        location = ", ".join(location_parts)
+        if location_field and not location_parts:
+            location_parts.extend(location_field if isinstance(location_field, list) else [location_field])
+        location = ", ".join(str(p) for p in location_parts)
 
         extracted = {
             "newspaper_title": title,

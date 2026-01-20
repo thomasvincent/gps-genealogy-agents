@@ -26,7 +26,17 @@
     "year": null,
     "place": null,
     "confidence": 0.0,
-    "note": "No obituary found as of 2026"
+    "note": "No obituary found as of 2026",
+    "ssdi_search": {
+      "searched": "2026-01-20",
+      "result": "not_found",
+      "interpretation": "Not listed in Social Security Death Index - may indicate subject is still living (would be ~93-94 years old)"
+    },
+    "find_a_grave_search": {
+      "searched": "2026-01-20",
+      "result": "not_found",
+      "note": "No matching burial record found"
+    }
   },
   "education": [
     {
@@ -307,6 +317,26 @@
     {"place": "Andrews AFB, Maryland", "type": "military"},
     {"place": "MacDill AFB, Florida", "type": "military"}
   ],
+  "media": {
+    "wikimedia_commons_photos": [
+      {
+        "title": "President Sharari of Nigeria greeting BGEN Archer Durham",
+        "url": "https://commons.wikimedia.org/wiki/File:President_Sharari_of_Nigeria_is_greeted_by_BGEN_Archer_Durham_upon_his_arrival_for_a_visit._Andrews_AFB.jpg",
+        "location": "Andrews AFB",
+        "date": "1980",
+        "source": "NARA"
+      },
+      {
+        "title": "Turkish Air Force commander visit",
+        "url": "https://commons.wikimedia.org/wiki/File:GEN_Sahinkaya,_commander_of_the_Turkish_air_force_is_greeted_by_BGEN_Archer_Durham_upon_his_arrival_for_a_visit_-_DPLA_-_94c675586a26ed81af13dd414afaab2c.jpeg",
+        "source": "NARA/DPLA"
+      }
+    ],
+    "official_portrait": {
+      "status": "not_retrieved",
+      "note": "USAF official portrait exists at af.mil but requires manual retrieval (bot protection)"
+    }
+  },
   "sources": [
     {
       "title": "California Birth Index 1905-1995",

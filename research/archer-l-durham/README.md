@@ -83,13 +83,24 @@ Two photos of BGEN Archer Durham already exist on Commons:
 - [x] ~~Mother's maiden name~~ → Sorrell (California Birth Index)
 - [x] ~~Siblings~~ → Barbara Camille (1926), Barney (1929)
 - [x] ~~Photos~~ → 2 photos on Wikimedia Commons
+- [x] ~~SSDI search~~ → Not found (may indicate still living)
+- [x] ~~Find A Grave search~~ → Not found
 - [ ] Parents' full names (father's given name unknown)
 - [ ] Spouse information
 - [ ] Children information
-- [ ] Death date and place (no obituary found)
+- [ ] Death date and place (no obituary found; **possibly still living at ~93-94 years old**)
 - [ ] Official USAF portrait (af.mil blocked; need manual retrieval)
 - [ ] Detailed DOE tenure dates
 - [ ] Post-DOE career/retirement
+
+## Search Results Summary (2026-01-20)
+
+| Source | Result | Interpretation |
+|--------|--------|----------------|
+| SSDI (FamilySearch) | Not Found | May indicate subject is still living |
+| Find A Grave | Not Found | No burial record on file |
+| Chronicling America | N/A | Coverage ends 1963; subject's notable career was post-1963 |
+| Wikimedia Commons | 2 Photos | Already uploaded from NARA |
 
 ## How to Use
 
