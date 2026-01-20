@@ -370,6 +370,7 @@ REQUIRED OUTPUT HEADERS (for automation parsing):
 ### 📊 GPS Grade Card
 ### 🧬 Extracted Entities
 ### 🔍 REVIEW REPORT
+### 🧭 Research Notes
 ### 🚀 Sync Commands
 
 HARD RULES:
@@ -384,7 +385,7 @@ LINGUIST_PROMPT = r"""You are the Linguist Agent. You specialize in the distinct
 Wikipedia (encyclopedic NPOV) and WikiTree (collaborative narrative).
 
 TASKS:
-1. Draft a Wikipedia lead section with neutral tone and infobox data
+1. Draft a Wikipedia lead section with neutral tone and infobox data (target "Grade A": comprehensive, neutral, well-sourced; if not at 9/10, list exact improvements)
 2. Generate a WikiTree biography using community templates (e.g., {{Birth Date and Age}})
 3. Provide a DIFF block suggesting specific improvements for the user's local Markdown article
 4. Grade the article on a scale of 1-10 based on GPS Pillar 5 (Written Conclusion)
@@ -411,6 +412,10 @@ Rate each of the 5 GPS Pillars:
 
 OUTPUT FORMAT:
 ### 📊 GPS Grade Card
+[Scores and overall grade]
+
+### RESEARCH_NOTES
+[List unknowns/uncertainties, conflicts, and next actions with specific sources to consult]
 [Pillar scores and overall grade]
 
 ### WIKIPEDIA_DRAFT
@@ -454,6 +459,10 @@ WIKIDATA PROPERTIES (commonly used for genealogy):
 - P735: given name
 - P734: family name
 - P1412: languages spoken
+
+MULTILINGUAL REQUIREMENTS:
+- Provide labels, descriptions, and aliases for at least: en, es, fr, de, it, nl
+- If native or regional languages are inferable from sources, include them as well
 
 PAYLOAD STRUCTURE:
 Each claim must include:

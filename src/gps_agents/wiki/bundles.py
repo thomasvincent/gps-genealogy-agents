@@ -104,6 +104,7 @@ def write_wiki_bundle(
     wikitree_path = base / "wikitree_bio.md"
     wikitree_yaml = base / "wikitree_profile.yaml"
     gedcom_path = base / "subject.ged"
+    mermaid_path = base / "family.mmd"
 
     # Deterministic JSON/text writes
     atomic_write(plan_path, json.dumps({
@@ -131,6 +132,7 @@ def write_wiki_bundle(
         "- wikitree_bio.md",
         "- wikitree_profile.yaml",
         "- subject.ged",
+        "- family.mmd",
         "",
         "Approval required before apply. Create approved.yaml with approved: true and reviewer: ...",
     ]
@@ -152,9 +154,17 @@ def write_wiki_bundle(
         # Fallback: write JSON as YAML placeholder
         atomic_write(wikitree_yaml, json.dumps(artifacts.get("wikitree_profile", {}), indent=2).encode("utf-8"))
 
-    # GEDCOM
+    # GEDCOM (fallback: empty if not provided)
     gedcom_text = artifacts.get("gedcom") or ""
     atomic_write(gedcom_path, gedcom_text.encode("utf-8"))
+
+    # Mermaid family graph (generate from ledger if available)
+    try:
+        from gps_agents.export.mermaid import export_mermaid
+        export_mermaid(Path("data/ledger"), mermaid_path, root_filter=subject)
+    except Exception:
+        # Write a placeholder
+        atomic_write(mermaid_path, f"flowchart TD\n  A[\"{subject}\"]".encode("utf-8"))
 
     return WikiBundle(
         run_id=run_id,
