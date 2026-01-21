@@ -145,7 +145,8 @@ def upsert_person(
             projection.save_fingerprint("person", fp.value, m.matched_handle)
             projection.set_external_ids(fp.value, gramps_handle=m.matched_handle)
             return UpsertResult(handle=m.matched_handle or "", created=False, action="merge")
-        if CONFIG.review_low <= score < CONFIG.review_high:
+        # Use adjusted threshold for review range to account for weak evidence margin
+        if CONFIG.review_low <= score < threshold:
             raise IdempotencyBlock(
                 reason="Probable duplicate requires review",
                 match_score=score,
@@ -166,7 +167,7 @@ def upsert_person(
             if claimed == 0:
                 # Lost race; reuse winner
                 reuse = projection.get_gramps_handle_by_fingerprint(fp.value)
-            return UpsertResult(handle=reuse or handle, created=False, action="reuse")
+                return UpsertResult(handle=reuse or handle, created=False, action="reuse")
             projection.set_external_ids(fp.value, gramps_handle=handle, last_synced_at=datetime.now(UTC).isoformat())
             return UpsertResult(handle=handle, created=True)
     except Exception:

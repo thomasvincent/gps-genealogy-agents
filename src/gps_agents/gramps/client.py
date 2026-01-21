@@ -23,7 +23,10 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from uuid_utils import uuid7
 
 from gps_agents.gramps.models import (
+    Event,
+    EventType,
     Family,
+    GrampsDate,
     Name,
     Person,
     Source,
@@ -226,7 +229,37 @@ class GrampsClient:
         # Private flag
         person.is_private = data.get("private", False)
 
+        # Parse birth event
+        birth_data = data.get("birth")
+        if birth_data:
+            person.birth = self._event_from_data(birth_data, EventType.BIRTH)
+
+        # Parse death event
+        death_data = data.get("death")
+        if death_data:
+            person.death = self._event_from_data(death_data, EventType.DEATH)
+
         return person
+
+    def _event_from_data(self, data: dict[str, Any], event_type: EventType) -> Event | None:
+        """Convert event data dict to Event model."""
+        if not data:
+            return None
+
+        date_data = data.get("date")
+        gramps_date = None
+        if date_data:
+            gramps_date = GrampsDate(
+                year=date_data.get("year"),
+                month=date_data.get("month"),
+                day=date_data.get("day"),
+            )
+
+        return Event(
+            event_type=event_type,
+            date=gramps_date,
+            place=data.get("place"),
+        )
 
     def _get_primary_surname(self, name_data: dict[str, Any]) -> str:
         """Extract primary surname from Gramps name structure."""

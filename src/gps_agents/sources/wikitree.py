@@ -81,17 +81,24 @@ class WikiTreeSource(BaseSource):
             logger.warning("WikiTree get_record error: %s", e)
             return None
 
-    def _parse_search_results(self, data: dict) -> list[RawRecord]:
+    def _parse_search_results(self, data: dict | list) -> list[RawRecord]:
         """Parse WikiTree search results.
 
         Args:
-            data: API response
+            data: API response (can be dict with searchPerson key, or list directly)
 
         Returns:
             List of RawRecord objects
         """
         records = []
-        results = data.get("searchPerson", [])
+
+        # Handle both list responses and dict responses
+        if isinstance(data, list):
+            results = data
+        elif isinstance(data, dict):
+            results = data.get("searchPerson", [])
+        else:
+            return records
 
         if isinstance(results, list):
             for person in results:

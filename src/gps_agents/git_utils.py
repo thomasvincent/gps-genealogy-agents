@@ -23,6 +23,7 @@ def _head_file_bytes(repo: Path, relpath: str) -> bytes | None:
         return subprocess.check_output(
             ["git", "--no-pager", "show", f"HEAD:{relpath}"],
             cwd=str(repo),
+            stderr=subprocess.DEVNULL,
         )
     except subprocess.CalledProcessError:
         return None
@@ -40,7 +41,11 @@ def commit_if_changed(repo: Path | str, files: Iterable[Path | str], message: st
 
 def _index_file_bytes(repo: Path, relpath: str) -> bytes | None:
     try:
-        return subprocess.check_output(["git", "--no-pager", "show", f":{relpath}"], cwd=str(repo))
+        return subprocess.check_output(
+            ["git", "--no-pager", "show", f":{relpath}"],
+            cwd=str(repo),
+            stderr=subprocess.DEVNULL,
+        )
     except subprocess.CalledProcessError:
         return None
 
@@ -55,9 +60,15 @@ def safe_commit(repo: Path | str, files: Iterable[Path | str], message: str, *, 
     - Else commit
     """
     repo = Path(repo)
-    # Stage files
-    paths = [str(Path(f).relative_to(repo)) for f in files]
-    subprocess.check_call(["git", "add", *paths], cwd=str(repo))
+    # Stage files - handle both absolute and relative paths
+    paths = []
+    for f in files:
+        p = Path(f)
+        if p.is_absolute():
+            paths.append(str(p.relative_to(repo)))
+        else:
+            paths.append(str(p))
+    subprocess.check_call(["git", "add", "-f", *paths], cwd=str(repo))
 
     changed = False
     for rel in paths:

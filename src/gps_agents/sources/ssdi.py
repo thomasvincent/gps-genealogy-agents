@@ -1,9 +1,17 @@
 """Social Security Death Index (SSDI) source connector.
 
 Provides access to SSDI data through publicly available search interfaces.
-No login required. Uses multiple fallback sources:
-1. FamilySearch SSDI (free, comprehensive)
-2. Steve Morse one-step tools (redirects to various sources)
+
+IMPORTANT LIMITATIONS:
+- FamilySearch requires authentication for search results (as of 2024)
+- SSDI updates have a 3-6 month lag from date of death
+- Recent deaths (within past year) may not appear in searches
+- For living persons, searches will return no results (expected)
+
+Available approaches:
+1. FamilySearch SSDI - requires free account login
+2. Steve Morse one-step tools - generates URLs for manual search
+3. Ancestry SSDI - requires paid subscription
 """
 from __future__ import annotations
 
@@ -23,24 +31,39 @@ logger = logging.getLogger(__name__)
 
 
 class SSDISource(BaseSource):
-    """Social Security Death Index source (no login required).
+    """Social Security Death Index source.
 
-    Searches public SSDI data for death records including:
+    Searches SSDI for death records including:
     - Death date
     - Last residence (state/ZIP)
     - SSN (partial, last 4 digits visible in some sources)
     - Birth date (month/year)
 
-    Uses FamilySearch's free SSDI collection as primary source.
+    IMPORTANT: FamilySearch now requires authentication for search results.
+    This source will attempt the search but may return empty results without
+    a valid FamilySearch session. For reliable results, use the
+    SteveMorseOneStepSource to generate manual search URLs.
+
+    Known limitations:
+    - SSDI has 3-6 month lag from death to indexing
+    - Very recent deaths (2024+) may not appear yet
+    - Requires FamilySearch authentication for actual results
     """
 
     name = "SSDI"
-    # FamilySearch search URL (public search interface)
-    base_url = "https://www.familysearch.org/search/collection/1202535/results"
+    # FamilySearch collection-specific search URL
+    # Note: This endpoint redirects to login without authentication
+    base_url = "https://www.familysearch.org/search/collection/1202535"
+
+    # Alternative endpoints that may work for basic queries
+    _alt_endpoints = [
+        "https://www.familysearch.org/search/record/results",
+        "https://api.familysearch.org/platform/records/search",
+    ]
 
     def requires_auth(self) -> bool:
-        """SSDI search does not require authentication."""
-        return False
+        """SSDI search via FamilySearch now requires authentication."""
+        return True  # Changed: FamilySearch requires login as of 2024
 
     async def search(self, query: SearchQuery) -> list[RawRecord]:
         """Search SSDI for death records matching the query.
@@ -60,9 +83,17 @@ class SSDISource(BaseSource):
         return records
 
     async def _search_familysearch(self, query: SearchQuery) -> list[RawRecord]:
-        """Search FamilySearch's free SSDI collection.
+        """Search FamilySearch's SSDI collection.
 
-        Collection: United States Social Security Death Index
+        Collection: United States Social Security Death Index (1202535)
+
+        NOTE: As of 2024, FamilySearch requires authentication for search results.
+        Without a valid session cookie, this will return an empty list or redirect
+        to a login page. The search is still attempted for cases where the user
+        has configured FamilySearch authentication.
+
+        For unauthenticated searches, use SteveMorseOneStepSource to generate
+        manual search URLs that the user can open in a browser.
         """
         # Build FamilySearch search URL
         # Collection ID for SSDI on FamilySearch
@@ -113,8 +144,18 @@ class SSDISource(BaseSource):
                 else:
                     return self._parse_familysearch_html(resp.text)
 
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code in (401, 403, 404):
+                logger.info(
+                    f"FamilySearch SSDI requires authentication (HTTP {e.response.status_code}). "
+                    "Use SteveMorseOneStepSource for manual search URLs, or configure "
+                    "FAMILYSEARCH_ACCESS_TOKEN environment variable."
+                )
+            else:
+                logger.warning(f"FamilySearch SSDI search failed: {e}")
+            return []
         except httpx.HTTPError as e:
-            logger.warning(f"FamilySearch SSDI search failed: {e}")
+            logger.warning(f"FamilySearch SSDI connection error: {e}")
             return []
 
     def _parse_familysearch_json(self, data: dict[str, Any]) -> list[RawRecord]:
@@ -339,10 +380,16 @@ class SteveMorseOneStepSource(BaseSource):
     Provides URL generation for various genealogy databases via
     stevemorse.org one-step tools. These tools simplify searching
     by constructing proper query URLs for:
-    - SSDI
-    - Ellis Island
-    - Census records
+    - SSDI (Social Security Death Index)
+    - Ellis Island passenger records
+    - Census records (1790-1950)
     - Naturalization records
+    - Vital records
+
+    IMPORTANT: This is the recommended approach for free census searches.
+    While FamilySearch and Ancestry require authentication for automated
+    searches, Steve Morse one-step tools generate URLs that users can
+    open in a browser and search manually or with a free FamilySearch account.
 
     Note: This source generates search URLs rather than scraping,
     as the one-step tools redirect to external databases.
@@ -398,6 +445,123 @@ class SteveMorseOneStepSource(BaseSource):
             params.append(f"givenname={quote_plus(given_name)}")
         if year:
             params.append(f"year={year}")
+
+        if params:
+            return f"{base}?{'&'.join(params)}"
+        return base
+
+    def get_census_search_url(
+        self,
+        census_year: int,
+        surname: str | None = None,
+        given_name: str | None = None,
+        state: str | None = None,
+        county: str | None = None,
+    ) -> str:
+        """Generate census search URL via Steve Morse one-step.
+
+        Supports census years: 1790, 1800, 1810, 1820, 1830, 1840, 1850,
+        1860, 1870, 1880, 1890 (fragments), 1900, 1910, 1920, 1930, 1940, 1950.
+
+        Args:
+            census_year: Year of census (e.g., 1940)
+            surname: Last name to search
+            given_name: First name to search
+            state: State name or abbreviation
+            county: County name
+
+        Returns:
+            URL for Steve Morse census one-step tool
+        """
+        # Map census years to Steve Morse tool pages
+        census_tools = {
+            1790: "census/unified1790.html",
+            1800: "census/unified1800.html",
+            1810: "census/unified1810.html",
+            1820: "census/unified1820.html",
+            1830: "census/unified1830.html",
+            1840: "census/unified1840.html",
+            1850: "census/unified1850.html",
+            1860: "census/unified1860.html",
+            1870: "census/unified1870.html",
+            1880: "census/unified1880.html",
+            1900: "census/unified1900.html",
+            1910: "census/unified1910.html",
+            1920: "census/unified1920.html",
+            1930: "census/unified1930.html",
+            1940: "census/unified1940.html",
+            1950: "census/unified1950.html",
+        }
+
+        tool_page = census_tools.get(census_year, "census/unified1940.html")
+        base = f"{self.base_url}/{tool_page}"
+        params = []
+
+        if surname:
+            params.append(f"surname={quote_plus(surname)}")
+        if given_name:
+            params.append(f"givenname={quote_plus(given_name)}")
+        if state:
+            params.append(f"state={quote_plus(state)}")
+        if county:
+            params.append(f"county={quote_plus(county)}")
+
+        if params:
+            return f"{base}?{'&'.join(params)}"
+        return base
+
+    def get_familysearch_census_url(
+        self,
+        census_year: int,
+        surname: str | None = None,
+        given_name: str | None = None,
+        state: str | None = None,
+    ) -> str:
+        """Generate direct FamilySearch census collection URL.
+
+        NOTE: Clicking these links requires a free FamilySearch account,
+        but the account is free to create and provides full access to
+        most census records.
+
+        Args:
+            census_year: Census year
+            surname: Last name
+            given_name: First name
+            state: State to search
+
+        Returns:
+            FamilySearch collection search URL
+        """
+        # FamilySearch collection IDs for US Census
+        collection_ids = {
+            1790: "1803959",
+            1800: "1804228",
+            1810: "1803765",
+            1820: "1803955",
+            1830: "1803958",
+            1840: "1786457",
+            1850: "1401638",
+            1860: "1473181",
+            1870: "1438024",
+            1880: "1417683",
+            1900: "1325221",
+            1910: "1727033",
+            1920: "1488411",
+            1930: "1810731",
+            1940: "2000219",
+            1950: "4313685",
+        }
+
+        collection_id = collection_ids.get(census_year, "2000219")  # Default to 1940
+        base = f"https://www.familysearch.org/search/collection/{collection_id}"
+
+        params = []
+        if surname:
+            params.append(f"q.surname={quote_plus(surname)}")
+        if given_name:
+            params.append(f"q.givenName={quote_plus(given_name)}")
+        if state:
+            params.append(f"q.residencePlace={quote_plus(state)}")
 
         if params:
             return f"{base}?{'&'.join(params)}"

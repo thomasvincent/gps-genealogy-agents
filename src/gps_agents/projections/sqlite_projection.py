@@ -39,7 +39,6 @@ class SQLiteProjection:
             yield conn
         finally:
             conn.close()
-            conn.close()
 
     def _init_schema(self) -> None:
         with self._get_conn() as conn:

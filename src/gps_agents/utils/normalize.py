@@ -152,8 +152,49 @@ def normalize_place(place: str, keep_case: bool = False) -> str:
         r"\bpvnc\.\s*": "province ",
     }
 
+    # US state abbreviations (common ones for genealogy)
+    us_states = {
+        r"\bny\b": "new york",
+        r"\bca\b": "california",
+        r"\btx\b": "texas",
+        r"\bpa\b": "pennsylvania",
+        r"\bma\b": "massachusetts",
+        r"\bva\b": "virginia",
+        r"\boh\b": "ohio",
+        r"\bil\b": "illinois",
+        r"\bga\b": "georgia",
+        r"\bnc\b": "north carolina",
+        r"\bsc\b": "south carolina",
+        r"\bmd\b": "maryland",
+        r"\bnj\b": "new jersey",
+        r"\bct\b": "connecticut",
+        r"\bmi\b": "michigan",
+        r"\bmo\b": "missouri",
+        r"\bfl\b": "florida",
+        r"\bky\b": "kentucky",
+        r"\btn\b": "tennessee",
+        r"\bin\b": "indiana",
+        r"\bwi\b": "wisconsin",
+        r"\bmn\b": "minnesota",
+        r"\bia\b": "iowa",
+        r"\bla\b": "louisiana",
+        r"\bal\b": "alabama",
+        r"\bms\b": "mississippi",
+        r"\bar\b": "arkansas",
+        r"\bme\b": "maine",
+        r"\bnh\b": "new hampshire",
+        r"\bvt\b": "vermont",
+        r"\bri\b": "rhode island",
+        r"\bde\b": "delaware",
+        r"\bwv\b": "west virginia",
+    }
+
     result_lower = result.lower()
     for pattern, replacement in abbreviations.items():
+        result_lower = re.sub(pattern, replacement, result_lower)
+
+    # Expand state abbreviations (only when they appear as standalone tokens)
+    for pattern, replacement in us_states.items():
         result_lower = re.sub(pattern, replacement, result_lower)
 
     if keep_case:

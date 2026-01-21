@@ -21,6 +21,21 @@ from gps_agents.git_utils import safe_commit
 
 # ---------------------- Test helpers ----------------------
 
+def _multiprocess_upsert_worker(db_path: str, proj_path: str, person_data: dict, shared_list) -> None:
+    """Module-level worker for multiprocess test (must be picklable)."""
+    from gps_agents.gramps.client import GrampsClient
+    from gps_agents.gramps.models import Name, Person
+    from gps_agents.gramps.upsert import upsert_person
+    from gps_agents.projections.sqlite_projection import SQLiteProjection
+
+    local_gc = GrampsClient(db_path)
+    local_gc.connect(db_path)
+    local_proj = SQLiteProjection(proj_path)
+    p = Person(names=[Name(given=person_data["given"], surname=person_data["surname"])])
+    r = upsert_person(local_gc, local_proj, p)
+    shared_list.append(r.handle)
+
+
 def make_gramps_db(tmp: Path) -> Path:
     db = tmp / "gramps.db"
     conn = sqlite3.connect(db)
@@ -350,16 +365,20 @@ def test_decide_upsert_citation_relationship(env_tmp: Path):
 def test_upsert_person_parallel_no_duplicates(env_tmp: Path):
     import threading
     db = make_gramps_db(env_tmp)
-    gc = GrampsClient(db)
-    gc.connect(db)
-    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+    proj_path = env_tmp / "proj.sqlite"
 
     p = Person(names=[Name(given="Concurrent", surname="Case")])
     handles: list[str] = []
+    lock = threading.Lock()
 
     def worker():
-        r = upsert_person(gc, proj, p)
-        handles.append(r.handle)
+        # Each thread needs its own SQLite connections
+        local_gc = GrampsClient(db)
+        local_gc.connect(db)
+        local_proj = SQLiteProjection(proj_path)
+        r = upsert_person(local_gc, local_proj, p)
+        with lock:
+            handles.append(r.handle)
 
     threads = [threading.Thread(target=worker) for _ in range(10)]
     for t in threads:
@@ -376,22 +395,21 @@ def test_upsert_person_parallel_no_duplicates(env_tmp: Path):
 def test_upsert_person_multiprocess_no_duplicates(env_tmp: Path):
     from multiprocessing import Process, Manager
     db = make_gramps_db(env_tmp)
-    gc = GrampsClient(db)
-    gc.connect(db)
-    proj = SQLiteProjection(env_tmp / "proj.sqlite")
+    proj_path = env_tmp / "proj.sqlite"
+    # Pre-create projection to avoid race during schema init
+    SQLiteProjection(proj_path)
 
-    p = Person(names=[Name(given="Multi", surname="Proc")])
-
-    def worker(shared):
-        local_gc = GrampsClient(db)
-        local_gc.connect(db)
-        local_proj = SQLiteProjection(env_tmp / "proj.sqlite")
-        r = upsert_person(local_gc, local_proj, p)
-        shared.append(r.handle)
+    person_data = {"given": "Multi", "surname": "Proc"}
 
     with Manager() as m:
         shared = m.list()
-        procs = [Process(target=worker, args=(shared,)) for _ in range(6)]
+        procs = [
+            Process(
+                target=_multiprocess_upsert_worker,
+                args=(str(db), str(proj_path), person_data, shared)
+            )
+            for _ in range(6)
+        ]
         for pr in procs:
             pr.start()
         for pr in procs:
