@@ -34,7 +34,13 @@ from .models import (
 
 if TYPE_CHECKING:
     from .llm import LLMClient
-    from .publishing import PublishingManager, PublishingPipeline
+    from .publishing import (
+        GPSPillar,
+        PublishingManager,
+        PublishingPipeline,
+        SearchRevisionAgentLLM,
+        SearchRevisionInput,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -255,6 +261,7 @@ class Orchestrator:
         llm_client: "LLMClient | None" = None,
         stop_conditions: dict[str, Callable[[CrawlerState], bool]] | None = None,
         publishing_manager: "PublishingManager | None" = None,
+        search_revision_agent: "SearchRevisionAgentLLM | None" = None,
     ):
         """Initialize the orchestrator.
 
@@ -263,6 +270,7 @@ class Orchestrator:
             llm_client: LLM client (used if registry not provided)
             stop_conditions: Custom stop conditions (defaults to STOP_CONDITIONS)
             publishing_manager: Optional PublishingManager for finalizing research
+            search_revision_agent: Optional SearchRevisionAgentLLM for Pillar 1 remediation
         """
         if llm_registry is None:
             llm_registry = create_llm_registry(client=llm_client)
@@ -271,6 +279,7 @@ class Orchestrator:
         self._stop_conditions = stop_conditions or STOP_CONDITIONS
         self._revisit_scheduler = RevisitScheduler()
         self._publishing_manager = publishing_manager
+        self._search_revision_agent = search_revision_agent
 
     def initialize_from_seed(
         self,
@@ -643,4 +652,202 @@ class Orchestrator:
             f"Grade {pipeline.grade_card.letter_grade if pipeline.grade_card else 'N/A'}"
         )
 
+        # Check if Pillar 1 (Reasonably Exhaustive Search) failed and trigger revision
+        if pipeline.grade_card and self._search_revision_agent:
+            pillar1_score = pipeline.grade_card.get_pillar_score("REASONABLY_EXHAUSTIVE_SEARCH")
+            if pillar1_score and pillar1_score.score < 7.0:
+                logger.info(
+                    f"Pillar 1 score {pillar1_score.score:.1f} < 7.0, triggering search revision"
+                )
+                self._trigger_search_revision(
+                    state=state,
+                    subject_id=subject_id,
+                    subject_name=subject_name,
+                    pillar_feedback=pillar1_score.improvements_needed,
+                )
+
         return pipeline
+
+    def _trigger_search_revision(
+        self,
+        state: CrawlerState,
+        subject_id: str,
+        subject_name: str,
+        pillar_feedback: list[str] | None = None,
+    ) -> int:
+        """Trigger Search Revision Agent when Pillar 1 fails.
+
+        Generates tiebreaker search queries and adds them to the revisit queue
+        with high priority.
+
+        Args:
+            state: Current crawler state
+            subject_id: ID of the person being researched
+            subject_name: Name of the person
+            pillar_feedback: Feedback from GPS grader about missing sources
+
+        Returns:
+            Number of queries added to revisit queue
+        """
+        if not self._search_revision_agent:
+            logger.warning("No search_revision_agent configured")
+            return 0
+
+        # Import here to avoid circular imports
+        from .publishing import GPSPillar, MissingSourceClass, SearchRevisionInput
+
+        # Parse pillar feedback to identify missing source classes
+        missing_classes = []
+        if pillar_feedback:
+            for feedback in pillar_feedback:
+                feedback_lower = feedback.lower()
+                if "vital" in feedback_lower or "birth" in feedback_lower or "death" in feedback_lower:
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="vital_records",
+                            description=feedback,
+                            priority=1,
+                            suggested_repositories=["FamilySearch", "Ancestry", "State Archives"],
+                        )
+                    )
+                elif "census" in feedback_lower:
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="census",
+                            description=feedback,
+                            priority=2,
+                            suggested_repositories=["Ancestry", "FamilySearch", "NARA"],
+                        )
+                    )
+                elif "military" in feedback_lower:
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="military",
+                            description=feedback,
+                            priority=3,
+                            suggested_repositories=["Fold3", "NARA", "Ancestry"],
+                        )
+                    )
+                elif "church" in feedback_lower or "parish" in feedback_lower:
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="church_records",
+                            description=feedback,
+                            priority=2,
+                            suggested_repositories=["FamilySearch", "Ancestry", "Diocesan Archives"],
+                        )
+                    )
+                elif "newspaper" in feedback_lower:
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="newspapers",
+                            description=feedback,
+                            priority=3,
+                            suggested_repositories=["Newspapers.com", "Chronicling America", "GenealogyBank"],
+                        )
+                    )
+                else:
+                    # Generic missing source
+                    missing_classes.append(
+                        MissingSourceClass(
+                            category="other",
+                            description=feedback,
+                            priority=4,
+                        )
+                    )
+
+        # Extract name parts from subject_name
+        name_parts = subject_name.split()
+        given_name = name_parts[0] if name_parts else ""
+        surname = name_parts[-1] if len(name_parts) > 1 else name_parts[0] if name_parts else ""
+
+        # Get birth/death years from seed person if available
+        seed = state.get_person(state.seed_person_id) if state.seed_person_id else None
+        birth_year = None
+        death_year = None
+        locations: list[str] = []
+
+        if seed:
+            for event in seed.events:
+                if event.type.value == "birth" and event.date:
+                    try:
+                        birth_year = int(event.date[:4])
+                    except (ValueError, IndexError):
+                        pass
+                    if event.place:
+                        locations.append(event.place)
+                elif event.type.value == "death" and event.date:
+                    try:
+                        death_year = int(event.date[:4])
+                    except (ValueError, IndexError):
+                        pass
+                    if event.place:
+                        locations.append(event.place)
+
+        # Build search revision input
+        revision_input = SearchRevisionInput(
+            subject_id=subject_id,
+            subject_name=subject_name,
+            given_name=given_name,
+            surname=surname,
+            birth_year=birth_year,
+            death_year=death_year,
+            known_locations=locations,
+            current_source_count=len(state.source_records),
+            current_pillar1_score=7.0,  # Below threshold
+            missing_source_classes=missing_classes,
+            gps_feedback=pillar_feedback or [],
+        )
+
+        # Generate tiebreaker queries using the agent's helper methods
+        name_variants = self._search_revision_agent.generate_name_variants(
+            given_name=given_name,
+            surname=surname,
+        )
+        date_ranges = self._search_revision_agent.generate_date_ranges(
+            birth_year=birth_year,
+            death_year=death_year,
+        )
+        archives = self._search_revision_agent.identify_regional_archives(
+            locations=locations,
+            country_of_origin=None,  # Could be inferred from location analysis
+        )
+        negative_targets = self._search_revision_agent.generate_negative_searches(
+            subject_name=subject_name,
+            known_locations=locations,
+            birth_year=birth_year,
+            death_year=death_year,
+        )
+
+        # Build search queries
+        queries = self._search_revision_agent.build_search_queries(
+            input_data=revision_input,
+            name_variants=name_variants,
+            date_ranges=date_ranges,
+            archives=archives,
+            negative_targets=negative_targets,
+        )
+
+        # Add queries to revisit queue with high priority
+        added_count = 0
+        for query in queries:
+            revisit_item = RevisitItem(
+                id=uuid4(),
+                original_source_id=uuid4(),  # New search, no original
+                original_query=subject_name,  # Base search was for subject
+                improved_query=query.query_string,
+                revisit_reason=f"Search Revision: {query.strategy.value} - {query.rationale}",
+                context={
+                    "strategy": query.strategy.value,
+                    "target_repository": query.target_repository,
+                    "location": query.location,
+                },
+                priority=0.9,  # High priority for search revision
+            )
+            state.add_revisit(revisit_item)
+            added_count += 1
+
+        logger.info(
+            f"Search Revision Agent added {added_count} tiebreaker queries to revisit queue"
+        )
+        return added_count
