@@ -40,6 +40,11 @@ from .reviewers import (
     LinguistInput,
     LinguistLLM,
     LinguistOutput,
+    # DevOps Specialist
+    DevOpsSpecialistLLM,
+    DevOpsWorkflowInput,
+    DevOpsWorkflowOutput,
+    PublishingBundle,
 )
 
 if TYPE_CHECKING:
@@ -85,6 +90,7 @@ class PublishingManager:
         self._logic_reviewer = PublishingLogicReviewerLLM(llm_client)
         self._source_reviewer = PublishingSourceReviewerLLM(llm_client)
         self._linguist = LinguistLLM(llm_client)
+        self._devops = DevOpsSpecialistLLM(llm_client)
 
         # Active pipelines
         self._pipelines: dict[str, PublishingPipeline] = {}
@@ -647,3 +653,116 @@ class PublishingManager:
         )
 
         return pipeline
+
+    def generate_git_workflow(
+        self,
+        pipeline: PublishingPipeline,
+        base_directory: str = "research/persons",
+        base_branch: str = "main",
+        create_branch: bool = True,
+    ) -> DevOpsWorkflowOutput:
+        """Generate git workflow for an approved pipeline.
+
+        Uses the DevOps Specialist to create shell-ready git commands
+        for committing and organizing research files.
+
+        Args:
+            pipeline: Approved publishing pipeline
+            base_directory: Base directory for research files
+            base_branch: Base branch to branch from
+            create_branch: Whether to create a new branch
+
+        Returns:
+            DevOpsWorkflowOutput with shell script and commit specs
+
+        Raises:
+            ValueError: If pipeline is not approved
+        """
+        if pipeline.status != PublishingStatus.APPROVED:
+            raise ValueError(
+                f"Cannot generate git workflow for pipeline with status {pipeline.status.value}"
+            )
+
+        # Extract person info from pipeline
+        name_parts = pipeline.subject_name.split() if pipeline.subject_name else ["Unknown"]
+        firstname = name_parts[0] if name_parts else "Unknown"
+        surname = name_parts[-1] if len(name_parts) > 1 else firstname
+        birth_year = None  # Would need to be passed in or extracted from pipeline
+
+        # Create publishing bundle from pipeline
+        bundle = PublishingBundle(
+            bundle_id=f"bundle_{pipeline.pipeline_id}",
+            subject_id=pipeline.subject_id,
+            subject_name=pipeline.subject_name or "Unknown",
+            surname=surname,
+            firstname=firstname,
+            birth_year=str(birth_year) if birth_year else None,
+            gps_grade=pipeline.grade_card.letter_grade if pipeline.grade_card else "C",
+            wikipedia_draft=getattr(pipeline, 'wikipedia_draft', None),
+            wikitree_bio=getattr(pipeline, 'wikitree_bio', None),
+            media_files=[],  # Would need to be populated from MediaPhotoAgent
+            research_notes="\n".join(n.content for n in pipeline.research_notes) if pipeline.research_notes else None,
+        )
+
+        # Build workflow input
+        workflow_input = DevOpsWorkflowInput(
+            bundles=[bundle],
+            base_directory=base_directory,
+            base_branch=base_branch,
+            create_branch=create_branch,
+            ai_author_name="Claude",
+            ai_author_email="noreply@anthropic.com",
+        )
+
+        # Generate workflow using DevOps Specialist
+        output = self._devops.build_workflow(workflow_input)
+
+        logger.info(
+            f"Generated git workflow for pipeline {pipeline.pipeline_id}: "
+            f"branch={output.branch_name}, commits={len(output.commits)}"
+        )
+
+        return output
+
+    def execute_git_workflow(
+        self,
+        workflow: DevOpsWorkflowOutput,
+        dry_run: bool = True,
+    ) -> tuple[bool, str]:
+        """Execute a git workflow script.
+
+        Args:
+            workflow: DevOps workflow output with shell script
+            dry_run: If True, only print script without executing
+
+        Returns:
+            Tuple of (success, output/error message)
+        """
+        import subprocess
+
+        if dry_run:
+            logger.info("Dry run - git workflow script:")
+            logger.info(workflow.shell_script)
+            return True, workflow.shell_script
+
+        try:
+            result = subprocess.run(
+                ["bash", "-c", workflow.shell_script],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+
+            if result.returncode == 0:
+                logger.info(f"Git workflow executed successfully")
+                return True, result.stdout
+            else:
+                logger.error(f"Git workflow failed: {result.stderr}")
+                return False, result.stderr
+
+        except subprocess.TimeoutExpired:
+            logger.error("Git workflow timed out")
+            return False, "Workflow execution timed out"
+        except Exception as e:
+            logger.error(f"Git workflow error: {e}")
+            return False, str(e)
