@@ -1430,3 +1430,257 @@ class TestDevOpsSpecialistExports:
         assert DevOpsWorkflowInput is not None
         assert DevOpsWorkflowOutput is not None
         assert DevOpsSpecialistLLM is not None
+
+
+# =============================================================================
+# Integration Tests
+# =============================================================================
+
+
+class TestSearchRevisionOrchestratorIntegration:
+    """Integration tests for Search Revision Agent with Orchestrator."""
+
+    def test_orchestrator_accepts_search_revision_agent(self):
+        """Test that Orchestrator can be initialized with search revision agent."""
+        from gps_agents.genealogy_crawler import Orchestrator, SearchRevisionAgentLLM
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        agent = SearchRevisionAgentLLM(client)
+        orchestrator = Orchestrator(llm_client=client, search_revision_agent=agent)
+
+        assert orchestrator._search_revision_agent is agent
+
+    def test_trigger_search_revision_generates_queries(self):
+        """Test that triggering search revision generates queries."""
+        from gps_agents.genealogy_crawler import (
+            CrawlerState,
+            Orchestrator,
+            SearchRevisionAgentLLM,
+        )
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        agent = SearchRevisionAgentLLM(client)
+        orchestrator = Orchestrator(llm_client=client, search_revision_agent=agent)
+
+        state = CrawlerState()
+
+        # Trigger search revision
+        count = orchestrator._trigger_search_revision(
+            state=state,
+            subject_id="person_123",
+            subject_name="John Smith",
+            pillar_feedback=["Missing vital records", "No census data found"],
+        )
+
+        # Should have generated queries
+        assert count > 0
+        assert len(state.revisit_queue) > 0
+
+        # Check query priorities are high
+        for item in state.revisit_queue:
+            assert item.priority >= 0.8
+
+
+class TestDevOpsManagerIntegration:
+    """Integration tests for DevOps Specialist with PublishingManager."""
+
+    def test_manager_has_devops_agent(self):
+        """Test that PublishingManager initializes with DevOps agent."""
+        from gps_agents.genealogy_crawler.publishing import PublishingManager
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        manager = PublishingManager(client)
+
+        assert manager._devops is not None
+
+    def test_generate_git_workflow_requires_approved_pipeline(self):
+        """Test that git workflow generation requires approved pipeline."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishingManager,
+            PublishingPipeline,
+            PublishingStatus,
+        )
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+        import pytest
+
+        client = MockLLMClient()
+        manager = PublishingManager(client)
+
+        # Create a non-approved pipeline
+        pipeline = PublishingPipeline(
+            pipeline_id="pipeline_001",
+            subject_id="person_123",
+            subject_name="John Smith",
+            status=PublishingStatus.DRAFT,
+        )
+
+        with pytest.raises(ValueError, match="Cannot generate git workflow"):
+            manager.generate_git_workflow(pipeline)
+
+    def test_generate_git_workflow_for_approved_pipeline(self):
+        """Test git workflow generation for approved pipeline."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishingManager,
+            PublishingPipeline,
+            PublishingStatus,
+            GPSGradeCard,
+            GPSPillarScore,
+            GPSPillar,
+        )
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        manager = PublishingManager(client)
+
+        # Create an approved pipeline with grade card
+        grade_card = GPSGradeCard(
+            subject_id="person_123",
+            pillar_scores=[
+                GPSPillarScore(pillar=GPSPillar.REASONABLY_EXHAUSTIVE_SEARCH, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.COMPLETE_CITATIONS, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.ANALYSIS_AND_CORRELATION, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.CONFLICT_RESOLUTION, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.WRITTEN_CONCLUSION, score=9.0, rationale="Good"),
+            ],
+        )
+
+        pipeline = PublishingPipeline(
+            pipeline_id="pipeline_001",
+            subject_id="person_123",
+            subject_name="John Smith",
+            status=PublishingStatus.APPROVED,
+            grade_card=grade_card,
+        )
+
+        # Generate workflow
+        workflow = manager.generate_git_workflow(pipeline)
+
+        assert workflow is not None
+        assert workflow.branch_name is not None
+        assert workflow.shell_script is not None
+        assert "git" in workflow.shell_script
+
+    def test_execute_git_workflow_dry_run(self):
+        """Test git workflow execution in dry run mode."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishingManager,
+            PublishingPipeline,
+            PublishingStatus,
+            GPSGradeCard,
+            GPSPillarScore,
+            GPSPillar,
+        )
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        manager = PublishingManager(client)
+
+        # Create an approved pipeline
+        grade_card = GPSGradeCard(
+            subject_id="person_123",
+            pillar_scores=[
+                GPSPillarScore(pillar=GPSPillar.REASONABLY_EXHAUSTIVE_SEARCH, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.COMPLETE_CITATIONS, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.ANALYSIS_AND_CORRELATION, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.CONFLICT_RESOLUTION, score=9.0, rationale="Good"),
+                GPSPillarScore(pillar=GPSPillar.WRITTEN_CONCLUSION, score=9.0, rationale="Good"),
+            ],
+        )
+
+        pipeline = PublishingPipeline(
+            pipeline_id="pipeline_001",
+            subject_id="person_123",
+            subject_name="John Smith",
+            status=PublishingStatus.APPROVED,
+            grade_card=grade_card,
+        )
+
+        # Generate and execute workflow in dry run mode
+        workflow = manager.generate_git_workflow(pipeline)
+        success, output = manager.execute_git_workflow(workflow, dry_run=True)
+
+        assert success is True
+        assert "git" in output
+
+
+class TestEndToEndPublishingPipeline:
+    """End-to-end tests for the full publishing pipeline."""
+
+    def test_full_pipeline_draft_to_approved(self):
+        """Test full pipeline from draft to approved with git workflow."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishingManager,
+            PublishingPipeline,
+            PublishingStatus,
+            PublishingPlatform,
+            GPSGradeCard,
+            GPSPillarScore,
+            GPSPillar,
+            QuorumDecision,
+            ReviewVerdict,
+            ReviewerType,
+            Verdict,
+        )
+        from gps_agents.genealogy_crawler.llm import MockLLMClient
+
+        client = MockLLMClient()
+        manager = PublishingManager(client)
+
+        # Step 1: Create pipeline
+        pipeline = manager.create_pipeline("person_123")
+        assert pipeline.status == PublishingStatus.DRAFT
+
+        # Step 2: Simulate GPS grading
+        grade_card = GPSGradeCard(
+            subject_id="person_123",
+            pillar_scores=[
+                GPSPillarScore(pillar=GPSPillar.REASONABLY_EXHAUSTIVE_SEARCH, score=9.5, rationale="Excellent search"),
+                GPSPillarScore(pillar=GPSPillar.COMPLETE_CITATIONS, score=9.2, rationale="Well cited"),
+                GPSPillarScore(pillar=GPSPillar.ANALYSIS_AND_CORRELATION, score=9.0, rationale="Good analysis"),
+                GPSPillarScore(pillar=GPSPillar.CONFLICT_RESOLUTION, score=9.3, rationale="Conflicts resolved"),
+                GPSPillarScore(pillar=GPSPillar.WRITTEN_CONCLUSION, score=9.1, rationale="Clear conclusion"),
+            ],
+        )
+        pipeline.grade_card = grade_card
+        pipeline.subject_name = "John Smith"
+
+        # Check grade is A
+        assert grade_card.letter_grade == "A"
+
+        # Step 3: Simulate quorum approval
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Timeline consistent",
+            reviewer_model="test",
+        )
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Sources verified",
+            reviewer_model="test",
+        )
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+        pipeline.quorum_decision = quorum
+
+        assert quorum.approved is True
+
+        # Step 4: Finalize pipeline
+        pipeline = manager.finalize_for_publishing(pipeline)
+        assert pipeline.status == PublishingStatus.APPROVED
+        assert PublishingPlatform.WIKIPEDIA in pipeline.target_platforms
+
+        # Step 5: Generate git workflow
+        workflow = manager.generate_git_workflow(pipeline)
+        assert workflow.shell_script is not None
+        assert len(workflow.commits) >= 1
+
+        # Step 6: Execute in dry run
+        success, output = manager.execute_git_workflow(workflow, dry_run=True)
+        assert success is True
