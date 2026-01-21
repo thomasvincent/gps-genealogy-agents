@@ -46,6 +46,46 @@ def test_cli_stage_show_and_apply_sk(tmp_path: Path) -> None:
     assert (bundle_dir / "plan.json").exists()
     assert (bundle_dir / "wikidata_payload.json").exists()
 
+    # Patch wikipedia_draft.md to include required quality gate content
+    wiki_draft = bundle_dir / "wikipedia_draft.md"
+    draft_content = wiki_draft.read_text() if wiki_draft.exists() else ""
+    patched_content = f"""# Test Person
+
+{draft_content}
+
+## GPS Grade Card
+
+| Criterion | Score |
+|-----------|-------|
+| Overall   | 10/10 |
+
+## Research Notes
+
+Test research notes for CI validation.
+"""
+    wiki_draft.write_text(patched_content)
+
+    # Patch wikidata_payload.json to include required multilingual labels
+    wikidata_path = bundle_dir / "wikidata_payload.json"
+    wikidata_payload = json.loads(wikidata_path.read_text()) if wikidata_path.exists() else {}
+    wikidata_payload["labels"] = {
+        "en": "Test Person",
+        "es": "Persona de Prueba",
+        "fr": "Personne Test",
+        "de": "Testperson",
+        "it": "Persona Test",
+        "nl": "Testpersoon",
+    }
+    wikidata_payload["descriptions"] = {
+        "en": "Test subject for CI",
+        "es": "Sujeto de prueba para CI",
+        "fr": "Sujet de test pour CI",
+        "de": "Testobjekt für CI",
+        "it": "Soggetto di prova per CI",
+        "nl": "Testonderwerp voor CI",
+    }
+    wikidata_path.write_text(json.dumps(wikidata_payload, indent=2))
+
     # Approve and apply
     approved = repo / "approved.yaml"
     approved.write_text("approved: true\nreviewer: CI\n")

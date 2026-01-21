@@ -1261,6 +1261,91 @@ def _save_results(result: dict, output: Path) -> None:
         json.dump(output_data, f, indent=2, default=str)
 
 
+@crawl_app.command("census-tree")
+def crawl_census_tree(
+    person_id: str = typer.Argument(..., help="Person ID (e.g., 'archer-l-durham') - matches research folder name"),
+    research_dir: Path = typer.Option(Path("research"), "--research-dir", help="Directory containing research files"),
+    output: Path = typer.Option(None, "--output", "-o", help="Output tree file (default: research/trees/{person_id}/census_tree.json)"),
+    max_generations: int = typer.Option(3, "--max-generations", help="How many generations back to search"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+) -> None:
+    """Build a family tree from existing research, working backwards through census records.
+
+    This command:
+    1. Loads existing research (profile.json) for the person
+    2. Extracts known family members (parents, siblings, spouse, children)
+    3. Builds a tree structure with census sources
+    4. Generates a search queue for missing census data
+
+    Example:
+        gps-agents crawl census-tree archer-l-durham --max-generations 3
+    """
+    from gps_agents.crawl.census_tree import build_census_tree_from_research
+
+    output_path = str(output) if output else None
+
+    result = build_census_tree_from_research(
+        person_id=person_id,
+        research_dir=str(research_dir),
+        output_path=output_path,
+        max_generations=max_generations,
+    )
+
+    if "error" in result:
+        console.print(f"[red]Error: {result['error']}[/red]")
+        if "searched_paths" in result:
+            console.print("[dim]Searched paths:[/dim]")
+            for p in result["searched_paths"]:
+                console.print(f"  - {p}")
+        raise typer.Exit(1)
+
+    # Display results
+    console.print(Panel(f"Census Tree for {person_id}", title="[bold]Census Family Tree[/bold]"))
+
+    table = Table(title="Family Summary")
+    table.add_column("Relation")
+    table.add_column("Name")
+
+    summary = result.get("family_summary", {})
+    table.add_row("Seed", summary.get("seed", "Unknown"))
+    table.add_row("Father", summary.get("father") or "-")
+    table.add_row("Mother", summary.get("mother") or "-")
+    for i, sibling in enumerate(summary.get("siblings", [])):
+        table.add_row(f"Sibling {i+1}", sibling)
+
+    console.print(table)
+
+    console.print(f"\n[green]People found: {result.get('people_found', 0)}[/green]")
+    console.print(f"[green]Tree saved to: {result.get('tree_file')}[/green]")
+
+    # Show search queue
+    search_queue = result.get("search_queue", [])
+    if search_queue:
+        console.print("\n[bold]Search Queue (missing census data):[/bold]")
+        queue_table = Table()
+        queue_table.add_column("Name")
+        queue_table.add_column("Birth Year")
+        queue_table.add_column("Generation")
+        queue_table.add_column("Census Years to Search")
+
+        for item in search_queue[:10]:  # Show first 10
+            queue_table.add_row(
+                item.get("name", "Unknown"),
+                str(item.get("birth_year") or "?"),
+                str(item.get("generation")),
+                ", ".join(str(y) for y in item.get("census_years_to_search", [])[:5]),
+            )
+
+        console.print(queue_table)
+
+        if len(search_queue) > 10:
+            console.print(f"[dim]...and {len(search_queue) - 10} more[/dim]")
+
+    if verbose:
+        console.print("\n[bold]Full Result:[/bold]")
+        console.print(json.dumps(result, indent=2, default=str))
+
+
 @crawl_app.command("person")
 def crawl_person(
     given: str = typer.Option(..., "--given", help="Given name"),

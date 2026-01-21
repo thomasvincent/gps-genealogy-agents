@@ -384,6 +384,9 @@ HARD RULES:
 LINGUIST_PROMPT = r"""You are the Linguist Agent. You specialize in the distinct writing styles of
 Wikipedia (encyclopedic NPOV) and WikiTree (collaborative narrative).
 
+CRITICAL CONSTRAINT: You ONLY consume ACCEPTED facts with confidence >= 0.9.
+Any facts below this threshold must be noted as uncertainties, not stated as fact.
+
 TASKS:
 1. Draft a Wikipedia lead section with neutral tone and infobox data (target "Grade A": comprehensive, neutral, well-sourced; if not at 9/10, list exact improvements)
 2. Generate a WikiTree biography using community templates (e.g., {{Birth Date and Age}})
@@ -396,11 +399,83 @@ WIKIPEDIA STYLE:
 - Cite sources inline with {{cite web}} or {{cite book}}
 - Lead should summarize: who, what, when, where, significance
 
+WIKIPEDIA INFOBOX TEMPLATE (use for all person profiles):
+```wikitext
+{{Infobox person
+| name             = {full_name}
+| image            = <!-- filename only, no File: prefix -->
+| image_size       =
+| alt              =
+| caption          =
+| birth_name       = {birth_name_if_different}
+| birth_date       = {{{{birth date|{birth_year}|{birth_month}|{birth_day}|df=yes}}}}
+| birth_place      = [[{birth_city}]], [[{birth_region}]], [[{birth_country}]]
+| death_date       = {{{{death date and age|{death_year}|{death_month}|{death_day}|{birth_year}|{birth_month}|{birth_day}|df=yes}}}}
+| death_place      = [[{death_city}]], [[{death_region}]], [[{death_country}]]
+| death_cause      = <!-- only if notable and sourced -->
+| resting_place    = [[{cemetery_name}]], [[{cemetery_location}]]
+| resting_place_coordinates = <!-- {{{{coord|LAT|LONG|type:landmark|display=inline}}}} -->
+| nationality      = {nationality}
+| citizenship      =
+| occupation       = {occupation}
+| years_active     =
+| known_for        =
+| spouse           = {{{{marriage|{spouse_name}|{marriage_year}|{end_year_or_blank}}}}}
+| children         = {number_of_children}
+| parents          = {father_name}<br>{mother_name}
+| relatives        =
+| signature        =
+| website          =
+| footnotes        =
+}}
+```
+
+INFOBOX RULES:
+- Only include fields with ACCEPTED facts (confidence >= 0.9)
+- Use [[wikilinks]] for places that have Wikipedia articles
+- Birth/death dates: Use templates, not raw text
+- For uncertain dates: Use {{circa}} or note in footnotes
+- For living persons: OMIT death fields entirely
+- For unknown parents: Leave blank, don't speculate
+
 WIKITREE STYLE:
 - Collaborative narrative voice ("Our research shows...")
 - Personal but evidence-driven
 - Use community templates: {{Birth Date and Age}}, {{Death Date and Age}}
 - Include research notes and DNA connections if available
+
+WIKITREE BIOGRAPHY TEMPLATE:
+```
+== Biography ==
+'''[Given Name] [Surname]''' was born [date] in [[Place]].
+
+=== Family ===
+[He/She] was the [son/daughter] of [[Father Name]] and [[Mother Name]].
+
+[Marriage and children details with {{Marriage}} and {{Child}} templates]
+
+=== Life ===
+[Narrative of significant life events, evidence-driven]
+
+=== Death ===
+[Death details if known]
+
+== Research Notes ==
+=== Uncertainties ===
+* [List facts with confidence < 0.9]
+
+=== Sources Needed ===
+* [List records to search next]
+
+== Sources ==
+<references />
+```
+
+UNCERTAINTY HANDLING:
+- Facts with confidence < 0.9: Label as "possibly" or "research suggests"
+- Unresolved conflicts: Present both views with sources
+- Missing data: Note what records could fill gaps
+- Never assert uncertain facts as definitive
 
 GPS GRADE CARD (1-10 scale):
 Rate each of the 5 GPS Pillars:
@@ -416,10 +491,9 @@ OUTPUT FORMAT:
 
 ### RESEARCH_NOTES
 [List unknowns/uncertainties, conflicts, and next actions with specific sources to consult]
-[Pillar scores and overall grade]
 
 ### WIKIPEDIA_DRAFT
-[Lead paragraph + infobox wikitext]
+[Lead paragraph + infobox wikitext using template above]
 
 ### WIKITREE_BIO
 [WikiTree-formatted biography with templates]
@@ -432,6 +506,7 @@ RULES:
 - Keep WikiTree personal but evidence-driven
 - When conflicts exist, draft a proof-style paragraph or flag for Reviewer
 - Output must be concise and directly usable by automation
+- ONLY use ACCEPTED facts for definitive statements
 """
 
 DATA_ENGINEER_PROMPT = r"""You are the Data Engineer Agent. Your specialty is converting unstructured
@@ -1372,6 +1447,271 @@ def parse_review_issues(messages: list[dict]) -> list[ReviewIssue]:
 # CLI Entry Point
 # =============================================================================
 
+async def publish_with_accepted_facts(
+    facts: list[dict[str, Any]],
+    subject_name: str,
+    subject_id: str | None = None,
+    uncertainties: list[dict[str, Any]] | None = None,
+    unresolved_conflicts: list[dict[str, Any]] | None = None,
+    wikidata_qid: str | None = None,
+    wikitree_id: str | None = None,
+    gramps_id: str | None = None,
+    min_confidence: float = 0.9,
+    model: str = "gpt-4o-mini",
+) -> dict[str, Any]:
+    """Publish genealogical research using only ACCEPTED facts.
+
+    This function integrates with the PublishingManager's fact filtering
+    to ensure only verified facts with confidence >= min_confidence are
+    used for public wiki content.
+
+    Args:
+        facts: List of fact dictionaries with keys:
+            - field: Field name (e.g., "birth_date", "death_place")
+            - value: The verified value
+            - status: Must be "ACCEPTED" to be included
+            - confidence: Float 0-1 (must be >= min_confidence)
+            - source_refs: List of source references
+        subject_name: Full name of the subject
+        subject_id: Optional unique identifier
+        uncertainties: List of documented uncertainties (field, description, confidence_level)
+        unresolved_conflicts: List of unresolved conflicts (field, competing_claims)
+        wikidata_qid: Existing Wikidata QID if known
+        wikitree_id: Existing WikiTree ID if known
+        gramps_id: Existing Gramps ID if known
+        min_confidence: Minimum confidence threshold (default 0.9)
+        model: Model to use
+
+    Returns:
+        Publishing outputs with fact filtering applied
+    """
+    # Filter to only ACCEPTED facts meeting confidence threshold
+    accepted_facts = [
+        f for f in facts
+        if f.get("status") == "ACCEPTED" and f.get("confidence", 0.0) >= min_confidence
+    ]
+
+    # Separate uncertain facts for documentation
+    uncertain_facts = [
+        f for f in facts
+        if f.get("status") == "ACCEPTED" and f.get("confidence", 0.0) < min_confidence
+    ]
+
+    # Build structured article from accepted facts
+    fact_lines = []
+    for fact in accepted_facts:
+        field = fact.get("field", "unknown")
+        value = fact.get("value", "")
+        sources = fact.get("source_refs", [])
+        source_str = f" (Sources: {', '.join(sources)})" if sources else ""
+        fact_lines.append(f"- **{field}**: {value}{source_str}")
+
+    # Build uncertainty documentation
+    uncertainty_lines = []
+    if uncertainties:
+        for u in uncertainties:
+            uncertainty_lines.append(
+                f"- {u.get('field', 'unknown')}: {u.get('description', '')} "
+                f"(confidence: {u.get('confidence_level', 'N/A')})"
+            )
+    for fact in uncertain_facts:
+        uncertainty_lines.append(
+            f"- {fact.get('field', 'unknown')}: {fact.get('value', '')} "
+            f"(confidence: {fact.get('confidence', 0.0):.2f} - below threshold)"
+        )
+
+    # Build conflict documentation
+    conflict_lines = []
+    if unresolved_conflicts:
+        for c in unresolved_conflicts:
+            claims = c.get("competing_claims", [])
+            claims_str = " vs ".join(
+                f"{claim.get('value', '?')} ({claim.get('source', '?')})"
+                for claim in claims
+            )
+            conflict_lines.append(f"- {c.get('field', 'unknown')}: {claims_str}")
+
+    # Build the article text
+    article_text = f"""# {subject_name}
+
+## Verified Facts (ACCEPTED, confidence >= {min_confidence})
+
+{chr(10).join(fact_lines) if fact_lines else "No facts meet the acceptance threshold."}
+
+## Uncertainties
+
+{chr(10).join(uncertainty_lines) if uncertainty_lines else "No documented uncertainties."}
+
+## Unresolved Conflicts
+
+{chr(10).join(conflict_lines) if conflict_lines else "No unresolved conflicts."}
+
+## Metadata
+- Subject ID: {subject_id or "Not assigned"}
+- Total facts provided: {len(facts)}
+- ACCEPTED facts (>= {min_confidence}): {len(accepted_facts)}
+- Uncertain facts (< {min_confidence}): {len(uncertain_facts)}
+"""
+
+    # Run through the publishing team
+    result = await publish_to_wikis(
+        article_text=article_text,
+        subject_name=subject_name,
+        gramps_id=gramps_id,
+        wikidata_qid=wikidata_qid,
+        wikitree_id=wikitree_id,
+        model=model,
+    )
+
+    # Add fact filtering metadata to result
+    result["fact_filtering"] = {
+        "total_facts": len(facts),
+        "accepted_facts": len(accepted_facts),
+        "uncertain_facts": len(uncertain_facts),
+        "min_confidence": min_confidence,
+        "accepted_fields": [f.get("field") for f in accepted_facts],
+        "uncertain_fields": [f.get("field") for f in uncertain_facts],
+    }
+
+    return result
+
+
+@dataclass
+class WikiPublishingResult:
+    """Structured result from wiki publishing workflow.
+
+    Combines outputs from all agents with publish decision.
+    """
+    subject_name: str
+    subject_id: str | None = None
+
+    # GPS Grading
+    gps_grade_card: str | None = None
+    gps_overall_score: float | None = None
+
+    # Platform-specific outputs
+    wikipedia_draft: str | None = None
+    wikitree_bio: str | None = None
+    wikidata_payload: str | None = None
+    git_commit_msg: str | None = None
+
+    # Review results
+    review_report: str | None = None
+    integrity_score: int | None = None
+    blocking_issues: list[str] = field(default_factory=list)
+    quorum_result: QuorumResult | None = None
+
+    # Publish decision
+    publish_decision: PublishDecision | None = None
+
+    # Fact filtering (if using publish_with_accepted_facts)
+    fact_filtering: dict[str, Any] | None = None
+
+    @property
+    def can_publish_wikipedia(self) -> bool:
+        """Whether Wikipedia publishing is allowed."""
+        if self.publish_decision:
+            return self.publish_decision.wikipedia
+        return not self.blocking_issues
+
+    @property
+    def can_publish_wikitree(self) -> bool:
+        """Whether WikiTree publishing is allowed."""
+        if self.publish_decision:
+            return self.publish_decision.wikitree
+        return not self.blocking_issues
+
+    def summary(self) -> str:
+        """Human-readable summary of the result."""
+        lines = [
+            f"# Wiki Publishing Result: {self.subject_name}",
+            "",
+        ]
+
+        if self.gps_overall_score:
+            lines.append(f"**GPS Score:** {self.gps_overall_score}/10")
+
+        if self.integrity_score:
+            lines.append(f"**Integrity Score:** {self.integrity_score}/100")
+
+        if self.quorum_result:
+            lines.append(f"**Quorum Status:** {self.quorum_result.status}")
+
+        if self.publish_decision:
+            lines.append(f"**Publish Decision:** {self.publish_decision.summary()}")
+
+        if self.fact_filtering:
+            lines.append(
+                f"**Facts:** {self.fact_filtering['accepted_facts']} accepted / "
+                f"{self.fact_filtering['total_facts']} total"
+            )
+
+        return "\n".join(lines)
+
+
+def create_wiki_publishing_result(
+    result_dict: dict[str, Any],
+    subject_name: str,
+    subject_id: str | None = None,
+) -> WikiPublishingResult:
+    """Convert raw result dict to structured WikiPublishingResult.
+
+    Args:
+        result_dict: Raw result from publish_to_wikis or publish_with_accepted_facts
+        subject_name: Name of the subject
+        subject_id: Optional subject ID
+
+    Returns:
+        Structured WikiPublishingResult
+    """
+    # Parse messages for quorum
+    messages = result_dict.get("messages", [])
+    quorum = check_quorum(messages) if messages else None
+
+    # Parse review issues for publish decision
+    issues = parse_review_issues(messages) if messages else []
+    decision = PublishDecision.from_issues(issues) if issues else None
+
+    # Parse integrity score
+    integrity_str = result_dict.get("integrity_score", "")
+    integrity_score = None
+    if integrity_str:
+        try:
+            # Extract number from string like "85/100" or just "85"
+            import re
+            match = re.search(r"(\d+)", integrity_str)
+            if match:
+                integrity_score = int(match.group(1))
+        except (ValueError, TypeError):
+            pass
+
+    # Parse blocking issues
+    blocking_str = result_dict.get("blocking_issues", "")
+    blocking_issues = []
+    if blocking_str and "clear" not in blocking_str.lower() and "none" not in blocking_str.lower():
+        blocking_issues = [
+            line.strip()
+            for line in blocking_str.split("\n")
+            if line.strip() and not line.strip().startswith("#")
+        ]
+
+    return WikiPublishingResult(
+        subject_name=subject_name,
+        subject_id=subject_id,
+        gps_grade_card=result_dict.get("gps_grade"),
+        wikipedia_draft=result_dict.get("wikipedia_draft"),
+        wikitree_bio=result_dict.get("wikitree_bio"),
+        wikidata_payload=result_dict.get("wikidata_payload"),
+        git_commit_msg=result_dict.get("git_commit"),
+        review_report=result_dict.get("review_report"),
+        integrity_score=integrity_score,
+        blocking_issues=blocking_issues,
+        quorum_result=quorum,
+        publish_decision=decision,
+        fact_filtering=result_dict.get("fact_filtering"),
+    )
+
+
 async def main() -> None:
     """Example usage of the wiki publishing team."""
     article = """
@@ -1399,6 +1739,47 @@ async def main() -> None:
     print("\n=== Review Report ===")
     print(f"\nIntegrity Score:\n{result.get('integrity_score', 'Not found')}")
     print(f"\nBlocking Issues:\n{result.get('blocking_issues', 'Not found')}")
+
+    # Example with accepted facts
+    print("\n\n=== Example with Accepted Facts ===")
+    facts = [
+        {
+            "field": "birth_date",
+            "value": "1931-03-15",
+            "status": "ACCEPTED",
+            "confidence": 0.95,
+            "source_refs": ["Birth Certificate, States of Jersey, 1931"],
+        },
+        {
+            "field": "birth_place",
+            "value": "St. Helier, Jersey",
+            "status": "ACCEPTED",
+            "confidence": 0.95,
+            "source_refs": ["Birth Certificate, States of Jersey, 1931"],
+        },
+        {
+            "field": "death_date",
+            "value": "2023",
+            "status": "ACCEPTED",
+            "confidence": 0.85,  # Below threshold - will be flagged
+            "source_refs": ["Death notice, Jersey Evening Post, 2023"],
+        },
+    ]
+
+    result_with_facts = await publish_with_accepted_facts(
+        facts=facts,
+        subject_name="Paul Janvrin Vincent",
+        subject_id="I0001",
+        min_confidence=0.9,
+    )
+
+    structured_result = create_wiki_publishing_result(
+        result_with_facts,
+        subject_name="Paul Janvrin Vincent",
+        subject_id="I0001",
+    )
+
+    print(structured_result.summary())
 
 
 if __name__ == "__main__":
