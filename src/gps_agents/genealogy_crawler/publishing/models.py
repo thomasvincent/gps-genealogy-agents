@@ -339,6 +339,7 @@ class PublishingPipeline(BaseModel):
 
     pipeline_id: str
     subject_id: str
+    subject_name: str | None = Field(default=None, description="Name of the research subject")
     status: PublishingStatus = Field(default=PublishingStatus.DRAFT)
 
     # GPS Grading
