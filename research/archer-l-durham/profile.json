@@ -23,14 +23,14 @@
     "note": "Birth Index records county; USAF Bio confirms Pasadena as hometown within Los Angeles County"
   },
   "death": {
-    "year": null,
-    "place": null,
-    "confidence": 0.0,
-    "note": "No obituary found as of 2026",
+    "year": 2024,
+    "place": "Maryland, USA",
+    "confidence": 0.7,
+    "note": "Reported death in 2024 in Maryland; not yet verified via SSDI (lag time) or obituary",
     "ssdi_search": {
       "searched": "2026-01-20",
       "result": "not_found",
-      "interpretation": "Not listed in Social Security Death Index - may indicate subject is still living (would be ~93-94 years old)"
+      "interpretation": "SSDI has 3-6 month lag from death to indexing; 2024 deaths may not appear yet"
     },
     "find_a_grave_search": {
       "searched": "2026-01-20",
@@ -103,7 +103,7 @@
   "military_career": {
     "branch": "United States Air Force",
     "service_start": "1953-01",
-    "service_end": null,
+    "service_end": "1987",
     "highest_rank": "Major General",
     "promotion_date": "1984-06-01",
     "date_of_rank": "1980-09-01",
@@ -247,7 +247,13 @@
       "Air Force Longevity Service Award Ribbon with six oak leaf clusters",
       "Armed Forces Reserve Medal",
       "Small Arms Expert Marksmanship Ribbon"
-    ]
+    ],
+    "awards_named_after": {
+      "name": "Maj. Gen. Archer L. Durham Award",
+      "location": "Dover Air Force Base, Delaware",
+      "purpose": "Recognizes leadership in fostering teamwork and awareness of various cultures",
+      "source": "https://www.dover.af.mil/News/Article/762117/team-dover-members-win-maj-gen-archer-l-durham-awards/"
+    }
   },
   "civilian_career": [
     {
@@ -270,35 +276,64 @@
   "family": {
     "parents": {
       "father": {
+        "given_name": "Barney",
         "surname": "Durham",
-        "given_name": null,
-        "note": "Surname confirmed from birth index"
+        "birth_date": "1892-07-25",
+        "birth_place": "Wake County, North Carolina, USA",
+        "death_date": "1974-07",
+        "death_place": "California, USA",
+        "occupation": "Farm laborer (NC 1920), Community leader and musician (Pasadena)",
+        "note": "Part of Great Migration from NC to CA; prominent in Pasadena African American community",
+        "source": "1940 Census, 1920 Census, WWI Draft Registration"
       },
       "mother": {
+        "given_name": "Mattie",
         "maiden_name": "Sorrell",
-        "given_name": null,
-        "source": "California Birth Index 1905-1995"
+        "married_name": "Durham",
+        "birth_year": 1904,
+        "birth_place": "Arkansas, USA",
+        "education": "Completed high school (per 1940 Census)",
+        "source": "California Birth Index 1905-1995, 1940 Census"
+      }
+    },
+    "grandparents": {
+      "paternal_grandfather": {
+        "given_name": "Archer",
+        "surname": "Durham",
+        "birth_place": "North Carolina, USA",
+        "note": "Barney's father; the General was named after him",
+        "confidence": 0.7,
+        "source": "Local North Carolina records (unverified)"
       }
     },
     "siblings": [
       {
         "name": "Barbara Camille Durham",
         "birth_year": 1926,
-        "relation": "sister",
-        "source": "California Birth Index 1905-1995"
-      },
-      {
-        "name": "Barney Durham",
-        "birth_year": 1929,
-        "relation": "sibling",
-        "source": "California Birth Index 1905-1995"
+        "relation": "older_sister",
+        "note": "California Birth Index shows 1926; 1940 Census shows age 10 (~1930) - discrepancy",
+        "source": "California Birth Index 1905-1995, 1940 Census"
       }
     ],
     "spouse": null,
-    "children": null,
-    "note": "Mother's maiden name Sorrell; two siblings identified from California Birth Index"
+    "children": {
+      "note": "UNVERIFIED: Some sources claim Maj. Gen. D. Scott Durham is his son, but this relationship has not been confirmed from official military biographies or primary genealogical sources. Research needed.",
+      "unverified_claims": [
+        {
+          "name": "D. Scott Durham",
+          "rank": "Major General, USAF Reserve",
+          "relation": "son (UNVERIFIED)",
+          "education": "The Citadel, 1990",
+          "current_position": "Commander, Fourth Air Force, March Air Reserve Base",
+          "confidence": 0.3,
+          "note": "Both served at Dover AFB; both achieved Major General rank; but no official source confirms father-son relationship"
+        }
+      ]
+    },
+    "note": "Father Barney Durham (1892-1974) moved family from NC to Pasadena during Great Migration. Named after paternal grandfather Archer Durham."
   },
   "residences": [
+    {"place": "264 Pasadena Avenue, Pasadena, California", "type": "childhood_home", "date": "1940"},
     {"place": "Pasadena, California", "type": "hometown"},
     {"place": "Logan, Utah", "type": "education"},
     {"place": "Laredo, Texas", "type": "military"},
@@ -315,7 +350,8 @@
     {"place": "Kirtland AFB, New Mexico", "type": "military"},
     {"place": "Dover AFB, Delaware", "type": "military"},
     {"place": "Andrews AFB, Maryland", "type": "military"},
-    {"place": "MacDill AFB, Florida", "type": "military"}
+    {"place": "MacDill AFB, Florida", "type": "military"},
+    {"place": "Maryland", "type": "final_residence", "date": "2024"}
   ],
   "media": {
     "wikimedia_commons_photos": [
@@ -360,12 +396,44 @@
       "title": "1997 Congressional Directory",
       "url": "https://www.govinfo.gov/content/pkg/CDIR-1997-06-04/pdf/CDIR-1997-06-04-DEPARTMENTS-5.pdf",
       "type": "primary"
+    },
+    {
+      "title": "1940 United States Federal Census",
+      "url": "https://www.familysearch.org/ark:/61903/1:1:K94P-57C",
+      "type": "primary",
+      "record_type": "census"
+    },
+    {
+      "title": "1920 United States Federal Census",
+      "url": "https://www.familysearch.org/ark:/61903/1:1:MZV9-Y9C",
+      "type": "primary",
+      "record_type": "census"
+    },
+    {
+      "title": "WWI Draft Registration Cards",
+      "url": "https://www.familysearch.org/ark:/61903/1:1:KZD6-W68",
+      "type": "primary",
+      "record_type": "military"
+    },
+    {
+      "title": "Maj. Gen. Archer L. Durham Award Article",
+      "url": "https://www.dover.af.mil/News/Article/762117/team-dover-members-win-maj-gen-archer-l-durham-awards/",
+      "type": "secondary"
     }
+  ],
+  "research_gaps": [
+    "Confirm D. Scott Durham relationship (claimed son) via obituary or family records",
+    "Find Archer L. Durham obituary (2024 death)",
+    "Spouse information unknown",
+    "Children information unverified",
+    "Mattie Durham (mother) death date unknown",
+    "Barbara Durham (sister) further records"
   ],
   "metadata": {
     "created": "2026-01-20",
     "last_updated": "2026-01-20",
     "research_status": "in_progress",
-    "confidence_overall": 0.9
+    "confidence_overall": 0.85,
+    "notes": "Family relationship with D. Scott Durham marked as UNVERIFIED pending primary source confirmation"
   }
 }

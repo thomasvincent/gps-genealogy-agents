@@ -19,9 +19,21 @@
 1 SEX M
 1 BIRT
 2 DATE 9 JUN 1932
-2 PLAC Los Angeles County, California, USA
+2 PLAC Pasadena, Los Angeles County, California, USA
 2 SOUR @S4@
+1 DEAT
+2 DATE 2024
+2 PLAC Maryland, USA
+2 NOTE Major General Archer L. Durham passed away in 2024
 1 FAMC @F1@
+1 RESI
+2 DATE 1940
+2 PLAC 264 Pasadena Avenue, Pasadena, California, USA
+2 NOTE Listed as son, age 7
+2 SOUR @S5@
+1 EDUC
+2 DATE ABT 1950
+2 PLAC Pasadena High School, Pasadena, California, USA
 1 EDUC
 2 DATE 1960
 2 PLAC Utah State University, Logan, Utah, USA
@@ -34,15 +46,12 @@
 2 DATE 1975
 2 PLAC National War College
 2 NOTE Distinguished Graduate
-1 GRAD
-2 DATE ABT 1950
-2 PLAC Pasadena High School, Pasadena, California, USA
 1 OCCU Military Officer
 2 DATE FROM 1953 TO 1987
 2 PLAC United States Air Force
 2 NOTE Major General; Command Pilot with 6,000+ flight hours
 1 OCCU Assistant Secretary for Human Resources and Administration
-2 DATE ABT 1993 TO 1997
+2 DATE FROM 1993 TO 1997
 2 PLAC U.S. Department of Energy, Washington, D.C.
 1 TITL Major General
 2 DATE 1 JUN 1984
@@ -62,74 +71,189 @@
 2 DATE FROM FEB 1980 TO FEB 1982
 2 PLAC Andrews Air Force Base, Maryland
 2 NOTE Commander, 76th Military Airlift Division
-1 RESI
-2 PLAC Pasadena, California, USA
-2 NOTE Hometown
+1 EVEN
+2 TYPE Award Named
+2 DATE AFT 2024
+2 PLAC Dover Air Force Base, Delaware
+2 NOTE The Brigadier General Archer L. Durham Award was established at Dover AFB
 1 NOTE Major General Archer L. Durham served as Director of Deployment, U.S. Transportation Command.
 2 CONT He was a Command Pilot with more than 6,000 flying hours. After military retirement,
 2 CONT he served as Assistant Secretary for Human Resources and Administration at the
 2 CONT U.S. Department of Energy during the Clinton administration.
+2 CONT He passed away in 2024 in Maryland.
 1 SOUR @S1@
 1 SOUR @S2@
 1 SOUR @S3@
 0 @I2@ INDI
-1 NAME /Durham/
-2 SURN Durham
-1 SEX M
-1 NOTE Father of Archer L. Durham. Given name unknown.
-2 CONT Surname confirmed from children's birth records in California Birth Index.
-1 FAMS @F1@
-1 SOUR @S4@
-0 @I3@ INDI
-1 NAME /Sorrell/
-2 SURN Sorrell
-1 SEX F
-1 NOTE Mother of Archer L. Durham. Given name unknown.
-2 CONT Maiden name Sorrell confirmed from California Birth Index.
-1 FAMS @F1@
-1 SOUR @S4@
-0 @I4@ INDI
-1 NAME Barbara Camille /Durham/
-2 GIVN Barbara Camille
-2 SURN Durham
-1 SEX F
-1 BIRT
-2 DATE 1926
-2 PLAC Los Angeles County, California, USA
-2 SOUR @S4@
-1 FAMC @F1@
-1 NOTE Older sister of Archer L. Durham.
-2 CONT Found in California Birth Index 1905-1995.
-1 SOUR @S4@
-0 @I5@ INDI
 1 NAME Barney /Durham/
 2 GIVN Barney
 2 SURN Durham
 1 SEX M
 1 BIRT
-2 DATE 1929
-2 PLAC Los Angeles County, California, USA
-2 SOUR @S4@
-1 FAMC @F1@
-1 NOTE Sibling of Archer L. Durham (older brother).
-2 CONT Found in California Birth Index 1905-1995.
+2 DATE 25 JUL 1892
+2 PLAC Wake County, North Carolina, USA
+2 NOTE WWI Draft Registration confirms birth date
+2 SOUR @S6@
+1 DEAT
+2 DATE JUL 1974
+2 PLAC California, USA
+1 RESI
+2 DATE 1920
+2 PLAC Cedar Fork, Wake County, North Carolina, USA
+2 NOTE 1920 Census: age 27, hired hand on farm
+2 SOUR @S7@
+1 RESI
+2 DATE 1940
+2 PLAC 264 Pasadena Avenue, Pasadena, California, USA
+2 NOTE Head of household, age 47, occupation: janitor/service worker
+2 SOUR @S5@
+1 EDUC
+2 NOTE Completed 5th grade (per 1940 Census)
+2 SOUR @S5@
+1 OCCU Farm Laborer
+2 DATE 1920
+2 PLAC Cedar Fork, Wake County, North Carolina
+2 NOTE Worked as hired hand on farm
+2 SOUR @S7@
+1 OCCU Community Leader and Musician
+2 DATE FROM 1930 TO 1974
+2 PLAC Pasadena, California
+2 NOTE Prominent in Pasadena African American community; frequent MC;
+2 CONT involved with Scattergood Settlement Foundation and American Legion;
+2 CONT performed as instrumentalist alongside son "Archie" (Archer)
+2 SOUR @S8@
+1 NOTE Father of Major General Archer L. Durham.
+2 CONT Born in North Carolina near Wake/Durham County border.
+2 CONT Part of the Great Migration from the South to California in early 1930s.
+2 CONT His father was also named Archer Durham (the General's namesake).
+2 CONT Barney was a community leader, Master of Ceremonies, and musician in Pasadena.
+1 FAMC @F3@
+1 FAMS @F1@
+1 SOUR @S5@
+1 SOUR @S6@
+1 SOUR @S7@
+0 @I3@ INDI
+1 NAME Mattie /Sorrell/ Durham
+2 GIVN Mattie
+2 SURN Sorrell
+2 MARNM Durham
+1 SEX F
+1 BIRT
+2 DATE ABT 1904
+2 PLAC Arkansas, USA
+2 SOUR @S5@
+1 RESI
+2 DATE 1940
+2 PLAC 264 Pasadena Avenue, Pasadena, California, USA
+2 NOTE Wife, age 36
+2 SOUR @S5@
+1 EDUC
+2 NOTE Completed high school (per 1940 Census)
+2 SOUR @S5@
+1 NOTE Mother of Major General Archer L. Durham. Maiden name Sorrell.
+2 CONT Born in Arkansas, part of the Great Migration to California.
+2 CONT 1940 Census confirmed as wife of Barney Durham.
+1 FAMS @F1@
 1 SOUR @S4@
+1 SOUR @S5@
+0 @I4@ INDI
+1 NAME Barbara /Durham/
+2 GIVN Barbara
+2 SURN Durham
+1 SEX F
+1 BIRT
+2 DATE ABT 1930
+2 PLAC California, USA
+2 NOTE Age 10 in 1940 Census; California Birth Index shows Barbara Camille Durham b. 1926
+2 SOUR @S5@
+1 RESI
+2 DATE 1940
+2 PLAC 264 Pasadena Avenue, Pasadena, California, USA
+2 NOTE Daughter, age 10
+2 SOUR @S5@
+1 FAMC @F1@
+1 NOTE Older sister of Major General Archer L. Durham.
+2 CONT California Birth Index shows Barbara Camille Durham b. 1926.
+2 CONT 1940 Census shows daughter Barbara age 10 (b. ~1930).
+2 CONT Possible age discrepancy requires further research.
+1 SOUR @S4@
+1 SOUR @S5@
+0 @I5@ INDI
+1 NAME D. Scott /Durham/
+2 GIVN D. Scott
+2 SURN Durham
+2 NPFX Maj Gen
+1 SEX M
+1 BIRT
+2 DATE ABT 1968
+2 PLAC USA
+2 NOTE Estimated from Citadel graduation 1990
+1 EDUC
+2 DATE 1990
+2 PLAC The Citadel, Charleston, South Carolina, USA
+2 NOTE Commissioned upon graduation
+1 OCCU Military Officer
+2 DATE FROM 1990
+2 PLAC United States Air Force Reserve
+2 NOTE Major General; Commander of Fourth Air Force at March Air Reserve Base
+1 NOTE Major General D. Scott Durham, USAF Reserve.
+2 CONT *** RELATIONSHIP TO ARCHER L. DURHAM IS UNVERIFIED ***
+2 CONT Some sources claim he is the son of Maj. Gen. Archer L. Durham,
+2 CONT but this has not been confirmed from official military biographies
+2 CONT or primary genealogical sources. Both served at Dover AFB.
+2 CONT Graduated from The Citadel in 1990.
+2 CONT Serves as Commander of the Fourth Air Force at March Air Reserve Base, CA.
+2 CONT RESEARCH NEEDED: Confirm family relationship via obituary, interview, or family records.
+1 SOUR @S9@
+0 @I6@ INDI
+1 NAME Archer /Durham/
+2 GIVN Archer
+2 SURN Durham
+1 SEX M
+1 BIRT
+2 DATE BEF 1870
+2 PLAC North Carolina, USA
+2 NOTE Barney's father; namesake of Major General Archer L. Durham
+1 RESI
+2 PLAC Wake County / Durham County border region, North Carolina
+1 FAMS @F3@
+1 NOTE Grandfather of Major General Archer L. Durham.
+2 CONT Father of Barney Durham.
+2 CONT The General was named after this ancestor.
+2 CONT Lived in the Wake/Durham County border region of North Carolina.
 0 @F1@ FAM
 1 HUSB @I2@
 1 WIFE @I3@
 1 CHIL @I4@
-1 CHIL @I5@
 1 CHIL @I1@
 1 MARR
 2 PLAC California, USA
-2 DATE BEF 1926
+2 DATE BEF 1930
 2 NOTE Marriage inferred from children's birth records
-1 NOTE Durham family of Los Angeles County, California.
-2 CONT Three children identified from California Birth Index:
-2 CONT - Barbara Camille (b. 1926)
-2 CONT - Barney (b. 1929)
-2 CONT - Archer Lyman (b. 9 Jun 1932)
-1 SOUR @S4@
+1 RESI
+2 DATE 1940
+2 PLAC 264 Pasadena Avenue, Pasadena, California, USA
+2 NOTE Rented home for $18/month
+2 SOUR @S5@
+1 NOTE Durham family of Pasadena, California.
+2 CONT Parents: Barney Durham (b. NC, 1892) and Mattie Sorrell (b. AR, ~1904).
+2 CONT Part of the Great Migration from the South to California.
+2 CONT 1940 Census: 264 Pasadena Avenue, Pasadena.
+2 CONT Children: Barbara (~1930), Archer Lyman (1932).
+1 SOUR @S5@
+0 @F2@ FAM
+1 NOTE *** UNVERIFIED FAMILY RELATIONSHIP ***
+2 CONT Claims exist that D. Scott Durham is the son of Archer L. Durham,
+2 CONT but this relationship has NOT been verified from official sources.
+2 CONT The HUSB and CHIL links have been removed pending verification.
+2 CONT Both individuals are USAF Major Generals who served at Dover AFB.
+2 CONT Research needed: obituary, family records, or official confirmation.
+0 @F3@ FAM
+1 HUSB @I6@
+1 CHIL @I2@
+1 NOTE Family of Archer Durham (grandfather).
+2 CONT Father of Barney Durham.
+2 CONT Lived in Wake County / Durham County border region, North Carolina.
 0 @S1@ SOUR
 1 TITL USAF Official Biography - Major General Archer L. Durham
 1 AUTH United States Air Force
@@ -152,10 +276,51 @@
 1 TITL California Birth Index, 1905-1995
 1 AUTH State of California
 1 PUBL California Department of Health Services
-1 NOTE Birth records for Durham children in Los Angeles County:
-2 CONT - Barbara Camille Durham (1926)
-2 CONT - Barney Durham (1929)
-2 CONT - Archer Lyman Durham (9 Jun 1932)
+1 NOTE Birth records for Durham children in Los Angeles County.
 2 CONT Mother's maiden name: Sorrell
 1 REFN https://californiabirthindex.org
+0 @S5@ SOUR
+1 TITL 1940 United States Federal Census
+1 AUTH U.S. Census Bureau
+1 PUBL National Archives and Records Administration
+1 NOTE Los Angeles County, California
+2 CONT Enumeration District: Pasadena
+2 CONT Address: 264 Pasadena Avenue
+2 CONT Household: Barney Durham (Head, 47, NC), Mattie Durham (Wife, 36, AR),
+2 CONT Barbara Durham (Daughter, 10, CA), Archer L. Durham (Son, 7, CA)
+2 CONT Rent: $18/month. Barney worked 40 hrs/week.
+2 CONT Barney education: 5th grade. Mattie education: High school.
+1 REFN https://www.familysearch.org/ark:/61903/1:1:K94P-57C
+0 @S6@ SOUR
+1 TITL World War I Draft Registration Cards, 1917-1918
+1 AUTH U.S. Selective Service System
+1 PUBL National Archives and Records Administration
+1 NOTE Barney Durham registration in Wake County, NC
+2 CONT Birth date: July 25, 1892
+2 CONT Occupation at registration: Laborer/farm hand
+2 CONT Residence: Cedar Fork, Wake County, North Carolina
+1 REFN https://www.familysearch.org/ark:/61903/1:1:KZD6-W68
+0 @S7@ SOUR
+1 TITL 1920 United States Federal Census
+1 AUTH U.S. Census Bureau
+1 PUBL National Archives and Records Administration
+1 NOTE Wake County, North Carolina
+2 CONT Cedar Fork township
+2 CONT Barney Durham: age 27, hired hand on farm
+1 REFN https://www.familysearch.org/ark:/61903/1:1:MZV9-Y9C
+0 @S8@ SOUR
+1 TITL California Eagle (Newspaper)
+1 AUTH California Eagle
+1 PUBL Los Angeles, California
+1 NOTE Historic African American newspaper
+2 CONT Documented Barney Durham's community involvement in Pasadena
+2 CONT including MC appearances, American Legion involvement,
+2 CONT and musical performances with son "Archie"
+1 REFN https://chroniclingamerica.loc.gov/lccn/sn83025209/
+0 @S9@ SOUR
+1 TITL USAF Official Biography - Major General D. Scott Durham
+1 AUTH United States Air Force
+1 PUBL Air Force Public Affairs
+1 NOTE Commander, Fourth Air Force, March Air Reserve Base, California
+1 REFN https://www.af.mil/About-Us/Biographies/Display/Article/1733347/d-scott-durham/
 0 TRLR

@@ -1,343 +1,77 @@
 {
   "seed": {
     "given": "Archer",
+    "middle": "Lyman",
     "surname": "Durham",
-    "birth_year": null,
-    "birth_place": null
+    "birth_year": 1932,
+    "birth_date": "1932-06-09",
+    "birth_place": "Pasadena, Los Angeles County, California, USA"
   },
   "coverage": {
     "sources": [
-      "accessgenealogy",
+      "wikitree",
       "findagrave",
       "nara1940",
       "nara1950",
-      "wikitree"
+      "chronicling_america",
+      "accessgenealogy"
     ],
-    "records": 20,
+    "records": 0,
     "primary": 0,
-    "secondary": 20,
-    "authored": 0
+    "secondary": 0,
+    "authored": 0,
+    "notes": "Free sources yielded no direct matches. Existing research in profile.json contains primary sources from FamilySearch (1940 Census) and USAF official biography."
   },
-  "records": [
-    {
-      "source": "FindAGrave",
-      "record_id": "96567974",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/96567974/a-durham",
-      "raw_data": {
-        "name": "No grave photoA Durham\u2022 No grave photoBirth and death dates unknown."
+  "existing_research": {
+    "profile_file": "research/archer-l-durham/profile.json",
+    "facts_file": "research/wiki_plans/archer-l-durham/facts.json",
+    "confirmed_sources": [
+      {
+        "type": "census",
+        "title": "1940 United States Federal Census",
+        "url": "https://www.familysearch.org/ark:/61903/1:1:K94P-57C",
+        "shows": "Family at 264 Pasadena Avenue: Barney (head), Mattie (wife), Barbara (daughter), Archer (son age 7)"
       },
-      "extracted_fields": {
-        "full_name": "No grave photoA Durham\u2022 No grave photoBirth and death dates unknown."
+      {
+        "type": "vital_record",
+        "title": "California Birth Index 1905-1995",
+        "shows": "Archer Durham, 1932, Los Angeles County, Mother: Sorrell"
       },
-      "accessed_at": "2026-01-20T07:16:22.958181Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
+      {
+        "type": "military",
+        "title": "USAF Official Biography",
+        "url": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/",
+        "shows": "Full military career, education, decorations"
+      }
+    ]
+  },
+  "family": {
+    "father": {
+      "name": "Barney Durham",
+      "birth": "1892-07-25",
+      "birth_place": "Wake County, North Carolina",
+      "death": "1974-07",
+      "death_place": "California"
     },
-    {
-      "source": "FindAGrave",
-      "record_id": "56512885",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/56512885/a-durham",
-      "raw_data": {
-        "name": "No grave photoCplA DurhamVVeteranFlowers have been left.\u2022 No grave photounknown \u2013 4 Mar 1917"
-      },
-      "extracted_fields": {
-        "full_name": "No grave photoCplA DurhamVVeteranFlowers have been left.\u2022 No grave photounknown \u2013 4 Mar 1917"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958230Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
+    "mother": {
+      "name": "Mattie Sorrell Durham",
+      "birth_year": 1904,
+      "birth_place": "Arkansas"
     },
-    {
-      "source": "FindAGrave",
-      "record_id": "50534641",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/50534641/a-durham",
-      "raw_data": {
-        "name": "PrivateA DurhamVVeteranFlowers have been left.unknown \u2013 10 Jul 1918"
-      },
-      "extracted_fields": {
-        "full_name": "PrivateA DurhamVVeteranFlowers have been left.unknown \u2013 10 Jul 1918"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958240Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "145550711",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/145550711/a-a-durham",
-      "raw_data": {
-        "name": "A A DurhamVVeteranFlowers have been left.unknown \u2013 9 Jul 1864"
-      },
-      "extracted_fields": {
-        "full_name": "A A DurhamVVeteranFlowers have been left.unknown \u2013 9 Jul 1864"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958247Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "22664127",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/22664127/a-dorothy-durham",
-      "raw_data": {
-        "name": "A DorothySartorDurham27 Jul 1917 \u2013 20 Sep 2005"
-      },
-      "extracted_fields": {
-        "full_name": "A DorothySartorDurham27 Jul 1917 \u2013 20 Sep 2005"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958253Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "116211237",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/116211237/a-eugene-durham",
-      "raw_data": {
-        "name": "A Eugene Durham1871 \u2013 1948"
-      },
-      "extracted_fields": {
-        "full_name": "A Eugene Durham1871 \u2013 1948"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958258Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "60321077",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/60321077/a-l-durham",
-      "raw_data": {
-        "name": "No grave photoA L DurhamFlowers have been left.\u2022 No grave photoBirth and death dates unknown."
-      },
-      "extracted_fields": {
-        "full_name": "No grave photoA L DurhamFlowers have been left.\u2022 No grave photoBirth and death dates unknown."
-      },
-      "accessed_at": "2026-01-20T07:16:22.958265Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "151414730",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/151414730/a-p-durham",
-      "raw_data": {
-        "name": "No grave photoA P DurhamFlowers have been left.\u2022 No grave photo8 May 1909 \u2013 17 Nov 1942"
-      },
-      "extracted_fields": {
-        "full_name": "No grave photoA P DurhamFlowers have been left.\u2022 No grave photo8 May 1909 \u2013 17 Nov 1942"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958272Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "40001762",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/40001762/a-pearl-durham",
-      "raw_data": {
-        "name": "A Pearl Durham1888 \u2013 1983"
-      },
-      "extracted_fields": {
-        "full_name": "A Pearl Durham1888 \u2013 1983"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958277Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "92880462",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/92880462/a-theron-durham",
-      "raw_data": {
-        "name": "A Theron Durham1866 \u2013 unknown"
-      },
-      "extracted_fields": {
-        "full_name": "A Theron Durham1866 \u2013 unknown"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958284Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "89309987",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/89309987/a-durham",
-      "raw_data": {
-        "name": "No grave photoA. Durham\u2022 No grave photo30 Jan 1876 \u2013 20 Jan 1880"
-      },
-      "extracted_fields": {
-        "full_name": "No grave photoA. Durham\u2022 No grave photo30 Jan 1876 \u2013 20 Jan 1880"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958290Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "283874584",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/283874584/a-durham",
-      "raw_data": {
-        "name": "A. DurhamCenotaphunknown \u2013 8 Jun 2016"
-      },
-      "extracted_fields": {
-        "full_name": "A. DurhamCenotaphunknown \u2013 8 Jun 2016"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958296Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "270101278",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/270101278/a-durham",
-      "raw_data": {
-        "name": "No grave photoA. Durham\u2022 No grave photounknown \u2013 Apr 1866"
-      },
-      "extracted_fields": {
-        "full_name": "No grave photoA. Durham\u2022 No grave photounknown \u2013 Apr 1866"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958302Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "83935399",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/83935399/a-b-durham",
-      "raw_data": {
-        "name": "A. B. Durham14 Aug 1902 \u2013 23 Oct 1949"
-      },
-      "extracted_fields": {
-        "full_name": "A. B. Durham14 Aug 1902 \u2013 23 Oct 1949"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958307Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "74459405",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/74459405/a-beryl-durham",
-      "raw_data": {
-        "name": "A. Beryl DurhamFlowers have been left.23 Aug 1934 \u2013 5 Jan 2006"
-      },
-      "extracted_fields": {
-        "full_name": "A. Beryl DurhamFlowers have been left.23 Aug 1934 \u2013 5 Jan 2006"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958312Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "33186544",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/33186544/a-boyce-durham",
-      "raw_data": {
-        "name": "A. Boyce \u201cBud\u201d Durham14 May 1938 \u2013 27 Oct 1988"
-      },
-      "extracted_fields": {
-        "full_name": "A. Boyce \u201cBud\u201d Durham14 May 1938 \u2013 27 Oct 1988"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958317Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "194276476",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/194276476/a-c-durham",
-      "raw_data": {
-        "name": "RevA. C. Durham2 May 1933 \u2013 1 Jun 2019"
-      },
-      "extracted_fields": {
-        "full_name": "RevA. C. Durham2 May 1933 \u2013 1 Jun 2019"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958322Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "80384035",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/80384035/a-d-durham",
-      "raw_data": {
-        "name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
-      },
-      "extracted_fields": {
-        "full_name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958327Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "180445530",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/180445530/a-erma-durham",
-      "raw_data": {
-        "name": "A. ErmaDiehlDurhamFlowers have been left.2 Dec 1889 \u2013 1972"
-      },
-      "extracted_fields": {
-        "full_name": "A. ErmaDiehlDurhamFlowers have been left.2 Dec 1889 \u2013 1972"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958333Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    },
-    {
-      "source": "FindAGrave",
-      "record_id": "61802998",
-      "record_type": "burial",
-      "url": "https://www.findagrave.com/memorial/61802998/a-eugene-durham",
-      "raw_data": {
-        "name": "A. Eugene Durham28 Oct 1940 \u2013 27 Jan 1994"
-      },
-      "extracted_fields": {
-        "full_name": "A. Eugene Durham28 Oct 1940 \u2013 27 Jan 1994"
-      },
-      "accessed_at": "2026-01-20T07:16:22.958338Z",
-      "confidence_hint": null,
-      "needs_translation": false,
-      "language": "en"
-    }
-  ]
+    "siblings": [
+      {
+        "name": "Barbara Camille Durham",
+        "birth_year": 1926,
+        "relation": "older sister"
+      }
+    ]
+  },
+  "research_gaps": [
+    "D. Scott Durham father-son relationship unverified",
+    "Spouse information unknown",
+    "Children unverified",
+    "Mattie Durham death date unknown",
+    "Archer obituary (2024 death) not yet indexed"
+  ],
+  "records": []
 }
