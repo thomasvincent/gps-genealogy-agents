@@ -75,7 +75,9 @@ dependencies = [
     "recordlinkage>=0.16",
     "python-gedcom>=1.0.0",
     "instructor>=1.12.0",
-    "spacy-transformers>=1.3.9",
+    # NOTE: spacy-transformers removed - was unused (only en_core_web_sm needed)
+    # and blocked security update of transformers (required <4.50.0)
+    "en-core-web-sm",
 ]
 
 [project.optional-dependencies]
@@ -255,6 +257,9 @@ module = [
 # Allow less strict typing for complex modules being gradually typed
 disallow_untyped_defs = false
 disallow_untyped_calls = false
+
+[tool.uv.sources]
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
 
 [dependency-groups]
 dev = [
