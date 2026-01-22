@@ -1359,7 +1359,13 @@ def crawl_person(
     until_gps: bool = typer.Option(True, "--until-gps/--no-until-gps", help="Stop early when GPS-quality coverage reached"),
     no_authored_sources: bool = typer.Option(False, "--no-authored-sources", help="Exclude authored/user-tree sources from searches"),
     expand_family: bool = typer.Option(True, "--expand-family/--no-expand-family", help="After confirming seed, expand to ancestors/descendants"),
-    max_generations: int = typer.Option(1, "--max-generations", help="Generations to expand (up and down)"),
+    max_generations: int = typer.Option(3, "--max-generations", help="Generations to expand (up and down)"),
+    # New options for census tree expansion
+    person_id: str | None = typer.Option(None, "--person-id", help="Person ID for loading existing research (e.g., 'archer-l-durham')"),
+    research_dir: str = typer.Option("research", "--research-dir", help="Directory containing existing research profiles"),
+    use_existing_profile: bool = typer.Option(True, "--use-existing-profile/--no-use-existing-profile", help="Load family from existing profile.json"),
+    require_gps_approval: bool = typer.Option(False, "--require-gps-approval/--no-require-gps-approval", help="Require GPS critic approval before expanding family"),
+    use_census_tree_builder: bool = typer.Option(True, "--use-census-tree-builder/--no-use-census-tree-builder", help="Use CensusTreeBuilder to generate search queue"),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
     run_id: str | None = typer.Option(None, "--run-id"),
 ) -> None:
@@ -1383,6 +1389,12 @@ def crawl_person(
             exclude_authored=no_authored_sources,
             expand_family=expand_family,
             max_generations=max_generations,
+            # New options for census tree expansion
+            person_id=person_id,
+            research_dir=research_dir,
+            use_existing_profile=use_existing_profile,
+            require_gps_approval=require_gps_approval,
+            use_census_tree_builder=use_census_tree_builder,
         )
 
         with Progress(

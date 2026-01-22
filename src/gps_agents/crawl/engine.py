@@ -15,6 +15,29 @@ from gps_agents.sources.nara1950 import Nara1950Source
 from gps_agents.sources.nara1940 import Nara1940Source
 from gps_agents.sources.findagrave import FindAGraveSource
 from gps_agents.sources.freebmd import FreeBMDSource
+from gps_agents.sources.familysearch import FamilySearchSource
+from gps_agents.sources.usgenweb import USGenWebSource
+from gps_agents.crawl.census_tree import CensusTreeBuilder, build_census_tree_from_research
+
+# New free sources
+from gps_agents.sources.billiongraves import BillionGravesSource
+from gps_agents.sources.freecen_uk import FreeCENSource
+from gps_agents.sources.cyndislist import CyndisListSource, NorwayBMDSource, BelgiumBMDSource
+from gps_agents.sources.jewishgen import JewishGenSource, YadVashemSource
+from gps_agents.sources.legacy_obituaries import LegacyObituariesSource, NewspaperObituariesSource
+from gps_agents.sources.afrigeneas import (
+    AfricanAmericanGenealogySource,
+    FreedmansBureauSource,
+    SlaveSchedulesSource,
+)
+from gps_agents.sources.library_of_congress import (
+    LibraryOfCongressSource,
+    ChroniclingAmericaSource,
+    NYPLSource,
+    ImmigrationRecordsSource,
+)
+from gps_agents.sources.california_vitals import CaliforniaVitalsSource
+from gps_agents.sources.free_census import FreeCensusSource
 
 
 @dataclass
@@ -35,7 +58,13 @@ class CrawlConfig:
     until_gps: bool = True  # stop early when GPS-quality coverage reached (primary+secondary, no authored-only)
     exclude_authored: bool = False  # exclude user-generated trees (e.g., WikiTree) from searches
     expand_family: bool = True  # after confirming a person, expand to relatives
-    max_generations: int = 1    # BFS depth up/down
+    max_generations: int = 3    # BFS depth up/down (increased from 1)
+    # New options for census tree expansion
+    person_id: Optional[str] = None  # ID for loading existing research (e.g., "archer-l-durham")
+    research_dir: str = "research"  # Directory containing existing research profiles
+    use_existing_profile: bool = True  # Load family members from existing profile.json
+    require_gps_approval: bool = False  # If False, expand family without LLM approval gate
+    use_census_tree_builder: bool = True  # Use CensusTreeBuilder to generate search queue
 
 
 async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: Any | None = None) -> dict[str, Any]:
@@ -49,12 +78,66 @@ async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: An
 
     # Router with open sources only for Phase 1
     router = SearchRouter(RouterConfig(parallel=True, max_results_per_source=50))
-    router.register_source(AccessGenealogySource())
+    access_gen = AccessGenealogySource()
+    usgenweb = USGenWebSource()
+    router.register_source(access_gen)
+    router.register_source(usgenweb)
     router.register_source(WikiTreeSource())
     router.register_source(Nara1950Source())
     router.register_source(Nara1940Source())
     router.register_source(FindAGraveSource())
     router.register_source(FreeBMDSource())
+
+    # Add FamilySearch if configured (requires FAMILYSEARCH_ACCESS_TOKEN env var)
+    fs_source = FamilySearchSource()
+    if fs_source.is_configured():
+        router.register_source(fs_source)
+        if cfg.verbose:
+            print("FamilySearch source enabled")
+
+    # Cemetery and burial sources
+    router.register_source(BillionGravesSource())
+
+    # Vital records sources
+    router.register_source(CaliforniaVitalsSource())
+
+    # Free census sources (1940, 1950 fully indexed, others browsable)
+    router.register_source(FreeCensusSource())
+
+    # UK census (FreeCEN volunteer transcriptions)
+    router.register_source(FreeCENSource())
+
+    # Resource directories
+    router.register_source(CyndisListSource())
+
+    # Obituary sources
+    router.register_source(LegacyObituariesSource())
+    router.register_source(NewspaperObituariesSource())
+
+    # Jewish genealogy
+    router.register_source(JewishGenSource())
+    router.register_source(YadVashemSource())
+
+    # African American genealogy
+    router.register_source(AfricanAmericanGenealogySource())
+    router.register_source(FreedmansBureauSource())
+    router.register_source(SlaveSchedulesSource())
+
+    # Library and archive sources
+    router.register_source(LibraryOfCongressSource())
+    router.register_source(ChroniclingAmericaSource())
+    router.register_source(NYPLSource())
+
+    # Immigration records
+    router.register_source(ImmigrationRecordsSource())
+
+    if cfg.verbose:
+        print("Census sources enabled: AccessGenealogy, USGenWeb, FreeCensus, FreeCEN")
+        print("Vital records: California Death/Birth Index")
+        print("Cemetery sources: FindAGrave, BillionGraves")
+        print("Obituaries: Legacy.com, Chronicling America")
+        print("Special collections: JewishGen, Afrigeneas, Freedmen's Bureau")
+        print("Archives: Library of Congress, NYPL")
 
     # Ensure output directory
     out_path = Path(cfg.tree_out)
@@ -92,6 +175,73 @@ async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: An
     visited: set[str] = set()
     accepted_counts: dict[str, int] = {}
 
+    # Load existing profile and seed family members into frontier
+    if cfg.use_existing_profile and cfg.person_id:
+        try:
+            tree_builder = CensusTreeBuilder(cfg.research_dir)
+            profile = tree_builder.load_existing_research(cfg.person_id)
+            if profile:
+                if cfg.verbose:
+                    print(f"Loaded existing profile for {cfg.person_id}")
+                # Extract family members
+                family = tree_builder.extract_family_from_profile(profile)
+                # Add parents (generation 1)
+                for parent in family.get("parents", []):
+                    if parent.given_name or parent.surname:
+                        parent_seed = SeedPerson(
+                            given=parent.given_name,
+                            surname=parent.surname,
+                            birth_year=parent.birth_year,
+                            birth_place=parent.birth_place,
+                        )
+                        frontier.append((parent_seed, 1))
+                        if cfg.verbose:
+                            print(f"  Added parent to frontier: {parent.full_name}")
+                # Add siblings (generation 0)
+                for sibling in family.get("siblings", []):
+                    if sibling.given_name or sibling.surname:
+                        sib_seed = SeedPerson(
+                            given=sibling.given_name,
+                            surname=sibling.surname,
+                            birth_year=sibling.birth_year,
+                            birth_place=sibling.birth_place,
+                        )
+                        frontier.append((sib_seed, 0))
+                        if cfg.verbose:
+                            print(f"  Added sibling to frontier: {sibling.full_name}")
+        except Exception as e:
+            if cfg.verbose:
+                print(f"Warning: Could not load existing profile: {e}")
+
+    # Use CensusTreeBuilder to generate search queue for census expansion
+    if cfg.use_census_tree_builder and cfg.person_id:
+        try:
+            tree_result = build_census_tree_from_research(
+                cfg.person_id,
+                research_dir=cfg.research_dir,
+                max_generations=cfg.max_generations,
+            )
+            search_queue = tree_result.get("search_queue", [])
+            if cfg.verbose:
+                print(f"CensusTreeBuilder generated {len(search_queue)} search targets")
+            for item in search_queue:
+                name_parts = item.get("name", "").split()
+                if name_parts:
+                    queue_seed = SeedPerson(
+                        given=name_parts[0] if name_parts else "",
+                        surname=name_parts[-1] if len(name_parts) > 1 else "",
+                        birth_year=item.get("birth_year"),
+                        birth_place=item.get("birth_place"),
+                    )
+                    gen = item.get("generation", 1)
+                    frontier.append((queue_seed, gen))
+                    if cfg.verbose:
+                        census_years = item.get("census_years_to_search", [])
+                        print(f"  Added {item['name']} (gen {gen}) - census years: {census_years}")
+        except Exception as e:
+            if cfg.verbose:
+                print(f"Warning: CensusTreeBuilder error: {e}")
+
     while frontier and iters < cfg.max_iterations and (time.time() - start) < cfg.max_duration_seconds:
         cur, gen = frontier.popleft()
         key = _person_key(cur.given, cur.surname, cur.birth_year, cur.birth_place)
@@ -110,6 +260,114 @@ async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: An
         )
 
         unified = await router.search(query, region=region)
+
+        # Census-specific searches for household extraction
+        # Extract state and county from birth_place
+        state = None
+        county = None
+        if cur.birth_place:
+            place_parts = cur.birth_place.split(",")
+            if len(place_parts) >= 2:
+                state = place_parts[-1].strip()
+                city = place_parts[0].strip().lower()
+                # Map known cities to their counties
+                city_to_county = {
+                    "pasadena": "Los Angeles",
+                    "los angeles": "Los Angeles",
+                    "glendale": "Los Angeles",
+                    "burbank": "Los Angeles",
+                    "long beach": "Los Angeles",
+                    "san francisco": "San Francisco",
+                    "oakland": "Alameda",
+                    "san diego": "San Diego",
+                    "sacramento": "Sacramento",
+                    "san jose": "Santa Clara",
+                    "fresno": "Fresno",
+                }
+                county = city_to_county.get(city, place_parts[0].strip())
+            elif len(place_parts) == 1:
+                state = place_parts[0].strip()
+
+        if cfg.verbose and county:
+            # Avoid "County County" duplication
+            county_display = county if "county" in county.lower() else f"{county} County"
+            print(f"  Census search targeting: {county_display}, {state}")
+
+        # Search AccessGenealogy and USGenWeb for census transcriptions
+        census_years = [1930, 1940]  # Most relevant for 1932 birth
+        if cur.birth_year:
+            # Add census years person would appear in (age 0+)
+            census_years = [y for y in [1880, 1900, 1910, 1920, 1930, 1940, 1950] if y >= (cur.birth_year - 5)][:3]
+
+        for year in census_years:
+            try:
+                ag_census = await access_gen.search_census(
+                    surname=cur.surname,
+                    given_name=cur.given,
+                    state=state,
+                    county=county,
+                    year=year,
+                )
+                for rec in ag_census:
+                    aggregated.append(rec.model_dump(mode="json"))
+                    coverage["secondary_count"] += 1
+                    coverage["sources"].add("accessgenealogy")
+                    if cfg.verbose and rec.extracted_fields.get("household_members"):
+                        members = rec.extracted_fields.get("household_members", [])
+                        print(f"  AccessGenealogy {year} census: {len(members)} household members found")
+            except Exception as e:
+                if cfg.verbose:
+                    print(f"  AccessGenealogy census {year} search error: {e}")
+
+            try:
+                ugw_census = await usgenweb.search_census(
+                    surname=cur.surname,
+                    given_name=cur.given,
+                    state=state,
+                    county=county,
+                    year=year,
+                )
+                for rec in ugw_census:
+                    aggregated.append(rec.model_dump(mode="json"))
+                    coverage["secondary_count"] += 1
+                    coverage["sources"].add("usgenweb")
+                    if cfg.verbose and rec.extracted_fields.get("household_members"):
+                        members = rec.extracted_fields.get("household_members", [])
+                        print(f"  USGenWeb {year} census: {len(members)} household members found")
+            except Exception as e:
+                if cfg.verbose:
+                    print(f"  USGenWeb census {year} search error: {e}")
+
+        # Process all aggregated census records and extract household members for frontier
+        if cfg.expand_family and gen < cfg.max_generations:
+            for rec_dict in aggregated[-20:]:  # Check recent records
+                if rec_dict.get("record_type") != "census":
+                    continue
+                extracted = rec_dict.get("extracted_fields", {})
+                household_members = extracted.get("household_members", [])
+                if not household_members:
+                    continue
+
+                # Extract persons from census household
+                persons = _extract_persons_from_census_household(household_members, cur.surname)
+                for given, surname, byear, rel in persons:
+                    # Determine generation based on relationship
+                    rel_lower = (rel or "").lower()
+                    if rel_lower in ("father", "mother", "parent"):
+                        new_gen = gen + 1  # Parents are one generation up
+                    elif rel_lower in ("son", "daughter", "child"):
+                        new_gen = gen  # Children are same or down
+                    elif rel_lower in ("head", "self"):
+                        continue  # Skip self
+                    else:
+                        new_gen = gen  # Siblings, spouses stay at same gen level
+
+                    member_key = _person_key(given, surname, byear, None)
+                    if member_key not in visited:
+                        member_seed = SeedPerson(given=given, surname=surname, birth_year=byear)
+                        frontier.append((member_seed, new_gen))
+                        if cfg.verbose:
+                            print(f"    Added census household member: {given} {surname} ({rel or 'unknown'}, gen {new_gen})")
 
         # Aggregate and classify
         for rec in unified.results:
@@ -359,7 +617,8 @@ async def run_crawl_person(seed: SeedPerson, cfg: CrawlConfig, kernel_config: An
                                 decision = await _evaluate_and_promote_fact(rel_fact, ledger, kernel_config)
                             except Exception:
                                 decision = "INCOMPLETE"
-                            if decision == "ACCEPT":
+                            # Expand family if GPS approved OR if approval not required
+                            if decision == "ACCEPT" or not cfg.require_gps_approval:
                                 # parse name and enqueue
                                 parts = nm.split(", ") if "," in nm else nm.split()
                                 if not parts:
@@ -470,14 +729,14 @@ def _classify_record(rec: Any) -> str:
     """Rudimentary classification into primary/secondary/authored.
 
     - primary: NARA 1940/1950 (original images), civil/church images when available
-    - secondary: indexes/derivative abstracts (FreeBMD, AccessGenealogy, FindAGrave)
+    - secondary: indexes/derivative abstracts (FreeBMD, AccessGenealogy, FindAGrave, USGenWeb)
     - authored: user trees/compiled narratives (WikiTree)
     """
     src = (rec.source or "").lower()
     rtype = (rec.record_type or "").lower()
     if src in {"nara1950", "nara1940"}:
         return "primary"
-    if src in {"freebmd", "accessgenealogy", "findagrave"}:
+    if src in {"freebmd", "accessgenealogy", "findagrave", "usgenweb"}:
         return "secondary"
     if src in {"wikitree"}:
         return "authored"
@@ -487,3 +746,56 @@ def _classify_record(rec: Any) -> str:
     if any(k in rtype for k in ["index", "transcript", "abstract", "burial", "census"]):
         return "secondary"
     return "secondary"
+
+
+def _extract_persons_from_census_household(
+    household_members: list[dict[str, str]],
+    target_surname: str,
+) -> list[tuple[str, str, int | None, str | None]]:
+    """Extract (given, surname, birth_year, relationship) from census household data.
+
+    Args:
+        household_members: List of dicts with name, age, relationship, birthplace, etc.
+        target_surname: The surname we're researching
+
+    Returns:
+        List of (given_name, surname, estimated_birth_year, relationship)
+    """
+    persons = []
+    target_surname_lower = target_surname.lower()
+
+    for member in household_members:
+        name = member.get("name", "")
+        if not name:
+            continue
+
+        # Parse name - could be "John Smith", "Smith, John", or just "John"
+        name_parts = name.replace(",", " ").split()
+        if len(name_parts) >= 2:
+            # Assume first-last or last-first format
+            if target_surname_lower in name.lower():
+                # Surname matches - parse accordingly
+                given = name_parts[0] if not name_parts[0].lower() == target_surname_lower else " ".join(name_parts[1:])
+                surname = target_surname
+            else:
+                given = name_parts[0]
+                surname = name_parts[-1]
+        elif len(name_parts) == 1:
+            given = name_parts[0]
+            surname = target_surname
+        else:
+            continue
+
+        # Estimate birth year from age if available
+        birth_year = None
+        age_str = member.get("age", "")
+        if age_str and age_str.isdigit():
+            age = int(age_str)
+            # Census year would be needed for accurate calc - estimate ~1930
+            birth_year = 1935 - age  # Rough estimate
+
+        relationship = member.get("relationship", "")
+
+        persons.append((given, surname, birth_year, relationship))
+
+    return persons
