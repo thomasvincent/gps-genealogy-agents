@@ -34,6 +34,20 @@ Example:
     ...     # Grade A - eligible for all platforms
     ...     print(f"Allowed: {pipeline.grade_card.allowed_platforms}")
 """
+from .config import (
+    CONFIG,
+    GPS_CONFIG,
+    GPSGradingConfig,
+    PLATFORM_CONFIG,
+    PlatformEligibilityConfig,
+    PRIVACY_CONFIG,
+    PrivacyConfig,
+    PublishingConfig,
+    QUORUM_CONFIG,
+    QuorumConfig,
+    REVIEWER_CONFIG,
+    ReviewerConfig,
+)
 from .manager import AdjudicationGate, PublishingManager
 from .models import (
     GPSGradeCard,
@@ -68,6 +82,11 @@ from .reviewers import (
     PublishingSourceReviewerLLM,
     SourceReviewerInput,
     SourceReviewerOutput,
+    # Tiebreaker Reviewer (for Bayesian quorum consensus)
+    TiebreakerInput,
+    TiebreakerOutput,
+    TiebreakerReviewerLLM,
+    TiebreakerReviewerType,
     # Linguist Agent
     AcceptedFact,
     GPSPillar5Grade,
@@ -112,6 +131,19 @@ from .validators.gps_pillars import GPSValidationSummary, PillarValidationResult
 from .validators.integrity import IntegrityCheckResult
 
 __all__ = [
+    # Configuration (unified thresholds)
+    "CONFIG",
+    "PublishingConfig",
+    "GPSGradingConfig",
+    "QuorumConfig",
+    "ReviewerConfig",
+    "PrivacyConfig",
+    "PlatformEligibilityConfig",
+    "GPS_CONFIG",
+    "QUORUM_CONFIG",
+    "REVIEWER_CONFIG",
+    "PRIVACY_CONFIG",
+    "PLATFORM_CONFIG",
     # Manager & Adjudication Gate
     "PublishingManager",
     "AdjudicationGate",
@@ -154,6 +186,12 @@ __all__ = [
     "LogicReviewerOutput",
     "SourceReviewerInput",
     "SourceReviewerOutput",
+    # LLM Wrappers - Tiebreaker Reviewer
+    "TiebreakerReviewerLLM",
+    # LLM Schemas - Tiebreaker Reviewer
+    "TiebreakerInput",
+    "TiebreakerOutput",
+    "TiebreakerReviewerType",
     # LLM Schemas - Linguist Agent
     "AcceptedFact",
     "LinguistInput",

@@ -5,12 +5,14 @@ for the publishing quorum system.
 """
 from __future__ import annotations
 
+from enum import Enum
 from typing import TYPE_CHECKING, Annotated
 
 from pydantic import BaseModel, Field
 
 from ..llm.wrapper import LLMClient, StructuredLLMWrapper
 
+from .config import CONFIG
 from .models import (
     GPSGradeCard,
     GPSPillar,
@@ -117,6 +119,12 @@ class LogicReviewerOutput(BaseModel):
     """Output from Logic Reviewer LLM."""
 
     verdict: Verdict
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+        default_factory=lambda: CONFIG.reviewer.default_confidence,
+        description="Confidence in verdict (0-1). Set via REVIEWER_DEFAULT_CONFIDENCE.",
+    )
     issues: list[ReviewIssue] = Field(default_factory=list)
     rationale: str = Field(description="Explanation for the verdict")
 
@@ -163,6 +171,12 @@ class SourceReviewerOutput(BaseModel):
     """Output from Source Reviewer LLM."""
 
     verdict: Verdict
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+        default_factory=lambda: CONFIG.reviewer.default_confidence,
+        description="Confidence in verdict (0-1). Set via REVIEWER_DEFAULT_CONFIDENCE.",
+    )
     issues: list[ReviewIssue] = Field(default_factory=list)
     rationale: str = Field(description="Explanation for the verdict")
 
@@ -233,17 +247,34 @@ class PublishingLogicReviewerLLM:
             model: Model identifier for audit trail
 
         Returns:
-            Review verdict with issues and rationale
+            Review verdict with issues, rationale, and confidence
         """
         output = self._wrapper.invoke(input_data)
 
         return ReviewVerdict(
             reviewer_type=ReviewerType.LOGIC_REVIEWER,
             verdict=output.verdict,
+            confidence=output.confidence,
             issues=output.issues,
             rationale=output.rationale,
             reviewer_model=model or "publishing_logic_reviewer_llm",
         )
+
+    async def review_async(self, input_data: LogicReviewerInput, model: str = "") -> ReviewVerdict:
+        """Async version of review for parallel execution.
+
+        Args:
+            input_data: Logic reviewer input with timeline/relationships
+            model: Model identifier for audit trail
+
+        Returns:
+            Review verdict with issues, rationale, and confidence
+        """
+        import asyncio
+
+        # Run synchronous review in executor to avoid blocking
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, lambda: self.review(input_data, model))
 
 
 class PublishingSourceReviewerLLM:
@@ -266,17 +297,174 @@ class PublishingSourceReviewerLLM:
             model: Model identifier for audit trail
 
         Returns:
-            Review verdict with issues and rationale
+            Review verdict with issues, rationale, and confidence
         """
         output = self._wrapper.invoke(input_data)
 
         return ReviewVerdict(
             reviewer_type=ReviewerType.SOURCE_REVIEWER,
             verdict=output.verdict,
+            confidence=output.confidence,
             issues=output.issues,
             rationale=output.rationale,
             reviewer_model=model or "publishing_source_reviewer_llm",
         )
+
+    async def review_async(self, input_data: SourceReviewerInput, model: str = "") -> ReviewVerdict:
+        """Async version of review for parallel execution.
+
+        Args:
+            input_data: Source reviewer input with citations/sources
+            model: Model identifier for audit trail
+
+        Returns:
+            Review verdict with issues, rationale, and confidence
+        """
+        import asyncio
+
+        # Run synchronous review in executor to avoid blocking
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, lambda: self.review(input_data, model))
+
+
+# =============================================================================
+# Tiebreaker Reviewer Schemas (for quorum disagreements)
+# =============================================================================
+
+
+class TiebreakerReviewerType(str, Enum):
+    """Type of tiebreaker reviewer."""
+
+    SENIOR_REVIEWER = "senior_reviewer"
+
+
+class TiebreakerInput(BaseModel):
+    """Input for Tiebreaker Reviewer when Logic and Source reviewers disagree."""
+
+    subject_id: str = Field(description="ID of the person being reviewed")
+    subject_name: str = Field(description="Name of the person")
+
+    # Logic reviewer results
+    logic_verdict: Verdict = Field(description="Logic reviewer's verdict")
+    logic_confidence: float = Field(description="Logic reviewer's confidence")
+    logic_rationale: str = Field(description="Logic reviewer's rationale")
+    logic_issues: list[dict] = Field(default_factory=list, description="Logic issues found")
+
+    # Source reviewer results
+    source_verdict: Verdict = Field(description="Source reviewer's verdict")
+    source_confidence: float = Field(description="Source reviewer's confidence")
+    source_rationale: str = Field(description="Source reviewer's rationale")
+    source_issues: list[dict] = Field(default_factory=list, description="Source issues found")
+
+    # Original evidence for independent review
+    events: list[dict] = Field(default_factory=list, description="Timeline events")
+    claims_with_citations: list[dict] = Field(
+        default_factory=list,
+        description="Claims with their citations",
+    )
+
+    # Reason for tiebreaker
+    disagreement_reason: str = Field(
+        description="Why tiebreaker was triggered (verdict_mismatch, low_confidence, etc.)",
+    )
+
+
+class TiebreakerOutput(BaseModel):
+    """Output from Tiebreaker Reviewer."""
+
+    verdict: Verdict = Field(description="Final tiebreaker verdict")
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+        default_factory=lambda: CONFIG.reviewer.tiebreaker_default_confidence,
+        description="Confidence in tiebreaker verdict. Set via TIEBREAKER_DEFAULT_CONFIDENCE.",
+    )
+    rationale: str = Field(description="Explanation for tiebreaker decision")
+
+    # Which reviewer was more correct
+    favored_reviewer: str = Field(
+        description="Which reviewer's position was more supported (logic, source, neither)",
+    )
+    correction_notes: str = Field(
+        default="",
+        description="Notes on where the disfavored reviewer erred",
+    )
+
+    # Additional findings
+    additional_issues: list[ReviewIssue] = Field(
+        default_factory=list,
+        description="New issues found during tiebreaker review",
+    )
+
+    # Recommendation
+    recommend_further_review: bool = Field(
+        default=False,
+        description="Whether to recommend additional human review",
+    )
+    further_review_reason: str = Field(
+        default="",
+        description="Why further review is recommended",
+    )
+
+
+class TiebreakerReviewerLLM:
+    """Tiebreaker Reviewer for resolving quorum disagreements.
+
+    Called when:
+    1. Logic and Source reviewers reach different verdicts (one PASS, one FAIL)
+    2. Both PASS but one has very low confidence (<0.5)
+
+    The tiebreaker performs an independent review considering both perspectives
+    and makes a final determination.
+    """
+
+    def __init__(self, client: LLMClient):
+        self._wrapper = StructuredLLMWrapper(
+            client=client,
+            role="tiebreaker_reviewer",
+            input_schema=TiebreakerInput,
+            output_schema=TiebreakerOutput,
+            temperature=0.1,  # Slight creativity for nuanced reasoning
+        )
+
+    def review(self, input_data: TiebreakerInput, model: str = "") -> ReviewVerdict:
+        """Run tiebreaker review to resolve disagreement.
+
+        Args:
+            input_data: Tiebreaker input with both reviewer perspectives
+            model: Model identifier for audit trail
+
+        Returns:
+            Final ReviewVerdict from tiebreaker
+        """
+        output = self._wrapper.invoke(input_data)
+
+        # Combine issues from tiebreaker with most relevant original issues
+        combined_issues = output.additional_issues.copy()
+
+        return ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,  # Tiebreaker acts as senior logic reviewer
+            verdict=output.verdict,
+            confidence=output.confidence,
+            issues=combined_issues,
+            rationale=f"TIEBREAKER: {output.rationale}\n\nFavored: {output.favored_reviewer}\n{output.correction_notes}",
+            reviewer_model=model or "tiebreaker_reviewer_llm",
+        )
+
+    async def review_async(self, input_data: TiebreakerInput, model: str = "") -> ReviewVerdict:
+        """Async version of tiebreaker review.
+
+        Args:
+            input_data: Tiebreaker input with both reviewer perspectives
+            model: Model identifier for audit trail
+
+        Returns:
+            Final ReviewVerdict from tiebreaker
+        """
+        import asyncio
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, lambda: self.review(input_data, model))
 
 
 # =============================================================================
@@ -456,17 +644,20 @@ class LinguistLLM:
     @staticmethod
     def filter_accepted_facts(
         facts: list[dict],
-        min_confidence: float = 0.9,
+        min_confidence: float | None = None,
     ) -> list[AcceptedFact]:
         """Filter facts to only include ACCEPTED with confidence >= threshold.
 
         Args:
             facts: Raw facts with status and confidence fields
-            min_confidence: Minimum confidence threshold (default 0.9)
+            min_confidence: Minimum confidence (defaults to FACT_MIN_ACCEPTANCE_CONFIDENCE config)
 
         Returns:
             List of AcceptedFact objects meeting the criteria
         """
+        if min_confidence is None:
+            min_confidence = CONFIG.reviewer.fact_acceptance_min_confidence
+
         accepted = []
         for fact in facts:
             if fact.get("status") != "ACCEPTED":

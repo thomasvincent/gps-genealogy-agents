@@ -6,7 +6,9 @@ as a complement to LLM-based grading.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Optional
 
+from ..config import CONFIG
 from ..models import GPSPillar
 
 
@@ -27,7 +29,12 @@ class GPSValidationSummary:
     pillar_results: dict[GPSPillar, PillarValidationResult]
     overall_score: float
     passes_threshold: bool
-    threshold: float = 7.0
+    threshold: Optional[float] = None
+
+    def __post_init__(self):
+        """Set default threshold from config if not provided."""
+        if self.threshold is None:
+            object.__setattr__(self, "threshold", CONFIG.gps.pillar_passing_threshold)
 
     @property
     def lowest_pillar(self) -> PillarValidationResult | None:
@@ -333,7 +340,7 @@ class GPSPillarValidator:
         has_written_conclusion: bool,
         conclusion_length: int = 0,
         research_notes_count: int = 0,
-        threshold: float = 7.0,
+        threshold: float | None = None,
     ) -> GPSValidationSummary:
         """Validate all GPS pillars.
 
@@ -348,11 +355,14 @@ class GPSPillarValidator:
             has_written_conclusion: Whether conclusion exists
             conclusion_length: Length of conclusion
             research_notes_count: Number of research notes
-            threshold: Minimum passing score
+            threshold: Minimum passing score (defaults to GPS_PILLAR_PASSING_THRESHOLD config)
 
         Returns:
             GPSValidationSummary with all pillar results
         """
+        if threshold is None:
+            threshold = CONFIG.gps.pillar_passing_threshold
+
         results = {}
 
         # Validate each pillar

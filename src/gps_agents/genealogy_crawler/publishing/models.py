@@ -7,9 +7,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field, computed_field
+
+from .config import CONFIG
 
 
 class GPSPillar(str, Enum):
@@ -119,24 +121,19 @@ class GPSGradeCard(BaseModel):
         C: 7.0-7.9  - GitHub only
         D: 6.0-6.9  - Not publishable
         F: <6.0     - Not publishable
+
+        Thresholds configurable via GPS_GRADE_*_THRESHOLD env vars.
         """
-        score = self.overall_score
-        if score >= 9.0:
-            return "A"
-        elif score >= 8.0:
-            return "B"
-        elif score >= 7.0:
-            return "C"
-        elif score >= 6.0:
-            return "D"
-        else:
-            return "F"
+        return CONFIG.gps.score_to_grade(self.overall_score)
 
     @computed_field
     @property
     def is_publication_ready(self) -> bool:
-        """Whether research meets minimum publication standard (Grade C+)."""
-        return self.overall_score >= 7.0
+        """Whether research meets minimum publication standard (Grade C+).
+
+        Threshold configurable via GPS_MIN_PUBLISH_SCORE env var.
+        """
+        return self.overall_score >= CONFIG.min_publication_score
 
     @computed_field
     @property
@@ -192,25 +189,82 @@ class ReviewIssue(BaseModel):
 
 
 class ReviewVerdict(BaseModel):
-    """Verdict from a single reviewer."""
+    """Verdict from a single reviewer with confidence scoring.
+
+    Confidence scoring enables Bayesian consensus by allowing weighted
+    combination of reviewer opinions. Higher confidence indicates stronger
+    conviction in the verdict.
+    """
 
     reviewer_type: ReviewerType
     verdict: Verdict
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+        default_factory=lambda: CONFIG.default_confidence,
+        description="Confidence in verdict (0-1). 0.8+ = high, 0.5-0.8 = moderate, <0.5 = low",
+    )
     issues: list[ReviewIssue] = Field(default_factory=list)
     rationale: str = Field(description="Explanation for the verdict")
     reviewed_at: datetime = Field(default_factory=datetime.utcnow)
     reviewer_model: str = Field(description="Model/version that performed review")
 
+    @computed_field
+    @property
+    def weighted_score(self) -> float:
+        """Score weighted by confidence (1.0 for PASS, 0.0 for FAIL) * confidence."""
+        base_score = 1.0 if self.verdict == Verdict.PASS else 0.0
+        return base_score * self.confidence
+
+    @computed_field
+    @property
+    def confidence_level(self) -> str:
+        """Human-readable confidence level.
+
+        Thresholds configurable via QUORUM_HIGH_CONFIDENCE and
+        QUORUM_MODERATE_CONFIDENCE env vars.
+        """
+        return CONFIG.quorum.confidence_level(self.confidence)
+
 
 class QuorumDecision(BaseModel):
-    """Decision from the dual-reviewer quorum system.
+    """Decision from the dual-reviewer quorum system with Bayesian consensus.
 
     Both LogicReviewer AND SourceReviewer must PASS for quorum approval.
     Any CRITICAL or HIGH issues from either reviewer block publishing.
+
+    Bayesian Consensus:
+    - Combines weighted verdicts based on confidence levels
+    - Detects disagreement requiring tiebreaker
+    - Provides consensus strength metric (0-1)
     """
 
     logic_verdict: ReviewVerdict
     source_verdict: ReviewVerdict
+
+    # Tiebreaker result (populated after tiebreaker runs)
+    tiebreaker_verdict: Optional[ReviewVerdict] = Field(
+        default=None,
+        description="Verdict from tiebreaker reviewer (if triggered)",
+    )
+    tiebreaker_reason: Optional[str] = Field(
+        default=None,
+        description="Why tiebreaker was triggered",
+    )
+
+    # Reviewer weights for Bayesian calculation (configurable via env vars)
+    logic_weight: float = Field(
+        default_factory=lambda: CONFIG.logic_weight,
+        ge=0.0,
+        le=1.0,
+        description="Weight for Logic Reviewer in consensus (0-1). Set via QUORUM_LOGIC_WEIGHT.",
+    )
+    source_weight: float = Field(
+        default_factory=lambda: CONFIG.source_weight,
+        ge=0.0,
+        le=1.0,
+        description="Weight for Source Reviewer in consensus (0-1). Set via QUORUM_SOURCE_WEIGHT.",
+    )
 
     @computed_field
     @property
@@ -224,11 +278,82 @@ class QuorumDecision(BaseModel):
     @computed_field
     @property
     def approved(self) -> bool:
-        """Whether quorum approved (both PASS)."""
+        """Whether quorum approved (both PASS or tiebreaker resolves)."""
+        # If tiebreaker was used, it determines outcome
+        if self.tiebreaker_verdict is not None:
+            return self.tiebreaker_verdict.verdict == Verdict.PASS
+
+        # Standard quorum: both must PASS
         return (
             self.logic_verdict.verdict == Verdict.PASS
             and self.source_verdict.verdict == Verdict.PASS
         )
+
+    @computed_field
+    @property
+    def reviewers_agree(self) -> bool:
+        """Whether both reviewers reached the same verdict."""
+        return self.logic_verdict.verdict == self.source_verdict.verdict
+
+    @computed_field
+    @property
+    def needs_tiebreaker(self) -> bool:
+        """Whether reviewers disagree and tiebreaker is needed.
+
+        Triggers when:
+        1. Verdicts differ (one PASS, one FAIL), OR
+        2. Both PASS but confidence is low on one side
+
+        Threshold configurable via QUORUM_TIEBREAKER_THRESHOLD env var.
+        """
+        if not self.reviewers_agree:
+            return self.tiebreaker_verdict is None
+
+        # Also trigger if both PASS but one has low confidence
+        if (self.logic_verdict.verdict == Verdict.PASS
+            and self.source_verdict.verdict == Verdict.PASS):
+            min_confidence = min(
+                self.logic_verdict.confidence,
+                self.source_verdict.confidence
+            )
+            if min_confidence < CONFIG.quorum.tiebreaker_threshold:
+                return self.tiebreaker_verdict is None
+
+        return False
+
+    @computed_field
+    @property
+    def consensus_score(self) -> float:
+        """Bayesian consensus score (0-1).
+
+        Combines weighted reviewer scores:
+        - Logic weighted_score * logic_weight
+        - Source weighted_score * source_weight
+        - Normalized by total weight
+        """
+        total_weight = self.logic_weight + self.source_weight
+        if total_weight == 0:
+            return 0.0
+
+        weighted_sum = (
+            self.logic_verdict.weighted_score * self.logic_weight
+            + self.source_verdict.weighted_score * self.source_weight
+        )
+        return weighted_sum / total_weight
+
+    @computed_field
+    @property
+    def consensus_strength(self) -> str:
+        """Human-readable consensus strength."""
+        score = self.consensus_score
+        if self.reviewers_agree and score >= 0.8:
+            return "strong"
+        elif self.reviewers_agree and score >= 0.5:
+            return "moderate"
+        elif not self.reviewers_agree:
+            return "disagreement"
+        else:
+            return "weak"
 
     @computed_field
     @property

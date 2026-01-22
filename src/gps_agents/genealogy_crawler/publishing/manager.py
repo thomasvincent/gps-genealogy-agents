@@ -40,6 +40,9 @@ from .reviewers import (
     # Source Reviewer
     PublishingSourceReviewerLLM,
     SourceReviewerInput,
+    # Tiebreaker Reviewer
+    TiebreakerInput,
+    TiebreakerReviewerLLM,
     # Linguist Agent
     AcceptedFact,
     LinguistInput,
@@ -94,6 +97,7 @@ class PublishingManager:
         self._gps_grader = GPSGraderLLM(llm_client)
         self._logic_reviewer = PublishingLogicReviewerLLM(llm_client)
         self._source_reviewer = PublishingSourceReviewerLLM(llm_client)
+        self._tiebreaker = TiebreakerReviewerLLM(llm_client)
         self._linguist = LinguistLLM(llm_client)
         self._devops = DevOpsSpecialistLLM(llm_client)
 
@@ -262,10 +266,12 @@ class PublishingManager:
         birth_date: str | None = None,
         death_date: str | None = None,
         relationships: list[dict] | None = None,
+        run_tiebreaker: bool = True,
     ) -> QuorumDecision:
-        """Run the dual-reviewer quorum process.
+        """Run the dual-reviewer quorum process (sync wrapper).
 
         Both Logic and Source reviewers must PASS for approval.
+        Uses async parallel execution internally for efficiency.
 
         Args:
             pipeline: Publishing pipeline to update
@@ -278,25 +284,78 @@ class PublishingManager:
             birth_date: Birth date if known
             death_date: Death date if known
             relationships: List of relationships
+            run_tiebreaker: Whether to run tiebreaker on disagreement (default True)
 
         Returns:
-            QuorumDecision with both verdicts
+            QuorumDecision with both verdicts (and tiebreaker if triggered)
+        """
+        # Run the async version synchronously
+        return asyncio.get_event_loop().run_until_complete(
+            self.run_quorum_async(
+                pipeline=pipeline,
+                events=events,
+                claims=claims,
+                claims_with_citations=claims_with_citations,
+                source_summaries=source_summaries,
+                key_facts=key_facts,
+                subject_name=subject_name,
+                birth_date=birth_date,
+                death_date=death_date,
+                relationships=relationships,
+                run_tiebreaker=run_tiebreaker,
+            )
+        )
+
+    async def run_quorum_async(
+        self,
+        pipeline: PublishingPipeline,
+        events: list[dict],
+        claims: list[dict],
+        claims_with_citations: list[dict],
+        source_summaries: list[dict],
+        key_facts: list[dict],
+        subject_name: str = "",
+        birth_date: str | None = None,
+        death_date: str | None = None,
+        relationships: list[dict] | None = None,
+        run_tiebreaker: bool = True,
+    ) -> QuorumDecision:
+        """Run the dual-reviewer quorum process with parallel execution.
+
+        Both Logic and Source reviewers run in parallel for efficiency.
+        If they disagree, a tiebreaker reviewer is invoked.
+
+        Args:
+            pipeline: Publishing pipeline to update
+            events: List of events for timeline validation
+            claims: List of claims for logic review
+            claims_with_citations: Claims with citations for source review
+            source_summaries: Source quality summaries
+            key_facts: Key facts requiring verification
+            subject_name: Name of the person
+            birth_date: Birth date if known
+            death_date: Death date if known
+            relationships: List of relationships
+            run_tiebreaker: Whether to run tiebreaker on disagreement
+
+        Returns:
+            QuorumDecision with both verdicts (and tiebreaker if triggered)
         """
         pipeline.status = PublishingStatus.UNDER_REVIEW
         pipeline.updated_at = datetime.utcnow()
 
-        # Run both reviewers
-        logic_verdict = self.run_logic_review(
+        # Prepare input data for both reviewers
+        logic_input = LogicReviewerInput(
             subject_id=pipeline.subject_id,
             subject_name=subject_name,
             events=events,
             birth_date=birth_date,
             death_date=death_date,
-            relationships=relationships,
+            relationships=relationships or [],
             claims=claims,
         )
 
-        source_verdict = self.run_source_review(
+        source_input = SourceReviewerInput(
             subject_id=pipeline.subject_id,
             subject_name=subject_name,
             claims_with_citations=claims_with_citations,
@@ -304,10 +363,78 @@ class PublishingManager:
             key_facts=key_facts,
         )
 
+        # Run both reviewers in PARALLEL using asyncio.gather
+        logger.info(f"Running quorum review in parallel for {pipeline.subject_id}")
+        logic_verdict, source_verdict = await asyncio.gather(
+            self._logic_reviewer.review_async(logic_input),
+            self._source_reviewer.review_async(source_input),
+        )
+
+        logger.info(
+            f"Quorum results: Logic={logic_verdict.verdict.value} "
+            f"(conf={logic_verdict.confidence:.2f}), "
+            f"Source={source_verdict.verdict.value} "
+            f"(conf={source_verdict.confidence:.2f})"
+        )
+
+        # Create initial quorum decision
         quorum = QuorumDecision(
             logic_verdict=logic_verdict,
             source_verdict=source_verdict,
         )
+
+        # Check if tiebreaker is needed
+        if run_tiebreaker and quorum.needs_tiebreaker:
+            logger.info(
+                f"Tiebreaker triggered for {pipeline.subject_id}: "
+                f"reviewers_agree={quorum.reviewers_agree}, "
+                f"consensus_strength={quorum.consensus_strength}"
+            )
+
+            # Determine disagreement reason
+            if not quorum.reviewers_agree:
+                disagreement_reason = "verdict_mismatch"
+            else:
+                disagreement_reason = "low_confidence"
+
+            # Prepare tiebreaker input
+            tiebreaker_input = TiebreakerInput(
+                subject_id=pipeline.subject_id,
+                subject_name=subject_name,
+                logic_verdict=logic_verdict.verdict,
+                logic_confidence=logic_verdict.confidence,
+                logic_rationale=logic_verdict.rationale,
+                logic_issues=[
+                    {"severity": i.severity.value, "description": i.description}
+                    for i in logic_verdict.issues
+                ],
+                source_verdict=source_verdict.verdict,
+                source_confidence=source_verdict.confidence,
+                source_rationale=source_verdict.rationale,
+                source_issues=[
+                    {"severity": i.severity.value, "description": i.description}
+                    for i in source_verdict.issues
+                ],
+                events=events,
+                claims_with_citations=claims_with_citations,
+                disagreement_reason=disagreement_reason,
+            )
+
+            # Run tiebreaker
+            tiebreaker_verdict = await self._tiebreaker.review_async(tiebreaker_input)
+
+            logger.info(
+                f"Tiebreaker verdict: {tiebreaker_verdict.verdict.value} "
+                f"(conf={tiebreaker_verdict.confidence:.2f})"
+            )
+
+            # Update quorum with tiebreaker result
+            quorum = QuorumDecision(
+                logic_verdict=logic_verdict,
+                source_verdict=source_verdict,
+                tiebreaker_verdict=tiebreaker_verdict,
+                tiebreaker_reason=disagreement_reason,
+            )
 
         pipeline.quorum_decision = quorum
 
@@ -318,6 +445,13 @@ class PublishingManager:
             pipeline.status = PublishingStatus.BLOCKED
 
         pipeline.updated_at = datetime.utcnow()
+
+        logger.info(
+            f"Quorum complete for {pipeline.subject_id}: "
+            f"approved={quorum.approved}, "
+            f"consensus_score={quorum.consensus_score:.2f}, "
+            f"strength={quorum.consensus_strength}"
+        )
 
         return quorum
 
