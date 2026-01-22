@@ -97,6 +97,13 @@
 1 DEAT
 2 DATE JUL 1974
 2 PLAC California, USA
+2 NOTE Alternative record: FindAGrave shows death as 1972
+1 BURI
+2 PLAC Mountain View Cemetery, Altadena, Los Angeles County, California, USA
+2 NOTE Vista Del Monte Garden Crypts section
+2 NOTE FindAGrave shows as "Barney M Durham" (1895-1972)
+2 NOTE Memorial ID: 7935180 - requires verification of identity
+2 SOUR @S10@
 1 RESI
 2 DATE 1920
 2 PLAC Cedar Fork, Wake County, North Carolina, USA
@@ -323,4 +330,18 @@
 1 PUBL Air Force Public Affairs
 1 NOTE Commander, Fourth Air Force, March Air Reserve Base, California
 1 REFN https://www.af.mil/About-Us/Biographies/Display/Article/1733347/d-scott-durham/
+0 @S10@ SOUR
+1 TITL Find A Grave Memorial - Barney M Durham
+1 AUTH Find A Grave
+1 PUBL Find A Grave / Ancestry.com
+1 NOTE Memorial ID: 7935180
+2 CONT Cemetery: Mountain View Cemetery, Altadena, Los Angeles County, California
+2 CONT Section: Vista Del Monte Garden Crypts
+2 CONT Birth: 1895 (note: differs from census/WWI records showing 1892)
+2 CONT Death: 1972 (note: other records suggest 1974)
+2 CONT Photo available. Created by contributor "Shiver" on Sep 29, 2003.
+2 CONT *** IDENTITY VERIFICATION NEEDED ***
+2 CONT This may be the same person as Barney Durham (b. 1892) based on location
+2 CONT and timeframe, but birth/death years differ slightly.
+1 REFN https://www.findagrave.com/memorial/7935180/barney-m-durham
 0 TRLR

@@ -1,0 +1,243 @@
+{
+  "metadata": {
+    "subject": "Major General Archer Lyman Durham, USAF",
+    "generated": "2026-01-21T00:34:46.993644",
+    "last_updated": "2026-01-21",
+    "last_verified": "2026-01-21",
+    "sources_searched": [
+      "AccessGenealogy",
+      "USGenWeb",
+      "FindAGrave",
+      "BillionGraves",
+      "WikiTree",
+      "NARA 1940 Census",
+      "NARA 1950 Census",
+      "California Death Index",
+      "California Birth Index",
+      "FreeCensus",
+      "ChroniclingAmerica",
+      "Legacy.com",
+      "Afrigeneas",
+      "Freedmens Bureau",
+      "JewishGen",
+      "CyndisList",
+      "Library of Congress",
+      "NYPL",
+      "US Air Force Biographies"
+    ],
+    "verification_methodology": {
+      "census_fields_to_compare": [
+        "name",
+        "race",
+        "age",
+        "birth_place",
+        "relationship_to_head",
+        "occupation",
+        "address"
+      ],
+      "note": "Race is a critical verification field in US census records. The Durham family was African American, participants in the Great Migration from NC to CA."
+    }
+  },
+  "subject": {
+    "name": "Archer Lyman Durham",
+    "title": "Major General, USAF",
+    "race": "African American",
+    "birth": {
+      "date": "1932-06-09",
+      "place": "Pasadena, Los Angeles County, California, USA",
+      "confidence": 1.0,
+      "source": "California Birth Index 1905-1995"
+    },
+    "death": {
+      "year": 2024,
+      "place": "Maryland, USA",
+      "confidence": 0.7,
+      "note": "No obituary found in public search as of 2026-01-21",
+      "search_url": "https://www.legacy.com/us/obituaries/name/Archer+Durham"
+    },
+    "military_career": {
+      "highest_rank": "Major General",
+      "branch": "United States Air Force",
+      "notable_positions": [
+        "Director of Deployment, US Transportation Command, MacDill AFB, Florida"
+      ],
+      "awards": "Maj. Gen. Archer L. Durham Award established in his honor (recognizes leadership in fostering teamwork and cultural awareness)",
+      "source": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+    }
+  },
+  "generation_0_parents": {
+    "father": {
+      "name": "Barney Durham",
+      "race": "African American",
+      "race_source": "1920 Census, 1940 Census (listed as Negro/Black)",
+      "birth": {
+        "date": "1892-07-25",
+        "place": "Wake County, North Carolina, USA"
+      },
+      "death": {
+        "date": "1974-07",
+        "place": "California, USA",
+        "note": "FindAGrave memorial 7935180 shows death as 1972"
+      },
+      "burial": {
+        "cemetery": "Mountain View Cemetery",
+        "location": "Altadena, Los Angeles County, California, USA",
+        "section": "Vista Del Monte Garden Crypts",
+        "findagrave_id": 7935180,
+        "findagrave_url": "https://www.findagrave.com/memorial/7935180/barney-m-durham",
+        "findagrave_name": "Barney M Durham",
+        "findagrave_dates": "1895-1972",
+        "verification_status": "PROBABLE_MATCH",
+        "verification_notes": "Same location/timeframe as family. Birth year differs (1895 vs 1892 WWI draft), death year differs (1972 vs 1974). Middle initial 'M' is new information. Requires additional verification.",
+        "discovered": "2026-01-21"
+      },
+      "occupation": "Farm laborer (NC 1920), Community leader and musician (Pasadena)",
+      "migration": "Great Migration from NC to CA (part of 6+ million African Americans who moved from rural South to urban North/West 1910-1970)",
+      "verified_sources": [
+        "https://www.familysearch.org/ark:/61903/1:1:K94P-57C (1940 Census)",
+        "https://www.familysearch.org/ark:/61903/1:1:MZV9-Y9C (1920 Census)",
+        "https://www.familysearch.org/ark:/61903/1:1:KZD6-W68 (WWI Draft)"
+      ],
+      "note": "FamilySearch requires authentication to view full records"
+    },
+    "mother": {
+      "name": "Mattie Sorrell Durham",
+      "maiden_name": "Sorrell",
+      "race": "African American",
+      "race_source": "1940 Census (listed as Negro/Black)",
+      "birth": {
+        "year": 1904,
+        "place": "Arkansas, USA"
+      },
+      "death": {
+        "status": "UNVERIFIED"
+      },
+      "education": "High school graduate (1940 Census)",
+      "ruled_out_matches": [
+        {
+          "name": "Mattie Troxtel Durham",
+          "dates": "1904-06-13 to 1970-08-01",
+          "url": "https://www.findagrave.com/memorial/120462569/mattie-durham",
+          "reason": "Different family - born Alabama, married James Erskin Durham, buried DeKalb County Alabama. Race not verified but family/location mismatch is conclusive.",
+          "parents": "John Patrick Troxtel & Hester Ann Love Troxtel",
+          "spouse": "James Erskin Durham (1899-1960)"
+        },
+        {
+          "name": "Mattie Willingham Durham",
+          "dates": "1904-03-17 to 1990-03-13",
+          "url": "https://www.findagrave.com/memorial/141187923/mattie-durham",
+          "reason": "Different family - born Texas, married Wilson Alonzo Durham 12/23/1925, children Ralph/Joseph/Wayne (none named Archer or Barbara), buried Dallas TX. Race not verified but family/location mismatch is conclusive.",
+          "spouse": "Wilson Alonzo Durham (1901-1996)",
+          "children": ["Ralph Weldon Durham", "Joseph Wilson Durham", "Wayne Alvin Durham"]
+        }
+      ]
+    }
+  },
+  "generation_0_siblings": [
+    {
+      "name": "Barbara Camille Durham",
+      "relation": "older_sister",
+      "race": "African American",
+      "race_source": "1940 Census (same household as parents)",
+      "birth": {
+        "year": 1926
+      },
+      "status": "UNVERIFIED",
+      "ruled_out_matches": [
+        {
+          "name": "Barbara Lois Jones Durham",
+          "dates": "1926-07-27 to 1988-04-18",
+          "url": "https://www.findagrave.com/memorial/102561589/barbara-lois-durham",
+          "reason": "Different family - married Floyd Leland Durham (1919-1991), buried Salem Baptist Church Cemetery, Collins, Mississippi. Children: Barbara E. Durham Pepper, Floyd Leland Durham Jr. Race not verified but family/location mismatch is conclusive.",
+          "spouse": "Floyd Leland Durham (1919-1991)",
+          "burial_location": "Collins, Covington County, Mississippi"
+        }
+      ]
+    }
+  ],
+  "generation_minus1_grandparents": {
+    "paternal": {
+      "grandfather": {
+        "name": "Archer Durham",
+        "race": "African American (presumed)",
+        "place": "North Carolina, USA",
+        "note": "Major General Archer L. Durham was named after him. Search Freedmen's Bureau and NC records.",
+        "confidence": 0.7
+      }
+    },
+    "maternal": {
+      "status": "UNKNOWN",
+      "note": "Mother Mattie Sorrell was born in Arkansas. Search AR census and vital records for Sorrell family.",
+      "research_lead": {
+        "name": "Mary Minerva Archer Sorrells",
+        "dates": "1820-1922",
+        "findagrave_url": "https://www.findagrave.com/memorial/60511016/mary-minerva-sorrells",
+        "location": "Fort Smith, Sebastian County, Arkansas",
+        "significance": "Has 'Archer' as middle name - suggests possible family connection between Sorrell and Archer/Durham families. The name 'Archer' appears in both paternal (grandfather Archer Durham) and possibly maternal lines.",
+        "discovered": "2026-01-21"
+      }
+    }
+  },
+  "generation_plus1_children": {
+    "status": "UNVERIFIED",
+    "potential": [
+      {
+        "name": "D. Scott Durham",
+        "race": "Unknown - requires verification",
+        "rank": "Major General, USAF Reserve",
+        "education": "The Citadel, 1986-1990",
+        "position": "Commander, Fourth Air Force, March ARB (retired July 2025)",
+        "hometown": "Yocumtown, Pennsylvania",
+        "confidence": 0.2,
+        "note": "Same surname and Air Force career suggests possible relation, but no direct evidence found. Hometown is Pennsylvania, not California. Race not confirmed.",
+        "source": "https://www.af.mil/About-Us/Biographies/Display/Article/1733347/d-scott-durham/"
+      }
+    ]
+  },
+  "research_notes": {
+    "verified_facts": [
+      "Archer Lyman Durham born June 9, 1932 in Pasadena, CA (California Birth Index)",
+      "Father Barney Durham from Wake County, NC; migrated to California (Great Migration)",
+      "Father Barney Durham served as WWI draft registrant",
+      "Family appears in 1920 and 1940 US Census records as African American (Negro/Black)",
+      "Archer L. Durham achieved rank of Major General, USAF",
+      "Award named in his honor recognizes leadership in fostering teamwork and cultural awareness",
+      "PROBABLE: Father Barney Durham buried at Mountain View Cemetery, Altadena, CA (FindAGrave #7935180 as 'Barney M Durham' 1895-1972)"
+    ],
+    "unverified_claims": [
+      "Mother's death date and burial location",
+      "Sister Barbara's death date and burial location",
+      "Paternal grandfather named Archer Durham",
+      "Connection to D. Scott Durham"
+    ],
+    "research_gaps": [
+      "No obituary found for Archer L. Durham (2024)",
+      "Mother Mattie Sorrell Durham death record not found",
+      "Sister Barbara Camille Durham death record not found",
+      "NARA 1940/1950 census sources returned 0 results - may need direct database access",
+      "FamilySearch records require authentication",
+      "Race should be verified from original census images when ruling out matches"
+    ],
+    "african_american_research_resources": [
+      "Afrigeneas.com - African American genealogy community",
+      "Freedmen's Bureau Records (FamilySearch collection 1989155)",
+      "1850/1860 Slave Schedules - for pre-Civil War ancestors",
+      "USCT (United States Colored Troops) Civil War records",
+      "Black newspapers via Chronicling America"
+    ]
+  },
+  "key_search_urls": {
+    "subject_biography": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/",
+    "california_death_index": "https://www.familysearch.org/search/collection/1932433?q.surname=Durham",
+    "california_birth_index": "https://www.familysearch.org/search/collection/1932380?q.surname=Durham",
+    "1950_census": "https://1950census.archives.gov/search/?ln=Durham&fn=Archer",
+    "1940_census": "https://1940census.archives.gov/?ln=Durham&fn=Barney",
+    "chronicling_america": "https://chroniclingamerica.loc.gov/search/pages/results/?andtext=Archer+Durham",
+    "legacy_obituaries": "https://www.legacy.com/us/obituaries/name/Archer+Durham",
+    "freedmens_bureau": "https://www.familysearch.org/search/collection/1989155?q.surname=Durham",
+    "slave_schedules_1850": "https://www.familysearch.org/search/collection/1420440?q.surname=Durham",
+    "slave_schedules_1860": "https://www.familysearch.org/search/collection/1473181?q.surname=Durham",
+    "usct_civil_war": "https://www.familysearch.org/search/collection/1932402?q.surname=Durham",
+    "nc_freedmen_marriages": "https://www.familysearch.org/search/collection/1803968?q.surname=Durham"
+  }
+}
