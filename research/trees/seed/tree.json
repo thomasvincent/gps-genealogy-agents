@@ -1,77 +1,136 @@
 {
   "seed": {
     "given": "Archer",
-    "middle": "Lyman",
     "surname": "Durham",
     "birth_year": 1932,
-    "birth_date": "1932-06-09",
-    "birth_place": "Pasadena, Los Angeles County, California, USA"
+    "birth_place": "Pasadena, California"
   },
   "coverage": {
     "sources": [
-      "wikitree",
+      "accessgenealogy",
       "findagrave",
       "nara1940",
       "nara1950",
-      "chronicling_america",
-      "accessgenealogy"
+      "usgenweb",
+      "wikitree"
     ],
-    "records": 0,
+    "records": 7,
     "primary": 0,
-    "secondary": 0,
-    "authored": 0,
-    "notes": "Free sources yielded no direct matches. Existing research in profile.json contains primary sources from FamilySearch (1940 Census) and USAF official biography."
+    "secondary": 7,
+    "authored": 0
   },
-  "existing_research": {
-    "profile_file": "research/archer-l-durham/profile.json",
-    "facts_file": "research/wiki_plans/archer-l-durham/facts.json",
-    "confirmed_sources": [
-      {
-        "type": "census",
-        "title": "1940 United States Federal Census",
-        "url": "https://www.familysearch.org/ark:/61903/1:1:K94P-57C",
-        "shows": "Family at 264 Pasadena Avenue: Barney (head), Mattie (wife), Barbara (daughter), Archer (son age 7)"
+  "records": [
+    {
+      "source": "FindAGrave",
+      "record_id": "80384035",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/80384035/a-d-durham",
+      "raw_data": {
+        "name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
       },
-      {
-        "type": "vital_record",
-        "title": "California Birth Index 1905-1995",
-        "shows": "Archer Durham, 1932, Los Angeles County, Mother: Sorrell"
+      "extracted_fields": {
+        "full_name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
       },
-      {
-        "type": "military",
-        "title": "USAF Official Biography",
-        "url": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/",
-        "shows": "Full military career, education, decorations"
-      }
-    ]
-  },
-  "family": {
-    "father": {
-      "name": "Barney Durham",
-      "birth": "1892-07-25",
-      "birth_place": "Wake County, North Carolina",
-      "death": "1974-07",
-      "death_place": "California"
+      "accessed_at": "2026-01-21T08:31:14.821783Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
     },
-    "mother": {
-      "name": "Mattie Sorrell Durham",
-      "birth_year": 1904,
-      "birth_place": "Arkansas"
+    {
+      "source": "FindAGrave",
+      "record_id": "57079016",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/57079016/a-w-durham",
+      "raw_data": {
+        "name": "A. W. DurhamFlowers have been left.1932 \u2013 1999"
+      },
+      "extracted_fields": {
+        "full_name": "A. W. DurhamFlowers have been left.1932 \u2013 1999"
+      },
+      "accessed_at": "2026-01-21T08:31:14.822137Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
     },
-    "siblings": [
-      {
-        "name": "Barbara Camille Durham",
-        "birth_year": 1926,
-        "relation": "older sister"
-      }
-    ]
-  },
-  "research_gaps": [
-    "D. Scott Durham father-son relationship unverified",
-    "Spouse information unknown",
-    "Children unverified",
-    "Mattie Durham death date unknown",
-    "Archer obituary (2024 death) not yet indexed"
-  ],
-  "records": []
+    {
+      "source": "FindAGrave",
+      "record_id": "119191886",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/119191886/jodean-elliott-blakeslee",
+      "raw_data": {
+        "name": "HonoringJodean Elliott-BlakesleeBirth1950Death2013"
+      },
+      "extracted_fields": {
+        "full_name": "HonoringJodean Elliott-BlakesleeBirth1950Death2013"
+      },
+      "accessed_at": "2026-01-21T08:31:14.822153Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "70493067",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/70493067/barney-fred-durham",
+      "raw_data": {
+        "name": "Barney Fred Durham27 Aug 1892 \u2013 27 Feb 1945"
+      },
+      "extracted_fields": {
+        "full_name": "Barney Fred Durham27 Aug 1892 \u2013 27 Feb 1945"
+      },
+      "accessed_at": "2026-01-21T08:31:18.395046Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "23658000",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/23658000/william-capps",
+      "raw_data": {
+        "name": "HonoringWilliam CappsBirth1884Death1976"
+      },
+      "extracted_fields": {
+        "full_name": "HonoringWilliam CappsBirth1884Death1976"
+      },
+      "accessed_at": "2026-01-21T08:31:18.395121Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "11049318",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/11049318/david-herbert",
+      "raw_data": {
+        "name": "HonoringDavid HerbertBirth1842Death1923"
+      },
+      "extracted_fields": {
+        "full_name": "HonoringDavid HerbertBirth1842Death1923"
+      },
+      "accessed_at": "2026-01-21T08:31:22.448159Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "7865059",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/7865059/carl-hoff",
+      "raw_data": {
+        "name": "HonoringCarl HoffBirth1903Death1994"
+      },
+      "extracted_fields": {
+        "full_name": "HonoringCarl HoffBirth1903Death1994"
+      },
+      "accessed_at": "2026-01-21T08:31:28.899511Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    }
+  ]
 }
