@@ -338,19 +338,87 @@ class FactAdjudicator:
     # -------------------------------------------------------------------------
 
     def _check_citation_exists(
-        self, citation: str, source_text: str, fuzzy: bool = True
+        self, citation: str, source_text: str, fuzzy: bool = True, fuzzy_threshold: float = 0.85
     ) -> bool:
-        """Check if a citation snippet exists in source text."""
+        """Check if a citation snippet exists in source text.
+
+        Uses Levenshtein distance for fuzzy matching to handle OCR noise
+        like "1880" vs "188O" or "rn" vs "m".
+
+        Args:
+            citation: The citation snippet to find
+            source_text: The full source text to search
+            fuzzy: If True, use fuzzy matching with OCR tolerance
+            fuzzy_threshold: Minimum similarity ratio for fuzzy match (0.0-1.0)
+
+        Returns:
+            True if citation found (exactly or within fuzzy threshold)
+        """
         if not citation or not source_text:
             return False
+
+        # Exact match first (fast path)
+        if citation in source_text:
+            return True
 
         if fuzzy:
             # Normalize whitespace and case
             norm_citation = " ".join(citation.lower().split())
             norm_source = " ".join(source_text.lower().split())
-            return norm_citation in norm_source
-        else:
-            return citation in source_text
+
+            # Normalized exact match
+            if norm_citation in norm_source:
+                return True
+
+            # Use Levenshtein sliding window for OCR tolerance
+            # This handles common OCR errors like: "1880" vs "188O", "rn" vs "m"
+            len_citation = len(norm_citation)
+            if len_citation == 0:
+                return False
+
+            # Slide window over source and find best match
+            best_ratio = 0.0
+            for i in range(len(norm_source) - len_citation + 1):
+                window = norm_source[i:i + len_citation]
+                ratio = self._edit_distance_ratio(norm_citation, window)
+                best_ratio = max(best_ratio, ratio)
+                if best_ratio >= 0.95:  # Early exit on near-perfect match
+                    return True
+
+            return best_ratio >= fuzzy_threshold
+
+        return False
+
+    @staticmethod
+    def _edit_distance_ratio(s1: str, s2: str) -> float:
+        """Calculate edit distance ratio between two strings.
+
+        Returns a value between 0.0 (completely different) and 1.0 (identical).
+        """
+        len1, len2 = len(s1), len(s2)
+        if len1 == 0 and len2 == 0:
+            return 1.0
+        if len1 == 0 or len2 == 0:
+            return 0.0
+
+        # Use optimized two-row DP for space efficiency
+        prev_row = list(range(len2 + 1))
+        curr_row = [0] * (len2 + 1)
+
+        for i in range(1, len1 + 1):
+            curr_row[0] = i
+            for j in range(1, len2 + 1):
+                cost = 0 if s1[i - 1] == s2[j - 1] else 1
+                curr_row[j] = min(
+                    curr_row[j - 1] + 1,      # insertion
+                    prev_row[j] + 1,          # deletion
+                    prev_row[j - 1] + cost    # substitution
+                )
+            prev_row, curr_row = curr_row, prev_row
+
+        distance = prev_row[len2]
+        max_len = max(len1, len2)
+        return 1.0 - (distance / max_len)
 
     def _normalize_date(self, value: Any) -> tuple[str, DatePrecision]:
         """Normalize a date value to ISO-8601 format."""

@@ -108,11 +108,31 @@ STOP_CONDITIONS: dict[str, Callable[[CrawlerState], bool]] = {
 
 @dataclass
 class RevisitScheduler:
-    """Schedules revisits to sources based on new discoveries."""
+    """Schedules revisits to sources based on new discoveries.
+
+    Supports optional durable storage via SQLiteProjection for persistence
+    across process restarts.
+    """
 
     min_revisit_interval_hours: float = 24.0
     max_revisits_per_source: int = 3
     revisit_history: dict[str, list[datetime]] = field(default_factory=dict)
+    _projection: Any = field(default=None, repr=False)  # SQLiteProjection for persistence
+
+    def set_projection(self, projection: Any) -> None:
+        """Set the SQLiteProjection for durable revisit history storage.
+
+        Args:
+            projection: SQLiteProjection instance with revisit_history table
+        """
+        self._projection = projection
+        # Load existing history from projection
+        if projection is not None:
+            stored = projection.load_all_revisit_history()
+            for source_key, timestamps in stored.items():
+                self.revisit_history[source_key] = [
+                    datetime.fromisoformat(ts) for ts in timestamps
+                ]
 
     def should_revisit(
         self,
@@ -130,26 +150,47 @@ class RevisitScheduler:
         """
         source_key = str(source_id)
 
-        # Check revisit history
-        history = self.revisit_history.get(source_key, [])
-        if len(history) >= self.max_revisits_per_source:
-            return False
-
-        # Check interval since last visit
-        if history:
-            last_visit = max(history)
-            hours_since = (datetime.now(UTC) - last_visit).total_seconds() / 3600
-            if hours_since < self.min_revisit_interval_hours:
+        # Check revisit history (use count from projection if available)
+        if self._projection is not None:
+            count = self._projection.get_revisit_count(source_key)
+            if count >= self.max_revisits_per_source:
                 return False
+            # Load timestamps to check interval
+            timestamps = self._projection.get_revisit_history(source_key)
+            if timestamps:
+                last_visit = datetime.fromisoformat(max(timestamps))
+                hours_since = (datetime.now(UTC) - last_visit).total_seconds() / 3600
+                if hours_since < self.min_revisit_interval_hours:
+                    return False
+        else:
+            # Fallback to in-memory history
+            history = self.revisit_history.get(source_key, [])
+            if len(history) >= self.max_revisits_per_source:
+                return False
+            if history:
+                last_visit = max(history)
+                hours_since = (datetime.now(UTC) - last_visit).total_seconds() / 3600
+                if hours_since < self.min_revisit_interval_hours:
+                    return False
 
         return True
 
     def record_revisit(self, source_id: UUID) -> None:
-        """Record a revisit to a source."""
+        """Record a revisit to a source.
+
+        Persists to SQLiteProjection if configured, otherwise stores in memory.
+        """
         source_key = str(source_id)
+        now = datetime.now(UTC)
+
+        # Update in-memory cache
         if source_key not in self.revisit_history:
             self.revisit_history[source_key] = []
-        self.revisit_history[source_key].append(datetime.now(UTC))
+        self.revisit_history[source_key].append(now)
+
+        # Persist to projection if available
+        if self._projection is not None:
+            self._projection.record_revisit(source_key, now.isoformat())
 
     def generate_revisit_item(
         self,
@@ -262,6 +303,7 @@ class Orchestrator:
         stop_conditions: dict[str, Callable[[CrawlerState], bool]] | None = None,
         publishing_manager: "PublishingManager | None" = None,
         search_revision_agent: "SearchRevisionAgentLLM | None" = None,
+        sqlite_projection: Any | None = None,
     ):
         """Initialize the orchestrator.
 
@@ -271,6 +313,7 @@ class Orchestrator:
             stop_conditions: Custom stop conditions (defaults to STOP_CONDITIONS)
             publishing_manager: Optional PublishingManager for finalizing research
             search_revision_agent: Optional SearchRevisionAgentLLM for Pillar 1 remediation
+            sqlite_projection: Optional SQLiteProjection for durable revisit history
         """
         if llm_registry is None:
             llm_registry = create_llm_registry(client=llm_client)
@@ -280,6 +323,10 @@ class Orchestrator:
         self._revisit_scheduler = RevisitScheduler()
         self._publishing_manager = publishing_manager
         self._search_revision_agent = search_revision_agent
+
+        # Wire up durable storage for revisit scheduler
+        if sqlite_projection is not None:
+            self._revisit_scheduler.set_projection(sqlite_projection)
 
     def initialize_from_seed(
         self,
@@ -696,65 +743,82 @@ class Orchestrator:
         # Import here to avoid circular imports
         from .publishing import GPSPillar, MissingSourceClass, SearchRevisionInput
 
+        # Robust category mapping with keyword synonyms and metadata
+        # Each category has: keywords (list), priority (int), repositories (list)
+        SOURCE_CATEGORY_RULES: list[tuple[str, list[str], int, list[str]]] = [
+            (
+                "vital_records",
+                ["vital", "birth", "death", "marriage", "certificate", "registry", "civil registration"],
+                1,
+                ["FamilySearch", "Ancestry", "State Archives", "County Clerk"],
+            ),
+            (
+                "census",
+                ["census", "enumeration", "population schedule", "household"],
+                2,
+                ["Ancestry", "FamilySearch", "NARA", "MyHeritage"],
+            ),
+            (
+                "military",
+                ["military", "service record", "draft", "veteran", "enlistment", "pension", "regiment"],
+                3,
+                ["Fold3", "NARA", "Ancestry", "National Archives"],
+            ),
+            (
+                "church_records",
+                ["church", "parish", "baptism", "christening", "burial", "confirmation", "diocese"],
+                2,
+                ["FamilySearch", "Ancestry", "Diocesan Archives", "Local Parish"],
+            ),
+            (
+                "newspapers",
+                ["newspaper", "obituary", "announcement", "notice", "periodical", "gazette"],
+                3,
+                ["Newspapers.com", "Chronicling America", "GenealogyBank", "Ancestry"],
+            ),
+            (
+                "probate",
+                ["probate", "will", "estate", "inheritance", "testament", "intestate"],
+                2,
+                ["FamilySearch", "Ancestry", "County Courthouse", "State Archives"],
+            ),
+            (
+                "land_records",
+                ["land", "deed", "property", "tax", "mortgage", "grantor", "grantee"],
+                3,
+                ["FamilySearch", "BLM GLO Records", "County Recorder", "State Archives"],
+            ),
+            (
+                "immigration",
+                ["immigration", "emigration", "passenger", "naturalization", "ship manifest", "port"],
+                2,
+                ["Ancestry", "FamilySearch", "Ellis Island", "NARA"],
+            ),
+        ]
+
+        def classify_feedback(feedback_text: str) -> MissingSourceClass:
+            """Classify feedback into a source category using keyword matching."""
+            feedback_lower = feedback_text.lower()
+
+            for category, keywords, priority, repositories in SOURCE_CATEGORY_RULES:
+                if any(keyword in feedback_lower for keyword in keywords):
+                    return MissingSourceClass(
+                        category=category,
+                        description=feedback_text,
+                        priority=priority,
+                        suggested_repositories=repositories,
+                    )
+
+            # Fallback for unrecognized feedback
+            return MissingSourceClass(
+                category="other",
+                description=feedback_text,
+                priority=4,
+                suggested_repositories=["FamilySearch", "Ancestry"],
+            )
+
         # Parse pillar feedback to identify missing source classes
-        missing_classes = []
-        if pillar_feedback:
-            for feedback in pillar_feedback:
-                feedback_lower = feedback.lower()
-                if "vital" in feedback_lower or "birth" in feedback_lower or "death" in feedback_lower:
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="vital_records",
-                            description=feedback,
-                            priority=1,
-                            suggested_repositories=["FamilySearch", "Ancestry", "State Archives"],
-                        )
-                    )
-                elif "census" in feedback_lower:
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="census",
-                            description=feedback,
-                            priority=2,
-                            suggested_repositories=["Ancestry", "FamilySearch", "NARA"],
-                        )
-                    )
-                elif "military" in feedback_lower:
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="military",
-                            description=feedback,
-                            priority=3,
-                            suggested_repositories=["Fold3", "NARA", "Ancestry"],
-                        )
-                    )
-                elif "church" in feedback_lower or "parish" in feedback_lower:
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="church_records",
-                            description=feedback,
-                            priority=2,
-                            suggested_repositories=["FamilySearch", "Ancestry", "Diocesan Archives"],
-                        )
-                    )
-                elif "newspaper" in feedback_lower:
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="newspapers",
-                            description=feedback,
-                            priority=3,
-                            suggested_repositories=["Newspapers.com", "Chronicling America", "GenealogyBank"],
-                        )
-                    )
-                else:
-                    # Generic missing source
-                    missing_classes.append(
-                        MissingSourceClass(
-                            category="other",
-                            description=feedback,
-                            priority=4,
-                        )
-                    )
+        missing_classes = [classify_feedback(fb) for fb in (pillar_feedback or [])]
 
         # Extract name parts from subject_name
         name_parts = subject_name.split()
