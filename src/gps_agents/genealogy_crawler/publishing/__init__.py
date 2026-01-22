@@ -34,11 +34,13 @@ Example:
     ...     # Grade A - eligible for all platforms
     ...     print(f"Allowed: {pipeline.grade_card.allowed_platforms}")
 """
-from .manager import PublishingManager
+from .manager import AdjudicationGate, PublishingManager
 from .models import (
     GPSGradeCard,
     GPSPillar,
     GPSPillarScore,
+    LedgerStatus,
+    PublishDecision,
     PublishingPipeline,
     PublishingPlatform,
     PublishingStatus,
@@ -47,6 +49,7 @@ from .models import (
     ReviewerType,
     ReviewIssue,
     ReviewVerdict,
+    SearchRevisionRequest,
     Severity,
     Uncertainty,
     UnresolvedConflict,
@@ -109,8 +112,9 @@ from .validators.gps_pillars import GPSValidationSummary, PillarValidationResult
 from .validators.integrity import IntegrityCheckResult
 
 __all__ = [
-    # Manager
+    # Manager & Adjudication Gate
     "PublishingManager",
+    "AdjudicationGate",
     # Models - Enums
     "GPSPillar",
     "Severity",
@@ -118,6 +122,7 @@ __all__ = [
     "ReviewerType",
     "Verdict",
     "PublishingPlatform",
+    "LedgerStatus",
     # Models - GPS Grading
     "GPSPillarScore",
     "GPSGradeCard",
@@ -125,6 +130,9 @@ __all__ = [
     "ReviewIssue",
     "ReviewVerdict",
     "QuorumDecision",
+    # Models - Adjudication Gate
+    "PublishDecision",
+    "SearchRevisionRequest",
     # Models - Paper Trail of Doubt
     "ResearchNote",
     "Uncertainty",

@@ -15,15 +15,20 @@ from ..llm.wrapper import LLMClient
 
 from .models import (
     GPSGradeCard,
+    LedgerStatus,
+    PublishDecision,
     PublishingPipeline,
     PublishingPlatform,
     PublishingStatus,
     QuorumDecision,
     ResearchNote,
+    ReviewIssue,
     ReviewVerdict,
+    SearchRevisionRequest,
     Severity,
     Uncertainty,
     UnresolvedConflict,
+    Verdict,
 )
 from .reviewers import (
     # GPS Grader
@@ -766,3 +771,447 @@ class PublishingManager:
         except Exception as e:
             logger.error(f"Git workflow error: {e}")
             return False, str(e)
+
+
+# =============================================================================
+# GPS Adjudication Gate
+# =============================================================================
+
+
+class AdjudicationGate:
+    """GPS Adjudication Gate for the Workflow Agent.
+
+    Processes structured data from Dual Reviewers (Logic and Source Reviewers)
+    to decide if a research bundle is ready for publication or requires
+    further revision.
+
+    GPS Pillar Mapping:
+    | Feature          | GPS Pillar                            |
+    |------------------|---------------------------------------|
+    | Quorum Check     | Pillar 4: Resolution of Conflicts     |
+    | Auto-Downgrade   | Pillar 5: Soundly Written Conclusion  |
+    | Search Revision  | Pillar 1: Reasonably Exhaustive       |
+
+    Example:
+        >>> gate = AdjudicationGate(storage, revisit_queue)
+        >>> decision = gate.adjudicate(quorum_decision, grade_card, subject_id)
+        >>> if decision.is_approved:
+        ...     gate.write_to_ledger(decision, facts)
+        >>> elif decision.requires_search_revision:
+        ...     revision_request = gate.create_search_revision_request(decision)
+    """
+
+    # Platform tier mapping for Auto-Downgrade Protocol
+    ENCYCLOPEDIC_PLATFORMS = {PublishingPlatform.WIKIPEDIA, PublishingPlatform.WIKIDATA}
+    COMMUNITY_PLATFORMS = {PublishingPlatform.WIKITREE}
+    DRAFT_PLATFORMS = {PublishingPlatform.GITHUB}
+    ALL_PLATFORMS = ENCYCLOPEDIC_PLATFORMS | COMMUNITY_PLATFORMS | DRAFT_PLATFORMS
+
+    def __init__(
+        self,
+        storage: "CrawlerStorage | None" = None,
+        revisit_queue: list | None = None,
+    ):
+        """Initialize the Adjudication Gate.
+
+        Args:
+            storage: Storage backend for Fact Ledger writes
+            revisit_queue: RevisitQueue for tie-breaker query prioritization
+        """
+        self._storage = storage
+        self._revisit_queue = revisit_queue if revisit_queue is not None else []
+        self._decisions: dict[str, PublishDecision] = {}
+
+    # =========================================================================
+    # Core Adjudication Logic
+    # =========================================================================
+
+    def adjudicate(
+        self,
+        quorum_decision: QuorumDecision,
+        grade_card: GPSGradeCard | None,
+        subject_id: str,
+        missing_evidence: list[str] | None = None,
+    ) -> PublishDecision:
+        """Execute the GPS Adjudication Gate algorithm.
+
+        This is the core adjudication method implementing:
+        1. Quorum Check - Both reviewers must PASS
+        2. Auto-Downgrade Protocol - Severity-based platform restrictions
+        3. Ledger Write Determination - Only ACCEPTED if quorum passes
+
+        Args:
+            quorum_decision: Decision from dual-reviewer quorum
+            grade_card: GPS grade card (optional, affects platform eligibility)
+            subject_id: ID of the research subject
+            missing_evidence: Evidence gaps identified by GPS Standards Critic
+
+        Returns:
+            PublishDecision with final adjudication result
+        """
+        decision_id = f"adj_{uuid.uuid4().hex[:12]}"
+
+        # Extract verdicts
+        logic_verdict = quorum_decision.logic_verdict.verdict
+        source_verdict = quorum_decision.source_verdict.verdict
+
+        # Step 1: QUORUM CHECK
+        # If either verdict is FAIL, is_approved must be False
+        quorum_passed = (
+            logic_verdict == Verdict.PASS
+            and source_verdict == Verdict.PASS
+        )
+
+        # Categorize issues by severity
+        critical_issues: list[ReviewIssue] = []
+        high_issues: list[ReviewIssue] = []
+        medium_issues: list[ReviewIssue] = []
+        low_issues: list[ReviewIssue] = []
+
+        for issue in quorum_decision.all_issues:
+            if issue.severity == Severity.CRITICAL:
+                critical_issues.append(issue)
+            elif issue.severity == Severity.HIGH:
+                high_issues.append(issue)
+            elif issue.severity == Severity.MEDIUM:
+                medium_issues.append(issue)
+            else:
+                low_issues.append(issue)
+
+        # Step 2: AUTO-DOWNGRADE PROTOCOL
+        allowed_platforms, blocked_platforms = self._apply_auto_downgrade(
+            critical_issues=critical_issues,
+            high_issues=high_issues,
+            medium_issues=medium_issues,
+            grade_card=grade_card,
+        )
+
+        # Calculate integrity score
+        integrity_score = self._calculate_integrity_score(
+            quorum_passed=quorum_passed,
+            critical_count=len(critical_issues),
+            high_count=len(high_issues),
+            medium_count=len(medium_issues),
+            grade_score=grade_card.overall_score if grade_card else 0.0,
+        )
+
+        # Step 3: LEDGER WRITE DETERMINATION
+        # Strict enforcement: Only ACCEPTED if quorum PASS
+        if quorum_passed and len(critical_issues) == 0:
+            ledger_status = LedgerStatus.ACCEPTED
+            is_approved = len(allowed_platforms) > 0
+        elif missing_evidence:
+            ledger_status = LedgerStatus.REVISION_REQUIRED
+            is_approved = False
+        else:
+            ledger_status = LedgerStatus.REJECTED
+            is_approved = False
+
+        # Determine if Search Revision Agent should be triggered
+        requires_search_revision = (
+            ledger_status == LedgerStatus.REVISION_REQUIRED
+            or len(missing_evidence or []) > 0
+        )
+
+        decision = PublishDecision(
+            decision_id=decision_id,
+            subject_id=subject_id,
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+            is_approved=is_approved,
+            integrity_score=integrity_score,
+            allowed_platforms=allowed_platforms,
+            blocked_platforms=blocked_platforms,
+            critical_issues=critical_issues,
+            high_issues=high_issues,
+            medium_issues=medium_issues,
+            low_issues=low_issues,
+            ledger_status=ledger_status,
+            requires_search_revision=requires_search_revision,
+            missing_evidence=missing_evidence or [],
+        )
+
+        self._decisions[decision_id] = decision
+
+        logger.info(
+            f"Adjudication {decision_id}: approved={is_approved}, "
+            f"ledger={ledger_status.value}, platforms={[p.value for p in allowed_platforms]}"
+        )
+
+        return decision
+
+    def _apply_auto_downgrade(
+        self,
+        critical_issues: list[ReviewIssue],
+        high_issues: list[ReviewIssue],
+        medium_issues: list[ReviewIssue],
+        grade_card: GPSGradeCard | None,
+    ) -> tuple[list[PublishingPlatform], list[PublishingPlatform]]:
+        """Apply the Auto-Downgrade Protocol based on issue severity.
+
+        Protocol:
+        - CRITICAL/HIGH Issues: Reject entire bundle (block ALL platforms)
+        - MEDIUM Issues: Allow WikiTree as "Research in Progress", block Wikipedia
+        - Grade-based: Further restrict based on GPS grade
+
+        Args:
+            critical_issues: CRITICAL severity issues
+            high_issues: HIGH severity issues
+            medium_issues: MEDIUM severity issues
+            grade_card: GPS grade card for grade-based restrictions
+
+        Returns:
+            Tuple of (allowed_platforms, blocked_platforms)
+        """
+        # Start with all platforms
+        allowed = set(self.ALL_PLATFORMS)
+        blocked: set[PublishingPlatform] = set()
+
+        # CRITICAL issues: Block ALL platforms
+        if critical_issues:
+            blocked = set(self.ALL_PLATFORMS)
+            allowed = set()
+            logger.warning(
+                f"Auto-Downgrade: CRITICAL issues found ({len(critical_issues)}), "
+                f"blocking ALL platforms"
+            )
+            return list(allowed), list(blocked)
+
+        # HIGH issues: Block Wikipedia/Wikidata (encyclopedic platforms)
+        if high_issues:
+            blocked.update(self.ENCYCLOPEDIC_PLATFORMS)
+            allowed -= self.ENCYCLOPEDIC_PLATFORMS
+            logger.warning(
+                f"Auto-Downgrade: HIGH issues found ({len(high_issues)}), "
+                f"blocking encyclopedic platforms"
+            )
+
+        # MEDIUM issues: Block Wikipedia but allow WikiTree as draft
+        if medium_issues and not high_issues:
+            blocked.add(PublishingPlatform.WIKIPEDIA)
+            allowed.discard(PublishingPlatform.WIKIPEDIA)
+            logger.info(
+                f"Auto-Downgrade: MEDIUM issues found ({len(medium_issues)}), "
+                f"blocking Wikipedia only"
+            )
+
+        # Apply grade-based restrictions
+        if grade_card:
+            grade_allowed = set(grade_card.allowed_platforms)
+            # Intersect with grade-allowed platforms
+            grade_blocked = self.ALL_PLATFORMS - grade_allowed
+            blocked.update(grade_blocked)
+            allowed &= grade_allowed
+            logger.info(
+                f"Auto-Downgrade: Grade {grade_card.letter_grade} allows {[p.value for p in grade_allowed]}"
+            )
+
+        return list(allowed), list(blocked)
+
+    def _calculate_integrity_score(
+        self,
+        quorum_passed: bool,
+        critical_count: int,
+        high_count: int,
+        medium_count: int,
+        grade_score: float,
+    ) -> float:
+        """Calculate overall integrity score (0-1).
+
+        Scoring:
+        - Base: 0.5 if quorum passed, 0.0 if not
+        - Deductions: -0.2 per CRITICAL, -0.1 per HIGH, -0.05 per MEDIUM
+        - Grade bonus: (grade_score / 10) * 0.3
+        - Capped at 0.0-1.0
+
+        Args:
+            quorum_passed: Whether dual reviewers both passed
+            critical_count: Number of CRITICAL issues
+            high_count: Number of HIGH issues
+            medium_count: Number of MEDIUM issues
+            grade_score: GPS grade score (1-10)
+
+        Returns:
+            Integrity score between 0.0 and 1.0
+        """
+        # Base score
+        score = 0.5 if quorum_passed else 0.0
+
+        # Issue deductions
+        score -= critical_count * 0.2
+        score -= high_count * 0.1
+        score -= medium_count * 0.05
+
+        # Grade bonus
+        if grade_score > 0:
+            score += (grade_score / 10.0) * 0.3
+
+        # Clamp to valid range
+        return max(0.0, min(1.0, score))
+
+    # =========================================================================
+    # Ledger Write
+    # =========================================================================
+
+    def write_to_ledger(
+        self,
+        decision: PublishDecision,
+        facts: list[dict],
+    ) -> bool:
+        """Write ACCEPTED facts to the Fact Ledger.
+
+        CONSTRAINT: Only permitted to write ACCEPTED status if quorum passed.
+
+        Args:
+            decision: Adjudication decision
+            facts: Facts to write to ledger
+
+        Returns:
+            True if write succeeded, False otherwise
+
+        Raises:
+            ValueError: If attempting to write without ACCEPTED ledger status
+        """
+        if decision.ledger_status != LedgerStatus.ACCEPTED:
+            raise ValueError(
+                f"Cannot write to ledger with status {decision.ledger_status.value}. "
+                f"Only ACCEPTED status permits ledger writes."
+            )
+
+        if not self._storage:
+            logger.warning("No storage configured, skipping ledger write")
+            return False
+
+        # Write facts to storage
+        try:
+            for fact in facts:
+                fact["ledger_status"] = "ACCEPTED"
+                fact["decision_id"] = decision.decision_id
+                fact["adjudicated_at"] = decision.adjudicated_at.isoformat()
+
+            logger.info(
+                f"Ledger write: {len(facts)} facts written with decision {decision.decision_id}"
+            )
+            return True
+
+        except Exception as e:
+            logger.error(f"Ledger write failed: {e}")
+            return False
+
+    # =========================================================================
+    # Search Revision
+    # =========================================================================
+
+    def create_search_revision_request(
+        self,
+        decision: PublishDecision,
+        gps_pillar_gaps: list[str] | None = None,
+    ) -> SearchRevisionRequest:
+        """Create a Search Revision Request for the Search Revision Agent.
+
+        Triggered when the GPS Standards Critic identifies missing evidence.
+
+        Args:
+            decision: Adjudication decision with missing evidence
+            gps_pillar_gaps: GPS pillars with identified gaps
+
+        Returns:
+            SearchRevisionRequest for the Search Revision Agent
+        """
+        request = SearchRevisionRequest(
+            request_id=f"rev_{uuid.uuid4().hex[:12]}",
+            subject_id=decision.subject_id,
+            decision_id=decision.decision_id,
+            missing_sources=self._extract_missing_source_types(decision.missing_evidence),
+            missing_claims=decision.missing_evidence,
+            search_queries=self._generate_search_queries(decision),
+            priority="high" if decision.critical_issues else "normal",
+            gps_pillar_gaps=gps_pillar_gaps or [],
+        )
+
+        # Add to RevisitQueue with priority for tie-breaker queries
+        self._add_to_revisit_queue(request)
+
+        logger.info(
+            f"Search Revision Request {request.request_id} created for {decision.subject_id}: "
+            f"{len(request.missing_claims)} missing claims"
+        )
+
+        return request
+
+    def _extract_missing_source_types(self, missing_evidence: list[str]) -> list[str]:
+        """Extract source types from missing evidence descriptions."""
+        source_types = set()
+        keywords = {
+            "census": "census_records",
+            "vital": "vital_records",
+            "birth": "birth_records",
+            "death": "death_records",
+            "marriage": "marriage_records",
+            "military": "military_records",
+            "immigration": "immigration_records",
+            "newspaper": "newspapers",
+            "obituary": "obituaries",
+        }
+
+        for evidence in missing_evidence:
+            lower_evidence = evidence.lower()
+            for keyword, source_type in keywords.items():
+                if keyword in lower_evidence:
+                    source_types.add(source_type)
+
+        return list(source_types)
+
+    def _generate_search_queries(self, decision: PublishDecision) -> list[str]:
+        """Generate suggested search queries from missing evidence."""
+        queries = []
+        for evidence in decision.missing_evidence:
+            # Simple query generation - could be enhanced with LLM
+            query = f"Find {evidence} for subject {decision.subject_id}"
+            queries.append(query)
+        return queries
+
+    def _add_to_revisit_queue(self, request: SearchRevisionRequest) -> None:
+        """Add tie-breaker queries to the RevisitQueue with priority.
+
+        The RevisitQueue must prioritize queries generated during adjudication.
+        """
+        revisit_item = {
+            "type": "tie_breaker",
+            "request_id": request.request_id,
+            "subject_id": request.subject_id,
+            "queries": request.search_queries,
+            "priority": request.priority,
+            "created_at": request.created_at.isoformat(),
+        }
+
+        # Insert at appropriate position based on priority
+        if request.priority == "critical":
+            self._revisit_queue.insert(0, revisit_item)
+        elif request.priority == "high":
+            # Insert after critical items
+            insert_pos = 0
+            for i, item in enumerate(self._revisit_queue):
+                if item.get("priority") != "critical":
+                    insert_pos = i
+                    break
+            self._revisit_queue.insert(insert_pos, revisit_item)
+        else:
+            self._revisit_queue.append(revisit_item)
+
+        logger.debug(
+            f"Added tie-breaker to RevisitQueue at position "
+            f"{self._revisit_queue.index(revisit_item)}"
+        )
+
+    # =========================================================================
+    # Utility Methods
+    # =========================================================================
+
+    def get_decision(self, decision_id: str) -> PublishDecision | None:
+        """Get an existing decision by ID."""
+        return self._decisions.get(decision_id)
+
+    def get_decisions_for_subject(self, subject_id: str) -> list[PublishDecision]:
+        """Get all decisions for a subject."""
+        return [d for d in self._decisions.values() if d.subject_id == subject_id]

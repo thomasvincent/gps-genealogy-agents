@@ -334,6 +334,173 @@ class UnresolvedConflict(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Adjudication Gate Models
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class LedgerStatus(str, Enum):
+    """Status for Fact Ledger writes."""
+
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    REVISION_REQUIRED = "revision_required"
+
+
+class PublishDecision(BaseModel):
+    """Final adjudication decision from the GPS Adjudication Gate.
+
+    This is the output of the Workflow Agent's adjudication logic,
+    determining whether a research bundle can be published.
+
+    GPS Pillar Mapping:
+    - Quorum Check → Pillar 4: Resolution of Conflicting Evidence
+    - Auto-Downgrade → Pillar 5: Soundly Written Conclusion
+    - Search Revision → Pillar 1: Reasonably Exhaustive Research
+    """
+
+    decision_id: str = Field(description="Unique decision identifier")
+    subject_id: str = Field(description="ID of the research subject")
+
+    # Quorum results
+    logic_verdict: Verdict = Field(description="PASS/FAIL from Logic Reviewer")
+    source_verdict: Verdict = Field(description="PASS/FAIL from Source Reviewer")
+
+    # Final decision
+    is_approved: bool = Field(
+        default=False,
+        description="Whether research is approved for publishing",
+    )
+
+    # Integrity scoring
+    integrity_score: float = Field(
+        ge=0.0,
+        le=1.0,
+        default=0.0,
+        description="Overall integrity score (0-1)",
+    )
+
+    # Platform restrictions
+    allowed_platforms: list[PublishingPlatform] = Field(
+        default_factory=list,
+        description="Platforms approved for publishing",
+    )
+    blocked_platforms: list[PublishingPlatform] = Field(
+        default_factory=list,
+        description="Platforms explicitly blocked",
+    )
+
+    # Issues tracking
+    critical_issues: list[ReviewIssue] = Field(
+        default_factory=list,
+        description="CRITICAL issues that block all publishing",
+    )
+    high_issues: list[ReviewIssue] = Field(
+        default_factory=list,
+        description="HIGH issues that block Wikipedia/Wikidata",
+    )
+    medium_issues: list[ReviewIssue] = Field(
+        default_factory=list,
+        description="MEDIUM issues (warnings)",
+    )
+    low_issues: list[ReviewIssue] = Field(
+        default_factory=list,
+        description="LOW issues (informational)",
+    )
+
+    # Ledger write status
+    ledger_status: LedgerStatus = Field(
+        default=LedgerStatus.PENDING,
+        description="Status for Fact Ledger write",
+    )
+
+    # Search revision trigger
+    requires_search_revision: bool = Field(
+        default=False,
+        description="Whether Search Revision Agent should be triggered",
+    )
+    missing_evidence: list[str] = Field(
+        default_factory=list,
+        description="Evidence identified as missing by GPS Standards Critic",
+    )
+
+    # Agent tracking
+    agent_responsible: str = Field(
+        default="workflow_agent",
+        description="Agent that made this decision",
+    )
+
+    # Timestamps
+    adjudicated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    @computed_field
+    @property
+    def quorum_passed(self) -> bool:
+        """Whether both reviewers passed (quorum condition)."""
+        return (
+            self.logic_verdict == Verdict.PASS
+            and self.source_verdict == Verdict.PASS
+        )
+
+    @computed_field
+    @property
+    def has_blocking_issues(self) -> bool:
+        """Whether there are CRITICAL or HIGH issues blocking publishing."""
+        return len(self.critical_issues) > 0 or len(self.high_issues) > 0
+
+    @computed_field
+    @property
+    def total_issues(self) -> int:
+        """Total count of all issues."""
+        return (
+            len(self.critical_issues)
+            + len(self.high_issues)
+            + len(self.medium_issues)
+            + len(self.low_issues)
+        )
+
+
+class SearchRevisionRequest(BaseModel):
+    """Request to the Search Revision Agent for additional evidence.
+
+    Generated when the GPS Standards Critic identifies missing evidence
+    that would strengthen the research bundle.
+    """
+
+    request_id: str = Field(description="Unique request identifier")
+    subject_id: str = Field(description="ID of the research subject")
+    decision_id: str = Field(description="ID of the PublishDecision that triggered this")
+
+    # Missing evidence details
+    missing_sources: list[str] = Field(
+        default_factory=list,
+        description="Types of sources that should be searched",
+    )
+    missing_claims: list[str] = Field(
+        default_factory=list,
+        description="Claims that need additional corroboration",
+    )
+    search_queries: list[str] = Field(
+        default_factory=list,
+        description="Suggested search queries",
+    )
+
+    # Priority
+    priority: str = Field(
+        default="normal",
+        description="Priority level: critical, high, normal, low",
+    )
+
+    # GPS Pillar linkage
+    gps_pillar_gaps: list[str] = Field(
+        default_factory=list,
+        description="GPS pillars with identified gaps",
+    )
+
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
 class PublishingPipeline(BaseModel):
     """Complete publishing pipeline state for a research subject."""
 
