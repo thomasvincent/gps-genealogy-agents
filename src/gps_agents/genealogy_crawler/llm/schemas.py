@@ -135,19 +135,31 @@ class ResolverInput(BaseModel):
 
 
 class ResolverOutput(BaseModel):
-    """Output schema for the Entity Resolver role."""
+    """Output schema for the Entity Resolver role.
+
+    For high-confidence matches (confidence >= 0.95), rationale fields
+    can be abbreviated to reduce token usage while maintaining GPS compliance.
+    """
     similarity_score: Annotated[float, Field(ge=0.0, le=1.0)]
     feature_scores: dict[str, FeatureScore]
-    merge_rationale: str
-    why_not_merge: str  # ALWAYS include concerns
+    merge_rationale: str = ""  # Optional for high-confidence matches
+    why_not_merge: str = ""  # Brief note acceptable for high-confidence
     recommendation: Literal["merge", "review", "separate"]
     confidence: Annotated[float, Field(ge=0.0, le=1.0)]
 
     @model_validator(mode="after")
-    def validate_has_why_not(self) -> "ResolverOutput":
-        """Always require why_not_merge reasoning."""
-        if not self.why_not_merge or not self.why_not_merge.strip():
-            raise ValueError("why_not_merge must be provided even for clear matches")
+    def validate_reasoning_completeness(self) -> "ResolverOutput":
+        """Require full reasoning for low-confidence, allow brief for high-confidence."""
+        # High-confidence threshold for abbreviated reasoning
+        HIGH_CONFIDENCE_THRESHOLD = 0.95
+
+        if self.confidence < HIGH_CONFIDENCE_THRESHOLD:
+            # Full reasoning required for uncertain matches
+            if not self.why_not_merge or not self.why_not_merge.strip():
+                raise ValueError("why_not_merge must be provided for confidence < 0.95")
+            if self.recommendation == "review" and not self.merge_rationale.strip():
+                raise ValueError("merge_rationale required when recommendation is 'review'")
+        # For high-confidence, brief or empty is acceptable (GPS compliant via confidence score)
         return self
 
 

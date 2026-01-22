@@ -729,11 +729,50 @@ class BayesianResolution(BaseModel):
 # =============================================================================
 
 
-def is_living(person: Person) -> bool:
+@dataclass
+class LivingDetectionConfig:
+    """Configurable thresholds for living person detection.
+
+    Attributes:
+        assume_living_age: Age below which person is assumed living (default: 100)
+        certain_deceased_age: Age above which person is almost certainly deceased (default: 120)
+        default_if_unknown: Default result when no birth/death data available
+        check_modern_indicators: Whether to check for modern digital indicators
     """
-    Conservative living status determination.
-    GDPR/CCPA requires assuming living unless proven otherwise.
+    assume_living_age: int = 100
+    certain_deceased_age: int = 120
+    default_if_unknown: bool = True  # Conservative default for GDPR
+    check_modern_indicators: bool = True
+
+
+# Global config (can be overridden per-call)
+_living_detection_config = LivingDetectionConfig()
+
+
+def configure_living_detection(config: LivingDetectionConfig) -> None:
+    """Set global living detection configuration."""
+    global _living_detection_config
+    _living_detection_config = config
+
+
+def is_living(
+    person: Person,
+    *,
+    config: LivingDetectionConfig | None = None,
+) -> bool:
+    """Determine if a person should be treated as living for privacy purposes.
+
+    Uses configurable age thresholds and optional modern indicator checking.
+
+    Args:
+        person: The person to check
+        config: Optional config override (uses global config if None)
+
+    Returns:
+        True if the person should be treated as living
     """
+    cfg = config or _living_detection_config
+
     # Explicit living flag
     if person.living:
         return True
@@ -743,23 +782,24 @@ def is_living(person: Person) -> bool:
         if fact.fact_type == FactType.DEATH and fact.date:
             return False
 
-    # Age-based heuristic (100-year rule)
+    # Age-based heuristic
     for fact in person.facts:
         if fact.fact_type == FactType.BIRTH and fact.date and fact.date.year:
             age = datetime.now(UTC).year - fact.date.year
-            if age < 100:
+            if age < cfg.assume_living_age:
                 return True  # Assume living
-            if age >= 120:
+            if age >= cfg.certain_deceased_age:
                 return False  # Almost certainly deceased
 
     # Check for modern indicators in extracted data
-    modern_indicators = ["email", "phone", "social_media", "linkedin", "facebook"]
-    for indicator in modern_indicators:
-        if indicator in person.extracted_data:
-            return True
+    if cfg.check_modern_indicators:
+        modern_indicators = ["email", "phone", "social_media", "linkedin", "facebook"]
+        for indicator in modern_indicators:
+            if indicator in person.extracted_data:
+                return True
 
-    # Default: Assume living (conservative for GDPR)
-    return True
+    # Default behavior when no data available
+    return cfg.default_if_unknown
 
 
 def apply_privacy_protection(person: Person) -> Person:

@@ -667,7 +667,7 @@ class Orchestrator:
         total_claims = len(state.assertions)
         citation_count = sum(
             1 for a in state.assertions.values()
-            if a.evidence_ids and len(a.evidence_ids) > 0
+            if a.evidence_claim_ids and len(a.evidence_claim_ids) > 0
         )
 
         # Count conflicts from merge clusters

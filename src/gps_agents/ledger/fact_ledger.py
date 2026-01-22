@@ -108,6 +108,9 @@ class FactLedger:
             opts.create_if_missing = True
             opts.max_open_files = 300
             self.db = rocksdb.DB(str(self.db_path / "facts.db"), opts)
+            # In-memory version index for O(1) latest version lookup
+            # Lazy-loaded on first access, maintained during append
+            self._version_index: dict[str, int] | None = None
 
     def _load_fallback_index(self) -> None:
         """Load index for fallback file-based storage.
@@ -163,6 +166,27 @@ class FactLedger:
             self._save_fallback_index()
         except OSError:
             pass  # Can't read file, leave index empty
+
+    def _ensure_version_index(self) -> dict[str, int]:
+        """Lazy-load version index for RocksDB mode (O(N) scan once, O(1) thereafter)."""
+        if self._version_index is not None:
+            return self._version_index
+
+        self._version_index = {}
+        it = self.db.iterkeys()
+        it.seek_to_first()
+        for key in it:
+            key_str = key.decode()
+            if ":" not in key_str:
+                continue
+            fact_id_str, version_str = key_str.split(":", 1)
+            try:
+                version = int(version_str)
+                if fact_id_str not in self._version_index or version > self._version_index[fact_id_str]:
+                    self._version_index[fact_id_str] = version
+            except ValueError:
+                continue
+        return self._version_index
 
     # =========================================================================
     # CQRS Event Registration
@@ -278,6 +302,12 @@ class FactLedger:
             self._save_fallback_index()
         else:
             self.db.put(key.encode(), value.encode())
+            # Maintain version index for O(1) latest version lookup
+            if self._version_index is not None:
+                fact_id_str = str(fact.fact_id)
+                current = self._version_index.get(fact_id_str, 0)
+                if fact.version > current:
+                    self._version_index[fact_id_str] = fact.version
 
         # Update person date cache if this is a birth/death fact
         if fact.person_id and fact.fact_type in ("birth", "death"):
@@ -370,6 +400,8 @@ class FactLedger:
     def get_latest_version(self, fact_id: UUID) -> int | None:
         """Get the latest version number for a fact.
 
+        Uses in-memory version index for O(1) lookup in RocksDB mode.
+
         Args:
             fact_id: The fact's UUID
 
@@ -379,18 +411,9 @@ class FactLedger:
         if self._use_fallback:
             versions_dict = self._index.get(str(fact_id), {})
             return max(versions_dict.keys()) if versions_dict else None
-        # Scan for highest version (could optimize with secondary index)
-        latest = None
-        prefix = f"{fact_id}:".encode()
-        it = self.db.iterkeys()
-        it.seek(prefix)
-        for key in it:
-            if not key.startswith(prefix):
-                break
-            version = int(key.decode().split(":")[1])
-            if latest is None or version > latest:
-                latest = version
-        return latest
+        # O(1) lookup via version index (lazy-loaded on first access)
+        version_index = self._ensure_version_index()
+        return version_index.get(str(fact_id))
 
     def get_all_versions(self, fact_id: UUID) -> list[Fact]:
         """Get all versions of a fact.
@@ -444,27 +467,13 @@ class FactLedger:
                 if fact and (status is None or fact.status == status):
                     yield fact
         else:
-            # First pass: build version cache (O(n) instead of O(n²))
-            latest_versions: dict[str, tuple[int, bytes]] = {}
-            it = self.db.iteritems()
-            it.seek_to_first()
-
-            for key, value in it:
-                key_str = key.decode()
-                parts = key_str.split(":", 1)
-                if len(parts) != 2:
+            # Use version index for streaming iteration (no full cache needed)
+            version_index = self._ensure_version_index()
+            for fact_id_str, latest_version in version_index.items():
+                key = f"{fact_id_str}:{latest_version}".encode()
+                value = self.db.get(key)
+                if value is None:
                     continue
-                fact_id_str, version_str = parts
-                try:
-                    version = int(version_str)
-                except ValueError:
-                    continue
-
-                if fact_id_str not in latest_versions or version > latest_versions[fact_id_str][0]:
-                    latest_versions[fact_id_str] = (version, value)
-
-            # Second pass: yield latest versions
-            for _, value in latest_versions.values():
                 fact = Fact.model_validate_json(value.decode())
                 if status is None or fact.status == status:
                     yield fact
