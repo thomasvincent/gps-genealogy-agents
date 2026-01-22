@@ -4,6 +4,7 @@ This module provides a type-safe interface to LLM calls with:
 - JSON schema enforcement via Pydantic models
 - Hallucination firewall validating citations exist in source
 - Role-specific prompts and output parsing
+- Idempotency via content fingerprinting to prevent duplicate API calls
 """
 from __future__ import annotations
 
@@ -16,6 +17,12 @@ from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
+from .idempotency import (
+    ContentFingerprint,
+    IdempotencyCache,
+    fingerprint_input,
+    get_global_cache,
+)
 from .prompts import ROLE_PROMPTS
 from .schemas import (
     ConflictAnalysisTiebreakerInput,
@@ -116,24 +123,102 @@ class HallucinationCheckResult:
         return code in self.violation_codes
 
 
-def check_citation_exists(citation: str, source_text: str, fuzzy: bool = False) -> bool:
+def _levenshtein_ratio(s1: str, s2: str) -> float:
+    """Calculate Levenshtein similarity ratio between two strings.
+
+    Returns a value between 0.0 (completely different) and 1.0 (identical).
+    Uses a sliding window approach for efficiency when s1 is shorter than s2.
+    """
+    if not s1 or not s2:
+        return 0.0
+    if s1 == s2:
+        return 1.0
+
+    len1, len2 = len(s1), len(s2)
+
+    # If citation is much shorter than source, use sliding window
+    if len1 < len2 / 2:
+        # Search for best match in source using window of citation length
+        best_ratio = 0.0
+        window_size = len1
+        for i in range(len2 - window_size + 1):
+            window = s2[i:i + window_size]
+            ratio = _edit_distance_ratio(s1, window)
+            best_ratio = max(best_ratio, ratio)
+            if best_ratio >= 0.95:  # Early exit if near-perfect match found
+                return best_ratio
+        return best_ratio
+
+    return _edit_distance_ratio(s1, s2)
+
+
+def _edit_distance_ratio(s1: str, s2: str) -> float:
+    """Calculate edit distance ratio between two strings of similar length."""
+    len1, len2 = len(s1), len(s2)
+    if len1 == 0 and len2 == 0:
+        return 1.0
+    if len1 == 0 or len2 == 0:
+        return 0.0
+
+    # Use optimized two-row DP for space efficiency
+    prev_row = list(range(len2 + 1))
+    curr_row = [0] * (len2 + 1)
+
+    for i in range(1, len1 + 1):
+        curr_row[0] = i
+        for j in range(1, len2 + 1):
+            cost = 0 if s1[i - 1] == s2[j - 1] else 1
+            curr_row[j] = min(
+                curr_row[j - 1] + 1,      # insertion
+                prev_row[j] + 1,          # deletion
+                prev_row[j - 1] + cost    # substitution
+            )
+        prev_row, curr_row = curr_row, prev_row
+
+    distance = prev_row[len2]
+    max_len = max(len1, len2)
+    return 1.0 - (distance / max_len)
+
+
+def check_citation_exists(
+    citation: str,
+    source_text: str,
+    fuzzy: bool = False,
+    fuzzy_threshold: float = 0.85,
+) -> bool:
     """Check if a citation snippet exists in source text.
 
     Args:
         citation: The citation snippet to find
         source_text: The full source text to search
-        fuzzy: If True, allow minor whitespace/case differences
+        fuzzy: If True, allow minor whitespace/case differences and OCR errors
+        fuzzy_threshold: Minimum similarity ratio for fuzzy match (0.0-1.0)
+
+    Returns:
+        True if citation found (exactly or within fuzzy threshold)
     """
     if not citation:
         return False
 
+    # Exact match first (fast path)
+    if citation in source_text:
+        return True
+
     if fuzzy:
-        # Normalize whitespace and case for fuzzy matching
+        # Normalize whitespace and case
         norm_citation = " ".join(citation.lower().split())
         norm_source = " ".join(source_text.lower().split())
-        return norm_citation in norm_source
-    else:
-        return citation in source_text
+
+        # Check normalized exact match
+        if norm_citation in norm_source:
+            return True
+
+        # Use Levenshtein similarity for OCR tolerance
+        # This handles common OCR errors like: "1880" vs "188O", "rn" vs "m"
+        ratio = _levenshtein_ratio(norm_citation, norm_source)
+        return ratio >= fuzzy_threshold
+
+    return False
 
 
 def hallucination_firewall(
@@ -332,13 +417,20 @@ class MockLLMClient(LLMClient):
 
 
 class StructuredLLMWrapper(Generic[InputT, OutputT]):
-    """Wrapper for LLM calls with structured I/O enforcement.
+    """Wrapper for LLM calls with structured I/O enforcement and idempotency.
 
     This wrapper:
-    1. Serializes Pydantic input to JSON
-    2. Calls the LLM with role-specific prompt
-    3. Parses response into Pydantic output
-    4. Validates output structure
+    1. Checks idempotency cache for previously processed content
+    2. Serializes Pydantic input to JSON
+    3. Calls the LLM with role-specific prompt (schema in system prompt for caching)
+    4. Parses response into Pydantic output
+    5. Validates output structure
+    6. Caches result for future deduplication
+
+    Token Optimization:
+    - Schema is injected into system prompt (enables provider prompt caching)
+    - Input JSON is minified (no whitespace)
+    - No indent on JSON payloads saves 10-15% tokens
     """
 
     def __init__(
@@ -348,6 +440,8 @@ class StructuredLLMWrapper(Generic[InputT, OutputT]):
         input_schema: type[InputT],
         output_schema: type[OutputT],
         temperature: float = 0.0,
+        cache: IdempotencyCache | None = None,
+        enable_caching: bool = True,
     ):
         """Initialize the wrapper.
 
@@ -357,31 +451,39 @@ class StructuredLLMWrapper(Generic[InputT, OutputT]):
             input_schema: Pydantic model for input validation
             output_schema: Pydantic model for output validation
             temperature: Sampling temperature
+            cache: Optional idempotency cache (uses global if not provided)
+            enable_caching: Whether to enable idempotency caching
         """
         self._client = client
         self._role = role
         self._input_schema = input_schema
         self._output_schema = output_schema
         self._temperature = temperature
+        self._cache = cache if cache is not None else get_global_cache()
+        self._enable_caching = enable_caching
 
         if role not in ROLE_PROMPTS:
             raise ValueError(f"Unknown role: {role}. Valid: {list(ROLE_PROMPTS.keys())}")
 
-        self._system_prompt = ROLE_PROMPTS[role]
+        # Build system prompt with schema for prompt caching (up to 90% cost reduction)
+        base_prompt = ROLE_PROMPTS[role]
+        schema_json = self._output_schema.model_json_schema()
+        # Minify schema JSON (no whitespace) for token efficiency
+        schema_str = json.dumps(schema_json, separators=(",", ":"))
+        self._system_prompt = f"{base_prompt}\n\nOUTPUT_SCHEMA:{schema_str}\nAlways respond with minified JSON matching OUTPUT_SCHEMA."
 
     def _build_user_message(self, input_data: InputT) -> str:
-        """Build user message from input data."""
-        schema_json = self._output_schema.model_json_schema()
+        """Build user message from input data with token optimization.
 
-        return f"""\
-INPUT:
-{input_data.model_dump_json(indent=2)}
+        Args:
+            input_data: The input data to serialize
 
-OUTPUT SCHEMA:
-{json.dumps(schema_json, indent=2)}
-
-Respond with valid JSON matching the schema exactly. Do not include any text outside the JSON object.
-"""
+        Returns:
+            User message string with minified JSON (schema is in system prompt)
+        """
+        # Minified JSON for token efficiency (no indent, excludes None values)
+        input_json = input_data.model_dump_json(exclude_none=True)
+        return f"INPUT:{input_json}"
 
     def _parse_response(self, response: str) -> OutputT:
         """Parse LLM response into output schema."""
@@ -415,12 +517,16 @@ Respond with valid JSON matching the schema exactly. Do not include any text out
         except ValidationError as e:
             raise ValueError(f"LLM response doesn't match schema: {e}") from e
 
-    def invoke(self, input_data: InputT, max_retries: int = 2) -> OutputT:
-        """Invoke the LLM with structured I/O.
+    def invoke(self, input_data: InputT, max_retries: int = 2, bypass_cache: bool = False) -> OutputT:
+        """Invoke the LLM with structured I/O and idempotency.
+
+        Checks the idempotency cache first to avoid duplicate API calls.
+        On cache miss, makes the API call and caches the result.
 
         Args:
             input_data: Validated input data
             max_retries: Number of retries on parse failure
+            bypass_cache: If True, skip cache check and force API call
 
         Returns:
             Validated output data
@@ -428,6 +534,22 @@ Respond with valid JSON matching the schema exactly. Do not include any text out
         Raises:
             ValueError: If response cannot be parsed after retries
         """
+        # Check idempotency cache first
+        fingerprint = fingerprint_input(input_data, self._role)
+
+        if self._enable_caching and not bypass_cache:
+            cached = self._cache.get(fingerprint)
+            if cached is not None:
+                logger.debug(f"Idempotency cache HIT for {self._role}: {fingerprint}")
+                try:
+                    return self._output_schema.model_validate_json(cached.output_json)
+                except ValidationError:
+                    # Cache entry invalid, proceed with API call
+                    logger.warning(f"Cache entry invalid for {fingerprint}, making fresh call")
+
+        logger.debug(f"Idempotency cache MISS for {self._role}: {fingerprint}")
+
+        # Build message (schema is now in system prompt for caching efficiency)
         user_message = self._build_user_message(input_data)
 
         last_error: Exception | None = None
@@ -438,7 +560,18 @@ Respond with valid JSON matching the schema exactly. Do not include any text out
                     user_message=user_message,
                     temperature=self._temperature,
                 )
-                return self._parse_response(response)
+                output = self._parse_response(response)
+
+                # Cache successful result
+                if self._enable_caching:
+                    self._cache.put(
+                        fingerprint=fingerprint,
+                        output=output,
+                        role=self._role,
+                        input_hash=fingerprint.value,
+                    )
+
+                return output
             except ValueError as e:
                 last_error = e
                 logger.warning(

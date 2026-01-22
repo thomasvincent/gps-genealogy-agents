@@ -1,8 +1,17 @@
 """LLM wrapper module for the genealogy crawler.
 
 Provides type-safe, structured I/O wrappers for LLM roles with
-hallucination firewall validation.
+hallucination firewall validation and idempotency caching.
 """
+from .idempotency import (
+    ContentFingerprint,
+    IdempotencyCache,
+    PersistentIdempotencyCache,
+    fingerprint_input,
+    fingerprint_raw_text,
+    get_global_cache,
+    set_global_cache,
+)
 from .prompts import ROLE_PROMPTS
 from .schemas import (
     Citation,
@@ -57,6 +66,14 @@ from .wrapper import (
 )
 
 __all__ = [
+    # Idempotency
+    "ContentFingerprint",
+    "IdempotencyCache",
+    "PersistentIdempotencyCache",
+    "fingerprint_input",
+    "fingerprint_raw_text",
+    "get_global_cache",
+    "set_global_cache",
     # Clients
     "LLMClient",
     "AnthropicClient",
