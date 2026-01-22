@@ -1684,3 +1684,387 @@ class TestEndToEndPublishingPipeline:
         # Step 6: Execute in dry run
         success, output = manager.execute_git_workflow(workflow, dry_run=True)
         assert success is True
+
+
+# =============================================================================
+# Adjudication Gate Tests
+# =============================================================================
+
+
+class TestPublishDecision:
+    """Test PublishDecision model."""
+
+    def test_create_publish_decision(self):
+        """Test creating a PublishDecision."""
+        from gps_agents.genealogy_crawler.publishing import (
+            LedgerStatus,
+            PublishDecision,
+            PublishingPlatform,
+            Verdict,
+        )
+
+        decision = PublishDecision(
+            decision_id="adj_test123",
+            subject_id="person_123",
+            logic_verdict=Verdict.PASS,
+            source_verdict=Verdict.PASS,
+            is_approved=True,
+            integrity_score=0.85,
+            allowed_platforms=[PublishingPlatform.WIKIPEDIA, PublishingPlatform.GITHUB],
+            ledger_status=LedgerStatus.ACCEPTED,
+        )
+
+        assert decision.decision_id == "adj_test123"
+        assert decision.quorum_passed is True
+        assert decision.is_approved is True
+        assert decision.integrity_score == 0.85
+
+    def test_quorum_passed_both_pass(self):
+        """Test quorum_passed when both reviewers pass."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishDecision,
+            Verdict,
+        )
+
+        decision = PublishDecision(
+            decision_id="adj_test",
+            subject_id="person_123",
+            logic_verdict=Verdict.PASS,
+            source_verdict=Verdict.PASS,
+        )
+
+        assert decision.quorum_passed is True
+
+    def test_quorum_passed_one_fails(self):
+        """Test quorum_passed when one reviewer fails."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishDecision,
+            Verdict,
+        )
+
+        decision = PublishDecision(
+            decision_id="adj_test",
+            subject_id="person_123",
+            logic_verdict=Verdict.PASS,
+            source_verdict=Verdict.FAIL,
+        )
+
+        assert decision.quorum_passed is False
+
+    def test_has_blocking_issues(self):
+        """Test has_blocking_issues computed field."""
+        from gps_agents.genealogy_crawler.publishing import (
+            PublishDecision,
+            ReviewIssue,
+            Severity,
+            Verdict,
+        )
+
+        critical_issue = ReviewIssue(
+            severity=Severity.CRITICAL,
+            description="Fabricated evidence",
+        )
+
+        decision = PublishDecision(
+            decision_id="adj_test",
+            subject_id="person_123",
+            logic_verdict=Verdict.FAIL,
+            source_verdict=Verdict.PASS,
+            critical_issues=[critical_issue],
+        )
+
+        assert decision.has_blocking_issues is True
+
+
+class TestAdjudicationGate:
+    """Test AdjudicationGate adjudication logic."""
+
+    def test_adjudicate_quorum_passes(self):
+        """Test adjudication when quorum passes."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            QuorumDecision,
+            ReviewerType,
+            ReviewVerdict,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Timeline consistent",
+            reviewer_model="test",
+        )
+
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Citations valid",
+            reviewer_model="test",
+        )
+
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+
+        decision = gate.adjudicate(quorum, None, "person_123")
+
+        assert decision.quorum_passed is True
+        assert decision.is_approved is True
+        assert len(decision.allowed_platforms) > 0
+
+    def test_adjudicate_quorum_fails(self):
+        """Test adjudication when quorum fails."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            LedgerStatus,
+            QuorumDecision,
+            ReviewerType,
+            ReviewVerdict,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.FAIL,
+            rationale="Timeline inconsistent",
+            reviewer_model="test",
+        )
+
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Citations valid",
+            reviewer_model="test",
+        )
+
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+
+        decision = gate.adjudicate(quorum, None, "person_123")
+
+        assert decision.quorum_passed is False
+        assert decision.is_approved is False
+        assert decision.ledger_status == LedgerStatus.REJECTED
+
+    def test_auto_downgrade_critical_issues(self):
+        """Test auto-downgrade blocks all platforms for CRITICAL issues."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            QuorumDecision,
+            ReviewerType,
+            ReviewIssue,
+            ReviewVerdict,
+            Severity,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        critical_issue = ReviewIssue(
+            severity=Severity.CRITICAL,
+            description="Evidence fabrication detected",
+        )
+
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.FAIL,
+            issues=[critical_issue],
+            rationale="Critical issues found",
+            reviewer_model="test",
+        )
+
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Citations valid",
+            reviewer_model="test",
+        )
+
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+
+        decision = gate.adjudicate(quorum, None, "person_123")
+
+        assert len(decision.allowed_platforms) == 0
+        assert len(decision.blocked_platforms) > 0
+        assert decision.is_approved is False
+
+    def test_auto_downgrade_high_issues_blocks_encyclopedic(self):
+        """Test auto-downgrade blocks Wikipedia/Wikidata for HIGH issues."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            PublishingPlatform,
+            QuorumDecision,
+            ReviewerType,
+            ReviewIssue,
+            ReviewVerdict,
+            Severity,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        high_issue = ReviewIssue(
+            severity=Severity.HIGH,
+            description="Unverified primary claim",
+        )
+
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.PASS,
+            issues=[high_issue],
+            rationale="High issue but passable",
+            reviewer_model="test",
+        )
+
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="Citations valid",
+            reviewer_model="test",
+        )
+
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+
+        decision = gate.adjudicate(quorum, None, "person_123")
+
+        # Wikipedia/Wikidata should be blocked
+        assert PublishingPlatform.WIKIPEDIA not in decision.allowed_platforms
+        assert PublishingPlatform.WIKIDATA not in decision.allowed_platforms
+        # WikiTree and GitHub should still be allowed
+        assert PublishingPlatform.WIKITREE in decision.allowed_platforms
+        assert PublishingPlatform.GITHUB in decision.allowed_platforms
+
+    def test_ledger_write_requires_accepted_status(self):
+        """Test that ledger write enforces ACCEPTED status."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            LedgerStatus,
+            PublishDecision,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        decision = PublishDecision(
+            decision_id="adj_test",
+            subject_id="person_123",
+            logic_verdict=Verdict.FAIL,
+            source_verdict=Verdict.PASS,
+            ledger_status=LedgerStatus.REJECTED,
+        )
+
+        # Should raise ValueError
+        import pytest
+        with pytest.raises(ValueError, match="Only ACCEPTED status"):
+            gate.write_to_ledger(decision, [{"fact": "test"}])
+
+    def test_search_revision_request_created(self):
+        """Test SearchRevisionRequest is created for missing evidence."""
+        from gps_agents.genealogy_crawler.publishing import (
+            AdjudicationGate,
+            LedgerStatus,
+            QuorumDecision,
+            ReviewerType,
+            ReviewVerdict,
+            Verdict,
+        )
+
+        gate = AdjudicationGate()
+
+        logic_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.LOGIC_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="OK",
+            reviewer_model="test",
+        )
+
+        source_verdict = ReviewVerdict(
+            reviewer_type=ReviewerType.SOURCE_REVIEWER,
+            verdict=Verdict.PASS,
+            rationale="OK",
+            reviewer_model="test",
+        )
+
+        quorum = QuorumDecision(
+            logic_verdict=logic_verdict,
+            source_verdict=source_verdict,
+        )
+
+        missing_evidence = ["1930 Census record", "Marriage certificate"]
+
+        decision = gate.adjudicate(quorum, None, "person_123", missing_evidence)
+
+        assert decision.requires_search_revision is True
+        assert len(decision.missing_evidence) == 2
+
+        # Create revision request
+        request = gate.create_search_revision_request(decision)
+        assert request.subject_id == "person_123"
+        assert len(request.missing_claims) == 2
+        assert "census_records" in request.missing_sources
+        assert "marriage_records" in request.missing_sources
+
+
+class TestAdjudicationGateIntegrity:
+    """Test integrity score calculation."""
+
+    def test_integrity_score_perfect(self):
+        """Test integrity score for perfect quorum."""
+        from gps_agents.genealogy_crawler.publishing import AdjudicationGate
+
+        gate = AdjudicationGate()
+        score = gate._calculate_integrity_score(
+            quorum_passed=True,
+            critical_count=0,
+            high_count=0,
+            medium_count=0,
+            grade_score=10.0,
+        )
+
+        # 0.5 (base) + 0.3 (grade bonus) = 0.8
+        assert score == 0.8
+
+    def test_integrity_score_with_issues(self):
+        """Test integrity score deductions for issues."""
+        from gps_agents.genealogy_crawler.publishing import AdjudicationGate
+
+        gate = AdjudicationGate()
+        score = gate._calculate_integrity_score(
+            quorum_passed=True,
+            critical_count=1,
+            high_count=2,
+            medium_count=3,
+            grade_score=8.0,
+        )
+
+        # 0.5 - 0.2 - 0.2 - 0.15 + 0.24 = 0.19
+        assert score < 0.5
+
+    def test_integrity_score_clamps_to_zero(self):
+        """Test integrity score doesn't go below 0."""
+        from gps_agents.genealogy_crawler.publishing import AdjudicationGate
+
+        gate = AdjudicationGate()
+        score = gate._calculate_integrity_score(
+            quorum_passed=False,
+            critical_count=5,
+            high_count=5,
+            medium_count=5,
+            grade_score=0.0,
+        )
+
+        assert score == 0.0
