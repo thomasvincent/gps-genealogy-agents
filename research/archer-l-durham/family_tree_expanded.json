@@ -210,13 +210,66 @@
       "Paternal grandfather named Archer Durham",
       "Connection to D. Scott Durham"
     ],
+    "negative_search_results": {
+      "date": "2026-01-21",
+      "note": "Documenting searches with no results is important for GPS compliance",
+      "searches": [
+        {
+          "target": "Archer Durham (grandfather)",
+          "source": "FindAGrave",
+          "location": "Wake County, North Carolina",
+          "parameters": "firstname=Archer, lastname=Durham, birthyear=1870 +/-10",
+          "result": "No matches found"
+        },
+        {
+          "target": "Archer Durham (grandfather)",
+          "source": "FindAGrave",
+          "location": "North Carolina (statewide)",
+          "parameters": "firstname=Archer, lastname=Durham",
+          "result": "No matches found",
+          "note": "Pre-Civil War era African Americans often lack formal burial records"
+        },
+        {
+          "target": "Mattie Durham (mother)",
+          "source": "FindAGrave",
+          "location": "California (statewide)",
+          "parameters": "firstname=Mattie, lastname=Durham, birthyear=1904 +/-5",
+          "result": "No matches found"
+        },
+        {
+          "target": "Barbara Durham (sister)",
+          "source": "FindAGrave",
+          "location": "California (statewide)",
+          "parameters": "firstname=Barbara, lastname=Durham, birthyear=1926 +/-5",
+          "result": "No matches found"
+        },
+        {
+          "target": "Archer L. Durham (subject)",
+          "source": "Legacy.com Obituaries",
+          "location": "Maryland and nationwide",
+          "parameters": "search query: Archer Durham",
+          "result": "No exact match found",
+          "note": "Search returned suggested results for Archer (first name) and Durham (last name) separately but no 'Archer Durham' obituary"
+        },
+        {
+          "target": "Durham family",
+          "source": "Mountain View Cemetery via FindAGrave",
+          "location": "Altadena, Los Angeles County, California",
+          "parameters": "lastname=Durham",
+          "result": "17 Durham records found, none matching Mattie or Barbara",
+          "note": "Only Barney M Durham appears to be from this family"
+        }
+      ]
+    },
     "research_gaps": [
       "No obituary found for Archer L. Durham (2024)",
       "Mother Mattie Sorrell Durham death record not found",
       "Sister Barbara Camille Durham death record not found",
+      "Paternal grandfather Archer Durham Sr. - no burial record found in NC",
       "NARA 1940/1950 census sources returned 0 results - may need direct database access",
       "FamilySearch records require authentication",
-      "Race should be verified from original census images when ruling out matches"
+      "Race should be verified from original census images when ruling out matches",
+      "Chronicling America newspaper search blocked by Cloudflare - try alternative access"
     ],
     "african_american_research_resources": [
       "Afrigeneas.com - African American genealogy community",
