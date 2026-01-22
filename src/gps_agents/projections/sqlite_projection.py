@@ -1,16 +1,21 @@
 """SQLite read projection + durable idempotency mapping store."""
 from __future__ import annotations
 
+import logging
 import sqlite3
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ..models.fact import Fact, FactStatus
 
 if TYPE_CHECKING:
     from uuid import UUID
+
+    from ..ledger.fact_ledger import LedgerEvent
+
+logger = logging.getLogger(__name__)
 
 
 class SQLiteProjection:
@@ -589,4 +594,55 @@ class SQLiteProjection:
                     raise
         if last_error:
             raise last_error
+
+    # ==================== CQRS Event Sync API ====================
+
+    def handle_ledger_event(self, event: "LedgerEvent") -> None:
+        """Handle a LedgerEvent to keep projection in sync with ledger.
+
+        This is the CQRS sync trigger - call this to project ledger writes
+        to the read model automatically.
+
+        Args:
+            event: The LedgerEvent emitted by FactLedger.append()
+        """
+        from ..ledger.fact_ledger import LedgerEventType
+
+        try:
+            if event.event_type in (LedgerEventType.FACT_APPENDED, LedgerEventType.FACT_UPDATED):
+                self.upsert_fact(event.fact)
+                logger.debug(
+                    f"Projected {event.event_type.value} for fact {event.fact_id} v{event.version}"
+                )
+            elif event.event_type == LedgerEventType.FACT_STATUS_CHANGED:
+                # Status changes also need upsert to update the read model
+                self.upsert_fact(event.fact)
+                logger.debug(
+                    f"Projected status change for fact {event.fact_id}"
+                )
+        except Exception as e:
+            logger.error(f"Failed to project ledger event {event.event_type}: {e}")
+            raise
+
+
+def wire_ledger_to_projection(ledger: Any, projection: "SQLiteProjection") -> None:
+    """Wire a FactLedger to auto-sync writes to a SQLiteProjection.
+
+    This establishes the CQRS event pipeline: writes to the ledger
+    automatically trigger updates to the read projection.
+
+    Args:
+        ledger: A FactLedger instance (the write store)
+        projection: A SQLiteProjection instance (the read store)
+
+    Example:
+        ledger = FactLedger("data/ledger")
+        projection = SQLiteProjection("data/projection.db")
+        wire_ledger_to_projection(ledger, projection)
+
+        # Now writes to ledger auto-sync to projection:
+        ledger.append(fact)  # Also updates projection
+    """
+    ledger.register_event_handler(projection.handle_ledger_event)
+    logger.info("Wired FactLedger to SQLiteProjection for CQRS sync")
 
