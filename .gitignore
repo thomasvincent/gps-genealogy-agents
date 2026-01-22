@@ -98,3 +98,5 @@ credentials.json
 *.ged
 output/
 results/
+# Playwright MCP screenshots
+.playwright-mcp/
