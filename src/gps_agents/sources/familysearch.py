@@ -1,13 +1,479 @@
-"""FamilySearch API connector."""
+"""FamilySearch API connector and no-login search.
+
+FamilySearch is the largest free genealogical database with billions of records.
+This module provides:
+1. FamilySearchSource - Full API access (requires OAuth2 authentication)
+2. FamilySearchNoLoginSource - Limited access without authentication:
+   - Search URL generation
+   - Collection browsing URLs
+   - Wiki access
+   - Basic search result scraping (publicly visible data)
+"""
 from __future__ import annotations
 
 import logging
+import re
 from datetime import UTC, datetime
+from urllib.parse import quote_plus, urlencode
+
+import httpx
+from bs4 import BeautifulSoup
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
 
 logger = logging.getLogger(__name__)
+
+
+# FamilySearch collection IDs for common record types (free browsing)
+FAMILYSEARCH_COLLECTIONS = {
+    # US Census (chronological)
+    "us_census_1790": "1803959",
+    "us_census_1800": "1804228",
+    "us_census_1810": "1803765",
+    "us_census_1820": "1803955",
+    "us_census_1830": "1803958",
+    "us_census_1840": "1786457",
+    "us_census_1850": "1401638",
+    "us_census_1860": "1473181",
+    "us_census_1870": "1438024",
+    "us_census_1880": "1417683",
+    "us_census_1900": "1325221",
+    "us_census_1910": "1727033",
+    "us_census_1920": "1488411",
+    "us_census_1930": "1810731",
+    "us_census_1940": "2000219",
+    "us_census_1950": "4179881",  # Released April 2022
+    # Vital Records
+    "california_death_index": "1932433",
+    "california_birth_index": "1932380",
+    "ssdi": "1202535",
+    # African American
+    "freedmens_bureau": "1989155",
+    "freedmens_bureau_labor": "2426245",
+    "freedmens_bureau_marriages": "1803968",
+    "freedmens_bureau_hospital": "2140102",
+    "slave_schedules_1850": "1420440",
+    "slave_schedules_1860": "1473181",
+    "usct_civil_war": "1932402",
+    # Immigration
+    "ellis_island": "1368704",
+    "castle_garden": "1849782",
+    "ny_passenger_lists": "1849782",
+    # Military
+    "wwi_draft_cards": "1968530",
+    "wwii_draft_cards": "2513478",
+    "civil_war_soldiers": "1910717",
+}
+
+
+class FamilySearchNoLoginSource(BaseSource):
+    """FamilySearch access without authentication.
+
+    Provides:
+    - Search URL generation for manual use
+    - Collection browsing URLs
+    - FamilySearch Wiki links
+    - Basic search result scraping (publicly visible before login wall)
+
+    No authentication required, but full record details need FamilySearch account.
+    """
+
+    name = "FamilySearchNoLogin"
+    base_url = "https://www.familysearch.org"
+
+    def requires_auth(self) -> bool:
+        return False
+
+    async def search(self, query: SearchQuery) -> list[RawRecord]:
+        """Search FamilySearch without login.
+
+        Generates search URLs and attempts to scrape publicly visible results.
+
+        Args:
+            query: Search parameters
+
+        Returns:
+            List of search URLs and any scraped basic data
+        """
+        records: list[RawRecord] = []
+
+        if not query.surname:
+            return []
+
+        # Build search URL with parameters
+        search_params = self._build_search_params(query)
+        search_url = f"{self.base_url}/search/record/results?{urlencode(search_params)}"
+
+        # Add main search URL
+        records.append(
+            RawRecord(
+                source=self.name,
+                record_id=f"fs-search-{query.surname}",
+                record_type="search_url",
+                url=search_url,
+                raw_data={"query": query.model_dump()},
+                extracted_fields={
+                    "search_type": "FamilySearch Historical Records",
+                    "search_url": search_url,
+                    "note": "Free account required for full record details",
+                    "tip": "Create free FamilySearch account for full access",
+                },
+                accessed_at=datetime.now(UTC),
+            )
+        )
+
+        # Try to scrape basic results from search page
+        try:
+            scraped_records = await self._scrape_search_results(search_url, query)
+            records.extend(scraped_records)
+        except Exception as e:
+            logger.debug(f"FamilySearch scrape error: {e}")
+
+        # Add relevant collection URLs based on query
+        collection_records = self._get_collection_urls(query)
+        records.extend(collection_records)
+
+        # Add FamilySearch Wiki link for research guidance
+        wiki_records = self._get_wiki_links(query)
+        records.extend(wiki_records)
+
+        # Add NARA workaround tip
+        records.append(
+            RawRecord(
+                source=self.name,
+                record_id="fs-nara-workaround",
+                record_type="tip",
+                url="https://www.archives.gov/research/census",
+                raw_data={
+                    "steps": [
+                        "1. Find person in FamilySearch index (visible without login)",
+                        "2. Note: Enumeration District (ED), Sheet/Page Number, Line Number",
+                        "3. Go to archives.gov/research/census",
+                        "4. Browse to that census year > state > county > ED > page",
+                    ],
+                },
+                extracted_fields={
+                    "tip_title": "NARA Image Workaround",
+                    "description": (
+                        "If FamilySearch requires login to view census images, "
+                        "note the Enumeration District (ED) and Page Number from the index, "
+                        "then look it up on NARA (archives.gov) which is free without login."
+                    ),
+                    "how_to": (
+                        "1) Find person in FamilySearch index; "
+                        "2) Note ED/Page/Line; "
+                        "3) Go to archives.gov/research/census; "
+                        "4) Browse census year > state > county > ED > page"
+                    ),
+                },
+                accessed_at=datetime.now(UTC),
+            )
+        )
+
+        return records
+
+    def _build_search_params(
+        self,
+        query: SearchQuery,
+        exact_surname: bool = False,
+        exact_given: bool = False,
+    ) -> dict[str, str]:
+        """Build FamilySearch search URL parameters.
+
+        Args:
+            query: Search parameters
+            exact_surname: If True, use exact surname matching (q.surname.exact=on)
+            exact_given: If True, use exact given name matching
+
+        Note on wildcards:
+            Use * for multiple characters (encode as %2A in URL)
+            Use ? for single character (encode as %3F in URL)
+            Example: q.surname=Durh* matches Durham, Durhan, etc.
+        """
+        params: dict[str, str] = {}
+
+        if query.given_name:
+            params["q.givenName"] = query.given_name
+            if exact_given:
+                params["q.givenName.exact"] = "on"
+        if query.surname:
+            params["q.surname"] = query.surname
+            if exact_surname:
+                params["q.surname.exact"] = "on"
+
+        if query.birth_year:
+            params["q.birthLikeDate.from"] = str(query.birth_year - query.birth_year_range)
+            params["q.birthLikeDate.to"] = str(query.birth_year + query.birth_year_range)
+
+        if query.birth_place:
+            params["q.birthLikePlace"] = query.birth_place
+
+        if query.state:
+            params["q.anyPlace"] = query.state
+
+        if query.death_year:
+            params["q.deathLikeDate.from"] = str(query.death_year - query.death_year_range)
+            params["q.deathLikeDate.to"] = str(query.death_year + query.death_year_range)
+
+        if query.father_name:
+            params["q.fatherGivenName"] = query.father_name
+        if query.mother_name:
+            params["q.motherGivenName"] = query.mother_name
+        if query.spouse_name:
+            params["q.spouseGivenName"] = query.spouse_name
+
+        # Add race filter if specified (for African American research)
+        if hasattr(query, "race") and query.race:
+            params["q.race"] = query.race
+
+        return params
+
+    async def _scrape_search_results(
+        self,
+        search_url: str,
+        query: SearchQuery,
+    ) -> list[RawRecord]:
+        """Scrape publicly visible search results.
+
+        FamilySearch shows basic info (name, dates, places) on search results
+        before requiring login for full details.
+        """
+        records: list[RawRecord] = []
+
+        try:
+            async with httpx.AsyncClient(
+                timeout=30.0,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                    "Accept": "text/html,application/xhtml+xml",
+                },
+                follow_redirects=True,
+            ) as client:
+                resp = await client.get(search_url)
+
+                if resp.status_code != 200:
+                    return []
+
+                soup = BeautifulSoup(resp.text, "html.parser")
+
+                # Look for result count
+                count_el = soup.select_one(".results-count, [data-testid='results-count']")
+                if count_el:
+                    count_text = count_el.get_text(strip=True)
+                    count_match = re.search(r"([\d,]+)", count_text)
+                    if count_match:
+                        records.append(
+                            RawRecord(
+                                source=self.name,
+                                record_id=f"fs-count-{query.surname}",
+                                record_type="metadata",
+                                url=search_url,
+                                raw_data={"count": count_match.group(1)},
+                                extracted_fields={
+                                    "result_count": count_match.group(1),
+                                    "note": f"Found {count_match.group(1)} records for {query.surname}",
+                                },
+                                accessed_at=datetime.now(UTC),
+                            )
+                        )
+
+                # Parse individual result cards (publicly visible portion)
+                result_cards = soup.select(".result-item, [data-testid='search-result']")
+
+                for i, card in enumerate(result_cards[:20]):  # Limit to first 20
+                    try:
+                        record = self._parse_result_card(card, query, i)
+                        if record:
+                            records.append(record)
+                    except Exception as e:
+                        logger.debug(f"Failed to parse result card: {e}")
+                        continue
+
+        except httpx.HTTPError as e:
+            logger.debug(f"FamilySearch HTTP error: {e}")
+
+        return records
+
+    def _parse_result_card(
+        self,
+        card: BeautifulSoup,
+        query: SearchQuery,
+        index: int,
+    ) -> RawRecord | None:
+        """Parse a single search result card."""
+        # Extract name
+        name_el = card.select_one(".result-name, [data-testid='result-name'], h3, h4")
+        if not name_el:
+            return None
+
+        name = name_el.get_text(strip=True)
+
+        # Extract dates
+        dates_el = card.select_one(".result-dates, [data-testid='result-dates']")
+        dates = dates_el.get_text(strip=True) if dates_el else ""
+
+        # Extract places
+        places_el = card.select_one(".result-places, [data-testid='result-places']")
+        places = places_el.get_text(strip=True) if places_el else ""
+
+        # Extract record type
+        type_el = card.select_one(".result-type, [data-testid='result-type'], .collection-name")
+        record_type = type_el.get_text(strip=True) if type_el else "Historical Record"
+
+        # Extract link to full record
+        link = card.select_one("a[href*='/ark:/']")
+        url = ""
+        if link:
+            href = link.get("href", "")
+            url = href if href.startswith("http") else f"{self.base_url}{href}"
+
+        # Parse birth/death years from dates string
+        birth_year = None
+        death_year = None
+        year_match = re.findall(r"\b(1[789]\d{2}|20[012]\d)\b", dates)
+        if year_match:
+            birth_year = year_match[0]
+            if len(year_match) > 1:
+                death_year = year_match[1]
+
+        return RawRecord(
+            source=self.name,
+            record_id=f"fs-result-{query.surname}-{index}",
+            record_type="search_result",
+            url=url or f"{self.base_url}/search",
+            raw_data={
+                "name": name,
+                "dates": dates,
+                "places": places,
+                "record_type": record_type,
+            },
+            extracted_fields={
+                "full_name": name,
+                "birth_year": birth_year,
+                "death_year": death_year,
+                "places": places,
+                "record_type": record_type,
+                "note": "Basic info - login required for full details",
+            },
+            accessed_at=datetime.now(UTC),
+        )
+
+    def _get_collection_urls(self, query: SearchQuery) -> list[RawRecord]:
+        """Get relevant FamilySearch collection URLs based on query."""
+        records: list[RawRecord] = []
+
+        # Determine relevant collections based on location and time period
+        relevant_collections = []
+
+        # US Census collections based on birth year
+        if query.birth_year:
+            for year in [1950, 1940, 1930, 1920, 1910, 1900, 1880, 1870, 1860, 1850]:
+                if query.birth_year - 5 <= year <= query.birth_year + 80:
+                    key = f"us_census_{year}"
+                    if key in FAMILYSEARCH_COLLECTIONS:
+                        relevant_collections.append((key, f"US Census {year}", FAMILYSEARCH_COLLECTIONS[key]))
+
+        # California vitals if CA location
+        location = (query.birth_place or "").lower() + " " + (query.state or "").lower()
+        if "california" in location or "ca" in location:
+            relevant_collections.append(("california_death_index", "California Death Index", FAMILYSEARCH_COLLECTIONS["california_death_index"]))
+            relevant_collections.append(("california_birth_index", "California Birth Index", FAMILYSEARCH_COLLECTIONS["california_birth_index"]))
+
+        # African American collections (check if researching AA genealogy)
+        # These are valuable for all researchers with Southern US roots
+        if any(state in location for state in ["north carolina", "south carolina", "georgia", "virginia", "alabama", "mississippi", "louisiana", "arkansas", "tennessee"]):
+            relevant_collections.append(("freedmens_bureau", "Freedmen's Bureau Records", FAMILYSEARCH_COLLECTIONS["freedmens_bureau"]))
+            relevant_collections.append(("slave_schedules_1860", "1860 Slave Schedules", FAMILYSEARCH_COLLECTIONS["slave_schedules_1860"]))
+
+        # Build URLs for each collection
+        for key, name, collection_id in relevant_collections[:10]:  # Limit
+            # Build collection search URL with query params
+            params = self._build_search_params(query)
+            collection_url = f"{self.base_url}/search/collection/{collection_id}/results?{urlencode(params)}"
+
+            records.append(
+                RawRecord(
+                    source=self.name,
+                    record_id=f"fs-collection-{key}",
+                    record_type="collection_search",
+                    url=collection_url,
+                    raw_data={"collection_id": collection_id, "collection_name": name},
+                    extracted_fields={
+                        "collection_name": name,
+                        "collection_id": collection_id,
+                        "search_url": collection_url,
+                        "note": "Browse collection - free account for full details",
+                    },
+                    accessed_at=datetime.now(UTC),
+                )
+            )
+
+        return records
+
+    def _get_wiki_links(self, query: SearchQuery) -> list[RawRecord]:
+        """Get relevant FamilySearch Wiki links."""
+        records: list[RawRecord] = []
+
+        # Base wiki URL
+        wiki_base = "https://www.familysearch.org/en/wiki"
+
+        # State-specific wiki if location known
+        location = (query.birth_place or "").lower() + " " + (query.state or "").lower()
+
+        state_wikis = {
+            "california": "California_Genealogy",
+            "texas": "Texas_Genealogy",
+            "new york": "New_York_Genealogy",
+            "north carolina": "North_Carolina_Genealogy",
+            "georgia": "Georgia_Genealogy",
+            "virginia": "Virginia_Genealogy",
+            "ohio": "Ohio_Genealogy",
+            "pennsylvania": "Pennsylvania_Genealogy",
+            "arkansas": "Arkansas_Genealogy",
+            "alabama": "Alabama_Genealogy",
+        }
+
+        for state, wiki_page in state_wikis.items():
+            if state in location:
+                records.append(
+                    RawRecord(
+                        source=self.name,
+                        record_id=f"fs-wiki-{state.replace(' ', '-')}",
+                        record_type="wiki",
+                        url=f"{wiki_base}/{wiki_page}",
+                        raw_data={"state": state},
+                        extracted_fields={
+                            "wiki_title": f"{state.title()} Genealogy Guide",
+                            "note": "Free research guide - no login required",
+                        },
+                        accessed_at=datetime.now(UTC),
+                    )
+                )
+                break
+
+        # African American genealogy wiki
+        if any(state in location for state in ["north carolina", "south carolina", "georgia", "virginia", "alabama", "mississippi"]):
+            records.append(
+                RawRecord(
+                    source=self.name,
+                    record_id="fs-wiki-african-american",
+                    record_type="wiki",
+                    url=f"{wiki_base}/African_American_Genealogy",
+                    raw_data={},
+                    extracted_fields={
+                        "wiki_title": "African American Genealogy Guide",
+                        "note": "Free research guide for African American genealogy",
+                    },
+                    accessed_at=datetime.now(UTC),
+                )
+            )
+
+        return records
+
+    async def get_record(self, record_id: str) -> RawRecord | None:
+        """Not available without login."""
+        return None
 
 
 class FamilySearchSource(BaseSource):

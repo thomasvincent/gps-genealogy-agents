@@ -8,6 +8,7 @@ from __future__ import annotations
 import logging
 import re
 from datetime import UTC, datetime
+from typing import Any
 
 from bs4 import BeautifulSoup
 
@@ -15,6 +16,9 @@ from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
 
 logger = logging.getLogger(__name__)
+
+# Census years available in US federal census
+CENSUS_YEARS = [1790, 1800, 1810, 1820, 1830, 1840, 1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1940, 1950]
 
 # State abbreviation to full name mapping for URL construction
 STATE_NAMES = {
@@ -412,3 +416,444 @@ class USGenWebSource(BaseSource):
                 return STATE_ABBREVS[state_slug]
 
         return ""
+
+    async def search_census(
+        self,
+        surname: str,
+        given_name: str | None = None,
+        state: str | None = None,
+        county: str | None = None,
+        year: int | None = None,
+    ) -> list[RawRecord]:
+        """Search specifically for census transcriptions.
+
+        This method targets census-specific URLs and parses household data.
+
+        Args:
+            surname: Surname to search for
+            given_name: Given name (optional)
+            state: State to search (e.g., "California", "CA")
+            county: County to search (e.g., "Los Angeles")
+            year: Census year (e.g., 1930, 1940)
+
+        Returns:
+            List of census records with household members extracted
+        """
+        import httpx
+
+        records: list[RawRecord] = []
+        state_slug = self._normalize_state(state) if state else None
+
+        try:
+            async with httpx.AsyncClient(timeout=45.0, follow_redirects=True) as client:
+                urls: list[str] = []
+
+                # State-specific census URLs
+                if state_slug:
+                    state_base = f"https://{state_slug}.usgenweb.org"
+
+                    # Look for census index pages
+                    urls.append(f"{state_base}/census/")
+                    urls.append(f"{state_base}/census.html")
+
+                    # Year-specific
+                    if year:
+                        urls.append(f"{state_base}/census/{year}/")
+                        urls.append(f"{state_base}/census{year}/")
+                        urls.append(f"{state_base}/{year}census/")
+
+                    # County-specific if provided
+                    if county:
+                        county_slug = county.lower().replace(" ", "").replace("county", "")
+                        urls.append(f"{state_base}/{county_slug}/census/")
+                        urls.append(f"{state_base}/{county_slug}/census.html")
+                        if year:
+                            urls.append(f"{state_base}/{county_slug}/census/{year}/")
+                            urls.append(f"{state_base}/{county_slug}/{year}census/")
+
+                # General census archives
+                urls.append(f"{self.base_url}/census/")
+
+                for url in urls:
+                    try:
+                        response = await client.get(url)
+                        if response.status_code != 200:
+                            continue
+                        soup = BeautifulSoup(response.text, "html.parser")
+
+                        # Parse census pages with household extraction
+                        page_records = self._parse_census_page(soup, url, surname, given_name)
+                        records.extend(page_records)
+
+                        # Also look for links to surname-specific pages
+                        surname_links = self._find_surname_census_links(soup, url, surname)
+                        for link_url in surname_links[:5]:  # Limit to 5 follow-up links
+                            try:
+                                link_resp = await client.get(link_url)
+                                if link_resp.status_code == 200:
+                                    link_soup = BeautifulSoup(link_resp.text, "html.parser")
+                                    link_records = self._parse_census_page(link_soup, link_url, surname, given_name)
+                                    records.extend(link_records)
+                            except Exception:
+                                continue
+
+                    except Exception as e:
+                        logger.debug("Census search error for %s: %s", url, e)
+                        continue
+
+        except Exception as e:
+            logger.warning("USGenWeb census search error: %s", e)
+
+        return records
+
+    def _find_surname_census_links(
+        self, soup: BeautifulSoup, base_url: str, surname: str
+    ) -> list[str]:
+        """Find links that might contain census data for the surname.
+
+        Args:
+            soup: BeautifulSoup parsed page
+            base_url: Current page URL
+            surname: Surname to look for
+
+        Returns:
+            List of URLs to follow
+        """
+        from urllib.parse import urlparse, urljoin
+
+        links: list[str] = []
+        surname_lower = surname.lower()
+
+        for link in soup.find_all("a", href=True):
+            href = link.get("href", "")
+            text = link.get_text(strip=True).lower()
+
+            # Look for census-related links
+            if "census" in text or "census" in href.lower():
+                # Check if it might have our surname or is a general census index
+                if surname_lower in text or surname_lower[0].upper() == text[0:1].upper():
+                    full_url = urljoin(base_url, href)
+                    if full_url not in links:
+                        links.append(full_url)
+
+        return links
+
+    def _parse_census_page(
+        self,
+        soup: BeautifulSoup,
+        url: str,
+        surname: str,
+        given_name: str | None = None,
+    ) -> list[RawRecord]:
+        """Parse a census transcription page for household data.
+
+        Args:
+            soup: BeautifulSoup parsed page
+            url: Page URL
+            surname: Surname to match
+            given_name: Given name to match (optional)
+
+        Returns:
+            List of census records with household members
+        """
+        records: list[RawRecord] = []
+        surname_lower = surname.lower()
+        given_lower = given_name.lower() if given_name else None
+
+        # Extract census year from URL or page content
+        census_year = self._extract_census_year(url, soup)
+
+        # Look for tables - census transcriptions are often tabular
+        tables = soup.find_all("table")
+        for table in tables:
+            household = self._extract_household_from_table(table, surname_lower, given_lower)
+            if household:
+                household["year"] = census_year
+                household["location"] = self._extract_state(url)
+
+                record = RawRecord(
+                    source=self.name,
+                    record_id=f"{url}#household-{hash(str(household))}",
+                    record_type="census",
+                    url=url,
+                    raw_data={"household": household, "source_url": url},
+                    extracted_fields={
+                        "household_head": household.get("head", ""),
+                        "household_members": household.get("members", []),
+                        "census_year": census_year,
+                        "location": household.get("location", ""),
+                    },
+                    accessed_at=datetime.now(UTC),
+                )
+                records.append(record)
+
+        # Also parse pre-formatted text (common in older USGenWeb pages)
+        pre_records = self._parse_preformatted_census(soup, url, surname_lower, census_year)
+        records.extend(pre_records)
+
+        return records
+
+    def _extract_census_year(self, url: str, soup: BeautifulSoup) -> str:
+        """Extract census year from URL or page content.
+
+        Args:
+            url: Page URL
+            soup: BeautifulSoup parsed page
+
+        Returns:
+            Census year as string, or empty string
+        """
+        # Check URL for year patterns
+        for year in CENSUS_YEARS:
+            if str(year) in url:
+                return str(year)
+
+        # Check page title
+        title = soup.find("title")
+        if title:
+            title_text = title.get_text()
+            for year in CENSUS_YEARS:
+                if str(year) in title_text:
+                    return str(year)
+
+        # Check h1/h2 headers
+        for h in soup.find_all(["h1", "h2"]):
+            h_text = h.get_text()
+            for year in CENSUS_YEARS:
+                if str(year) in h_text:
+                    return str(year)
+
+        return ""
+
+    def _extract_household_from_table(
+        self,
+        table: BeautifulSoup,
+        surname_lower: str,
+        given_lower: str | None = None,
+    ) -> dict[str, Any] | None:
+        """Extract household members from a census table.
+
+        Args:
+            table: BeautifulSoup table element
+            surname_lower: Lowercase surname to match
+            given_lower: Lowercase given name to match (optional)
+
+        Returns:
+            Household dict with head and members, or None
+        """
+        # Get headers
+        headers: list[str] = []
+        header_row = table.find("tr")
+        if header_row:
+            headers = [th.get_text(strip=True).lower() for th in header_row.find_all(["th", "td"])]
+
+        # Identify key columns
+        name_col = next((i for i, h in enumerate(headers) if any(
+            k in h for k in ["name", "surname", "head", "person"]
+        )), 0)
+        age_col = next((i for i, h in enumerate(headers) if "age" in h), -1)
+        rel_col = next((i for i, h in enumerate(headers) if any(
+            k in h for k in ["relation", "relationship", "rel"]
+        )), -1)
+        sex_col = next((i for i, h in enumerate(headers) if any(
+            k in h for k in ["sex", "gender", "m/f"]
+        )), -1)
+        birthplace_col = next((i for i, h in enumerate(headers) if any(
+            k in h for k in ["birthplace", "birth place", "born", "nativity"]
+        )), -1)
+        occupation_col = next((i for i, h in enumerate(headers) if any(
+            k in h for k in ["occupation", "occup"]
+        )), -1)
+
+        # Scan rows for surname match
+        household: dict[str, Any] = {"members": [], "head": "", "year": "", "location": ""}
+        found_match = False
+
+        rows = table.find_all("tr")[1:]  # Skip header
+        for i, row in enumerate(rows):
+            cells = [td.get_text(strip=True) for td in row.find_all(["td", "th"])]
+            if not cells:
+                continue
+
+            # Check for surname match
+            row_text = " ".join(cells).lower()
+            if surname_lower in row_text:
+                found_match = True
+
+            # If we found our match, collect this household
+            if found_match:
+                member: dict[str, str] = {}
+
+                # Extract data from cells
+                if name_col < len(cells):
+                    member["name"] = cells[name_col]
+                if age_col >= 0 and age_col < len(cells):
+                    member["age"] = cells[age_col]
+                if rel_col >= 0 and rel_col < len(cells):
+                    member["relationship"] = cells[rel_col]
+                if sex_col >= 0 and sex_col < len(cells):
+                    member["sex"] = cells[sex_col]
+                if birthplace_col >= 0 and birthplace_col < len(cells):
+                    member["birthplace"] = cells[birthplace_col]
+                if occupation_col >= 0 and occupation_col < len(cells):
+                    member["occupation"] = cells[occupation_col]
+
+                if member.get("name"):
+                    household["members"].append(member)
+
+                    # First member with Head relationship is household head
+                    if not household["head"]:
+                        rel = member.get("relationship", "").lower()
+                        if "head" in rel or "self" in rel or i == 0:
+                            household["head"] = member["name"]
+
+                # Stop after collecting ~15 members (typical household limit)
+                if len(household["members"]) >= 15:
+                    break
+
+            # If we've moved to a new household (new "Head"), stop
+            if found_match and len(household["members"]) > 1:
+                rel = cells[rel_col].lower() if rel_col >= 0 and rel_col < len(cells) else ""
+                if "head" in rel and household["head"]:
+                    break
+
+        if household["members"]:
+            return household
+        return None
+
+    def _parse_preformatted_census(
+        self,
+        soup: BeautifulSoup,
+        url: str,
+        surname_lower: str,
+        census_year: str,
+    ) -> list[RawRecord]:
+        """Parse preformatted (PRE tag) census transcriptions.
+
+        Older USGenWeb pages often use PRE tags for census data.
+
+        Args:
+            soup: BeautifulSoup parsed page
+            url: Page URL
+            surname_lower: Lowercase surname to match
+            census_year: Extracted census year
+
+        Returns:
+            List of census records
+        """
+        records: list[RawRecord] = []
+
+        # Find all PRE tags
+        for pre in soup.find_all("pre"):
+            text = pre.get_text()
+            lines = text.split("\n")
+
+            household_members: list[dict[str, str]] = []
+            current_head = ""
+            collecting = False
+
+            for line in lines:
+                line = line.strip()
+                if not line or len(line) < 5:
+                    continue
+
+                line_lower = line.lower()
+
+                # Check for surname match to start collecting
+                if surname_lower in line_lower:
+                    collecting = True
+
+                if collecting:
+                    # Try to parse this line
+                    member = self._parse_census_line(line)
+                    if member:
+                        household_members.append(member)
+                        if not current_head:
+                            current_head = member.get("name", "")
+
+                    # Stop collecting if we hit an empty line after finding members
+                    # or if we've collected enough
+                    if len(household_members) >= 15:
+                        break
+
+            if household_members:
+                record = RawRecord(
+                    source=self.name,
+                    record_id=f"{url}#pre-{hash(str(household_members))}",
+                    record_type="census",
+                    url=url,
+                    raw_data={"household_members": household_members, "source_url": url},
+                    extracted_fields={
+                        "household_head": current_head,
+                        "household_members": household_members,
+                        "census_year": census_year,
+                        "location": self._extract_state(url),
+                    },
+                    accessed_at=datetime.now(UTC),
+                )
+                records.append(record)
+
+        return records
+
+    def _parse_census_line(self, line: str) -> dict[str, str] | None:
+        """Parse a single census entry line.
+
+        Args:
+            line: Text line from census transcription
+
+        Returns:
+            Dict with name, age, relationship, etc., or None
+        """
+        member: dict[str, str] = {}
+
+        # Try multiple delimiters
+        delimiters = [",", "|", "\t", "  "]  # Note: double space is common
+        parts: list[str] = []
+
+        for delim in delimiters:
+            if delim in line:
+                parts = [p.strip() for p in line.split(delim) if p.strip()]
+                if len(parts) >= 2:
+                    break
+
+        # Whitespace-separated fallback
+        if len(parts) < 2:
+            parts = line.split()
+
+        if len(parts) < 2:
+            return None
+
+        # First part is usually name
+        member["name"] = parts[0]
+
+        # Look through remaining parts
+        for part in parts[1:]:
+            part_clean = part.strip()
+            part_lower = part_clean.lower()
+
+            # Age (numeric, usually 1-3 digits)
+            if re.match(r"^\d{1,3}$", part_clean):
+                if "age" not in member:
+                    member["age"] = part_clean
+            # Sex
+            elif part_lower in ("m", "f", "male", "female"):
+                member["sex"] = part_clean
+            # Relationship
+            elif part_lower in (
+                "head", "wife", "husband", "son", "daughter", "mother", "father",
+                "brother", "sister", "boarder", "lodger", "servant", "inmate",
+                "grandchild", "grandson", "granddaughter", "nephew", "niece",
+                "aunt", "uncle", "cousin", "step-son", "step-daughter"
+            ):
+                member["relationship"] = part_clean
+            # Single letter for marital status
+            elif part_lower in ("s", "m", "w", "d") and len(part_clean) == 1:
+                member["marital_status"] = part_clean
+            # Birthplace (longer text, not numeric)
+            elif len(part_clean) > 2 and not part_clean.isdigit():
+                if "birthplace" not in member:
+                    member["birthplace"] = part_clean
+
+        if member.get("name"):
+            return member
+        return None
