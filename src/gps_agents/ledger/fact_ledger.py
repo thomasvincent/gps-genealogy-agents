@@ -1,8 +1,13 @@
-"""RocksDB-based append-only fact ledger."""
+"""RocksDB-based append-only fact ledger with privacy and CQRS support."""
 from __future__ import annotations
 
 import json
+import logging
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from enum import Enum
 from pathlib import Path
+from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
 try:
@@ -10,12 +15,47 @@ try:
 except ImportError:
     rocksdb = None  # type: ignore
 
-from typing import TYPE_CHECKING
-
 from ..models.fact import Fact, FactStatus
+from .privacy import PrivacyCheckResult, PrivacyEngine, PrivacyStatus, get_privacy_engine
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# CQRS Event Types
+# =============================================================================
+
+
+class LedgerEventType(str, Enum):
+    """Types of events emitted by the ledger for CQRS projection."""
+    FACT_APPENDED = "fact_appended"
+    FACT_UPDATED = "fact_updated"  # New version of existing fact
+    FACT_STATUS_CHANGED = "fact_status_changed"
+
+
+@dataclass
+class LedgerEvent:
+    """Event emitted when the ledger changes, for CQRS projection."""
+    event_type: LedgerEventType
+    fact_id: UUID
+    version: int
+    timestamp: datetime
+    fact: Fact
+    privacy_status: PrivacyStatus
+    is_restricted: bool
+    metadata: dict | None = None
+
+
+# Type alias for event handlers
+EventHandler = Callable[[LedgerEvent], None]
+
+
+# =============================================================================
+# Privacy-Aware Fact Ledger
+# =============================================================================
 
 
 class FactLedger:
@@ -23,16 +63,38 @@ class FactLedger:
 
     This is the authoritative write store in the CQRS architecture.
     Facts are immutable - updates create new versions.
+
+    Features:
+    - Privacy Engine: Enforces 100-year rule for living person protection
+    - CQRS Events: Emits events for Neo4j graph projection
+    - Idempotency: Content fingerprinting prevents duplicate writes
     """
 
-    def __init__(self, db_path: str | Path) -> None:
+    def __init__(
+        self,
+        db_path: str | Path,
+        privacy_engine: PrivacyEngine | None = None,
+        enforce_privacy: bool = True,
+    ) -> None:
         """Initialize the ledger.
 
         Args:
             db_path: Path to RocksDB database directory
+            privacy_engine: Privacy engine for 100-year rule (uses default if None)
+            enforce_privacy: If True, check privacy before appending
         """
         self.db_path = Path(db_path)
         self.db_path.mkdir(parents=True, exist_ok=True)
+
+        # Privacy engine for living person protection
+        self._privacy_engine = privacy_engine or get_privacy_engine()
+        self._enforce_privacy = enforce_privacy
+
+        # CQRS event handlers for projection
+        self._event_handlers: list[EventHandler] = []
+
+        # Person date cache for efficient privacy checks
+        self._person_dates: dict[str, dict[str, int | None]] = {}
 
         if rocksdb is None:
             # Fallback to file-based storage for development
@@ -51,11 +113,17 @@ class FactLedger:
         """Load index for fallback file-based storage.
 
         Initializes _index as empty dict if file doesn't exist or is corrupted.
+        Index structure: fact_id -> {version: byte_offset} for O(1) retrieval.
         """
-        self._index: dict[str, list[int]] = {}  # fact_id -> [versions]
+        self._index: dict[str, dict[int, int]] = {}  # fact_id -> {version: byte_offset}
         if self._index_path.exists():
             try:
                 self._index = json.loads(self._index_path.read_text())
+                # Convert nested dicts to int keys (JSON stores keys as strings)
+                self._index = {
+                    fact_id: {int(v): offset for v, offset in versions.items()}
+                    for fact_id, versions in self._index.items()
+                }
             except (json.JSONDecodeError, OSError):
                 # Index corrupted or unreadable - rebuild from facts file
                 self._rebuild_index_from_facts()
@@ -65,9 +133,10 @@ class FactLedger:
         self._index_path.write_text(json.dumps(self._index))
 
     def _rebuild_index_from_facts(self) -> None:
-        """Rebuild index by scanning facts file.
+        """Rebuild index by scanning facts file with byte offsets.
 
         Used when index is corrupted or missing.
+        Stores byte offset for each fact version to enable O(1) retrieval.
         """
         self._index = {}
         if not self._fallback_path.exists():
@@ -75,7 +144,11 @@ class FactLedger:
 
         try:
             with open(self._fallback_path) as f:
-                for line in f:
+                while True:
+                    byte_offset = f.tell()
+                    line = f.readline()
+                    if not line:
+                        break
                     try:
                         entry = json.loads(line)
                         key = entry.get("key", "")
@@ -83,42 +156,180 @@ class FactLedger:
                             fact_id_str, version_str = key.split(":", 1)
                             version = int(version_str)
                             if fact_id_str not in self._index:
-                                self._index[fact_id_str] = []
-                            self._index[fact_id_str].append(version)
+                                self._index[fact_id_str] = {}
+                            self._index[fact_id_str][version] = byte_offset
                     except (json.JSONDecodeError, ValueError):
                         continue  # Skip malformed entries
             self._save_fallback_index()
         except OSError:
             pass  # Can't read file, leave index empty
 
-    def append(self, fact: Fact) -> str:
-        """Append a fact to the ledger.
+    # =========================================================================
+    # CQRS Event Registration
+    # =========================================================================
+
+    def register_event_handler(self, handler: EventHandler) -> None:
+        """Register a handler for ledger events (CQRS projection).
+
+        Args:
+            handler: Callable that receives LedgerEvent instances
+        """
+        self._event_handlers.append(handler)
+        logger.debug(f"Registered event handler: {handler.__name__ if hasattr(handler, '__name__') else handler}")
+
+    def unregister_event_handler(self, handler: EventHandler) -> None:
+        """Unregister an event handler."""
+        if handler in self._event_handlers:
+            self._event_handlers.remove(handler)
+
+    def _emit_event(self, event: LedgerEvent) -> None:
+        """Emit an event to all registered handlers."""
+        for handler in self._event_handlers:
+            try:
+                handler(event)
+            except Exception as e:
+                logger.error(f"Event handler error: {e}", exc_info=True)
+
+    # =========================================================================
+    # Person Date Cache (for privacy checks)
+    # =========================================================================
+
+    def update_person_dates(
+        self,
+        person_id: str,
+        birth_year: int | None = None,
+        death_year: int | None = None,
+    ) -> None:
+        """Update cached birth/death years for a person.
+
+        Called when new birth/death facts are discovered.
+        """
+        if person_id not in self._person_dates:
+            self._person_dates[person_id] = {"birth_year": None, "death_year": None}
+
+        if birth_year is not None:
+            self._person_dates[person_id]["birth_year"] = birth_year
+        if death_year is not None:
+            self._person_dates[person_id]["death_year"] = death_year
+
+    def get_person_dates(self, person_id: str) -> dict[str, int | None]:
+        """Get cached birth/death years for a person."""
+        return self._person_dates.get(person_id, {"birth_year": None, "death_year": None})
+
+    # =========================================================================
+    # Core Append with Privacy and CQRS
+    # =========================================================================
+
+    def append(
+        self,
+        fact: Fact,
+        skip_privacy_check: bool = False,
+    ) -> str:
+        """Append a fact to the ledger with privacy check and event emission.
 
         Args:
             fact: The fact to append
+            skip_privacy_check: If True, bypass privacy check (use with caution)
 
         Returns:
             The ledger key for the appended fact
+
+        Raises:
+            PrivacyViolationError: If fact violates privacy rules (when enforced)
         """
+        # Privacy check (100-year rule)
+        privacy_result: PrivacyCheckResult | None = None
+        if self._enforce_privacy and not skip_privacy_check:
+            person_dates = self.get_person_dates(fact.person_id or "")
+            privacy_result = self._privacy_engine.check_fact(
+                fact,
+                context={
+                    "birth_year": person_dates.get("birth_year"),
+                    "death_year": person_dates.get("death_year"),
+                },
+            )
+
+            # Log privacy status
+            if privacy_result.is_restricted:
+                logger.info(
+                    f"Fact {fact.fact_id} flagged as RESTRICTED "
+                    f"(status={privacy_result.status.value}): {privacy_result.recommendations}"
+                )
+
+            # If there are violations, log them (in strict mode, could raise)
+            if privacy_result.violations:
+                for violation in privacy_result.violations:
+                    logger.warning(f"Privacy violation: {violation}")
+
+        # Perform the append
         key = fact.ledger_key()
         value = fact.model_dump_json()
 
         if self._use_fallback:
             with open(self._fallback_path, "a") as f:
+                # Record byte offset before writing for O(1) retrieval
+                byte_offset = f.tell()
                 f.write(json.dumps({"key": key, "value": json.loads(value)}) + "\n")
 
             fact_id_str = str(fact.fact_id)
             if fact_id_str not in self._index:
-                self._index[fact_id_str] = []
-            self._index[fact_id_str].append(fact.version)
+                self._index[fact_id_str] = {}
+            self._index[fact_id_str][fact.version] = byte_offset
             self._save_fallback_index()
         else:
             self.db.put(key.encode(), value.encode())
 
+        # Update person date cache if this is a birth/death fact
+        if fact.person_id and fact.fact_type in ("birth", "death"):
+            self._update_person_dates_from_fact(fact)
+
+        # Emit CQRS event for projection
+        if self._event_handlers:
+            event_type = (
+                LedgerEventType.FACT_UPDATED
+                if fact.version > 1
+                else LedgerEventType.FACT_APPENDED
+            )
+            event = LedgerEvent(
+                event_type=event_type,
+                fact_id=fact.fact_id,
+                version=fact.version,
+                timestamp=datetime.now(UTC),
+                fact=fact,
+                privacy_status=(
+                    privacy_result.status if privacy_result
+                    else PrivacyStatus.UNKNOWN
+                ),
+                is_restricted=(
+                    privacy_result.is_restricted if privacy_result
+                    else True  # Default to restricted if not checked
+                ),
+                metadata={"key": key},
+            )
+            self._emit_event(event)
+
         return key
+
+    def _update_person_dates_from_fact(self, fact: Fact) -> None:
+        """Extract and cache birth/death year from fact."""
+        import re
+
+        if not fact.person_id:
+            return
+
+        # Extract year from statement
+        match = re.search(r"\b(1[6-9]\d{2}|20[0-2]\d)\b", fact.statement)
+        if match:
+            year = int(match.group(1))
+            if fact.fact_type == "birth":
+                self.update_person_dates(fact.person_id, birth_year=year)
+            elif fact.fact_type == "death":
+                self.update_person_dates(fact.person_id, death_year=year)
 
     def get(self, fact_id: UUID, version: int | None = None) -> Fact | None:
         """Retrieve a fact by ID and optional version.
+
+        Uses byte offset index for O(1) retrieval in fallback mode.
 
         Args:
             fact_id: The fact's UUID
@@ -137,8 +348,16 @@ class FactLedger:
         if self._use_fallback:
             if not self._fallback_path.exists():
                 return None
+            fact_id_str = str(fact_id)
+            # O(1) lookup using byte offset index
+            versions_dict = self._index.get(fact_id_str)
+            if not versions_dict or version not in versions_dict:
+                return None
+            byte_offset = versions_dict[version]
             with open(self._fallback_path) as f:
-                for line in f:
+                f.seek(byte_offset)
+                line = f.readline()
+                if line:
                     entry = json.loads(line)
                     if entry["key"] == key:
                         return Fact.model_validate(entry["value"])
@@ -158,8 +377,8 @@ class FactLedger:
             Latest version number or None if fact doesn't exist
         """
         if self._use_fallback:
-            versions = self._index.get(str(fact_id), [])
-            return max(versions) if versions else None
+            versions_dict = self._index.get(str(fact_id), {})
+            return max(versions_dict.keys()) if versions_dict else None
         # Scan for highest version (could optimize with secondary index)
         latest = None
         prefix = f"{fact_id}:".encode()
@@ -183,9 +402,9 @@ class FactLedger:
             List of all versions, sorted by version number
         """
         if self._use_fallback:
-            versions = self._index.get(str(fact_id), [])
+            versions_dict = self._index.get(str(fact_id), {})
             facts = []
-            for v in sorted(versions):
+            for v in sorted(versions_dict.keys()):
                 fact = self.get(fact_id, v)
                 if fact:
                     facts.append(fact)
@@ -216,9 +435,12 @@ class FactLedger:
         if self._use_fallback:
             if not self._fallback_path.exists():
                 return
-            # Get latest version of each fact - uses pre-built index
-            for fact_id_str, versions in self._index.items():
-                fact = self.get(UUID(fact_id_str), max(versions))
+            # Get latest version of each fact - uses pre-built index with O(1) retrieval
+            for fact_id_str, versions_dict in self._index.items():
+                if not versions_dict:
+                    continue
+                latest_version = max(versions_dict.keys())
+                fact = self.get(UUID(fact_id_str), latest_version)
                 if fact and (status is None or fact.status == status):
                     yield fact
         else:

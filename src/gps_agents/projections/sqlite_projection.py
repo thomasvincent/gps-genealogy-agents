@@ -42,10 +42,9 @@ class SQLiteProjection:
 
     def _init_schema(self) -> None:
         with self._get_conn() as conn:
+            # Note: PRAGMAs are centralized in _get_conn() to avoid redundant execution
             conn.executescript(
                 """
-                PRAGMA journal_mode=WAL;
-
                 CREATE TABLE IF NOT EXISTS facts (
                     fact_id TEXT PRIMARY KEY,
                     version INTEGER NOT NULL,
@@ -121,6 +120,14 @@ class SQLiteProjection:
                     entity_id TEXT,
                     property_id TEXT
                 );
+
+                -- Revisit history for durable RevisitScheduler state
+                CREATE TABLE IF NOT EXISTS revisit_history (
+                    source_id TEXT NOT NULL,
+                    visit_timestamp TEXT NOT NULL,
+                    PRIMARY KEY (source_id, visit_timestamp)
+                );
+                CREATE INDEX IF NOT EXISTS idx_revisit_source ON revisit_history(source_id);
                 """
             )
             conn.commit()
@@ -343,11 +350,19 @@ class SQLiteProjection:
             return stats
 
     def rebuild_from_ledger(self, ledger) -> int:
+        """Rebuild the projection from a ledger's facts.
+
+        Args:
+            ledger: A FactLedger instance to iterate over
+
+        Returns:
+            Number of facts upserted
+        """
         count = 0
         for fact in ledger.iter_all_facts():
             self.upsert_fact(fact)
             count += 1
-            return count
+        return count  # Fixed: return outside loop to process all facts
 
     # ------------------- Transaction API ----------------------------
 
@@ -450,6 +465,75 @@ class SQLiteProjection:
                 (fingerprint, guid, entity_id, property_id),
             )
             conn.commit()
+
+    # --------------------- Revisit History API ----------------------
+
+    def record_revisit(self, source_id: str, visit_timestamp: str) -> None:
+        """Record a source revisit for durable RevisitScheduler state.
+
+        Args:
+            source_id: The source ID being revisited
+            visit_timestamp: ISO-8601 timestamp of the visit
+        """
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO revisit_history (source_id, visit_timestamp)
+                VALUES (?, ?)
+                """,
+                (source_id, visit_timestamp),
+            )
+            conn.commit()
+
+    def get_revisit_history(self, source_id: str) -> list[str]:
+        """Get all revisit timestamps for a source.
+
+        Args:
+            source_id: The source ID to look up
+
+        Returns:
+            List of ISO-8601 timestamps, sorted ascending
+        """
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                "SELECT visit_timestamp FROM revisit_history WHERE source_id = ? ORDER BY visit_timestamp",
+                (source_id,),
+            ).fetchall()
+            return [row["visit_timestamp"] for row in rows]
+
+    def get_revisit_count(self, source_id: str) -> int:
+        """Get the number of times a source has been revisited.
+
+        Args:
+            source_id: The source ID to count
+
+        Returns:
+            Number of recorded revisits
+        """
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT COUNT(*) FROM revisit_history WHERE source_id = ?",
+                (source_id,),
+            ).fetchone()
+            return row[0] if row else 0
+
+    def load_all_revisit_history(self) -> dict[str, list[str]]:
+        """Load all revisit history into memory.
+
+        Returns:
+            Dict mapping source_id to list of ISO-8601 timestamps
+        """
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                "SELECT source_id, visit_timestamp FROM revisit_history ORDER BY source_id, visit_timestamp"
+            ).fetchall()
+            history: dict[str, list[str]] = {}
+            for row in rows:
+                source_id = row["source_id"]
+                if source_id not in history:
+                    history[source_id] = []
+                history[source_id].append(row["visit_timestamp"])
+            return history
 
     # ---------------------- Transaction helper ----------------------
 
