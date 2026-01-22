@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, Tuple, List, DefaultDict
 from collections import defaultdict
@@ -41,7 +41,7 @@ def export_gedcom(ledger_dir: Path, out_file: Path, root_filter: str = "") -> Pa
     lines = []
     lines.append("0 HEAD")
     lines.append("1 SOUR gps-genealogy-agents")
-    lines.append(f"1 DATE {datetime.utcnow().strftime('%d %b %Y').upper()}")
+    lines.append(f"1 DATE {datetime.now(UTC).strftime('%d %b %Y').upper()}")
     lines.append("1 GEDC")
     lines.append("2 VERS 5.5")
     lines.append("2 FORM LINEAGE-LINKED")

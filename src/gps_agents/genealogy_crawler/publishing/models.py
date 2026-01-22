@@ -5,11 +5,16 @@ and Paper Trail of Doubt preservation.
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field, computed_field
+
+
+def _utc_now() -> datetime:
+    """Return current UTC time (for use as default_factory)."""
+    return datetime.now(UTC)
 
 from .config import CONFIG
 
@@ -97,7 +102,7 @@ class GPSGradeCard(BaseModel):
         max_length=5,
         description="Scores for all 5 GPS pillars",
     )
-    graded_at: datetime = Field(default_factory=datetime.utcnow)
+    graded_at: datetime = Field(default_factory=_utc_now)
     grader_model: str = Field(
         default="gps_grader_llm",
         description="Model/version that performed grading",
@@ -206,7 +211,7 @@ class ReviewVerdict(BaseModel):
     )
     issues: list[ReviewIssue] = Field(default_factory=list)
     rationale: str = Field(description="Explanation for the verdict")
-    reviewed_at: datetime = Field(default_factory=datetime.utcnow)
+    reviewed_at: datetime = Field(default_factory=_utc_now)
     reviewer_model: str = Field(description="Model/version that performed review")
 
     @computed_field
@@ -390,7 +395,7 @@ class ResearchNote(BaseModel):
         default_factory=list,
         description="References to source records",
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
     author: str = Field(
         default="system",
         description="Author of the note (system or user)",
@@ -421,7 +426,7 @@ class Uncertainty(BaseModel):
         default_factory=list,
         description="Sources that could resolve uncertainty",
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 class UnresolvedConflict(BaseModel):
@@ -451,7 +456,7 @@ class UnresolvedConflict(BaseModel):
     remaining_doubt: str = Field(
         description="Explanation of why conflict remains unresolved",
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -557,7 +562,7 @@ class PublishDecision(BaseModel):
     )
 
     # Timestamps
-    adjudicated_at: datetime = Field(default_factory=datetime.utcnow)
+    adjudicated_at: datetime = Field(default_factory=_utc_now)
 
     @computed_field
     @property
@@ -623,7 +628,7 @@ class SearchRevisionRequest(BaseModel):
         description="GPS pillars with identified gaps",
     )
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 class PublishingPipeline(BaseModel):
@@ -654,8 +659,8 @@ class PublishingPipeline(BaseModel):
     )
 
     # Timestamps
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
+    updated_at: datetime = Field(default_factory=_utc_now)
 
     @computed_field
     @property

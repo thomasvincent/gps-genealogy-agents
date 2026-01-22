@@ -8,7 +8,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from ..llm.wrapper import LLMClient
@@ -342,7 +342,7 @@ class PublishingManager:
             QuorumDecision with both verdicts (and tiebreaker if triggered)
         """
         pipeline.status = PublishingStatus.UNDER_REVIEW
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
 
         # Prepare input data for both reviewers
         logic_input = LogicReviewerInput(
@@ -444,7 +444,7 @@ class PublishingManager:
         else:
             pipeline.status = PublishingStatus.BLOCKED
 
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
 
         logger.info(
             f"Quorum complete for {pipeline.subject_id}: "
@@ -526,7 +526,7 @@ class PublishingManager:
             author=author,
         )
         pipeline.research_notes.append(note)
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
         return note
 
     def add_uncertainty(
@@ -561,7 +561,7 @@ class PublishingManager:
             additional_sources_needed=additional_sources_needed or [],
         )
         pipeline.uncertainties.append(uncertainty)
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
         return uncertainty
 
     def add_unresolved_conflict(
@@ -599,7 +599,7 @@ class PublishingManager:
             chosen_rationale=chosen_rationale,
         )
         pipeline.unresolved_conflicts.append(conflict)
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
         return conflict
 
     # =========================================================================
@@ -672,7 +672,7 @@ class PublishingManager:
         else:
             pipeline.status = PublishingStatus.BLOCKED
 
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
 
         logger.info(
             f"Pipeline {pipeline.pipeline_id} created for {subject_id}: "
@@ -784,7 +784,7 @@ class PublishingManager:
         else:
             pipeline.status = PublishingStatus.BLOCKED
 
-        pipeline.updated_at = datetime.utcnow()
+        pipeline.updated_at = datetime.now(UTC)
 
         logger.info(
             f"Pipeline {pipeline.pipeline_id} finalized: "

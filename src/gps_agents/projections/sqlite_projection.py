@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import sqlite3
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -41,9 +42,13 @@ class SQLiteProjection:
             conn.close()
 
     def _init_schema(self) -> None:
-        with self._get_conn() as conn:
-            # Note: PRAGMAs are centralized in _get_conn() to avoid redundant execution
-            conn.executescript(
+        # Retry with exponential backoff for concurrent access (e.g., parallel tests)
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                with self._get_conn() as conn:
+                    # Note: PRAGMAs are centralized in _get_conn() to avoid redundant execution
+                    conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS facts (
                     fact_id TEXT PRIMARY KEY,
@@ -129,8 +134,14 @@ class SQLiteProjection:
                 );
                 CREATE INDEX IF NOT EXISTS idx_revisit_source ON revisit_history(source_id);
                 """
-            )
-            conn.commit()
+                    )
+                    conn.commit()
+                    return  # Success, exit retry loop
+            except sqlite3.OperationalError as e:
+                if "database is locked" in str(e) and attempt < max_retries - 1:
+                    time.sleep(0.1 * (2 ** attempt))  # Exponential backoff
+                    continue
+                raise
 
     # --------------------------- Facts API ---------------------------
 
@@ -383,63 +394,81 @@ class SQLiteProjection:
         """Attempt to reserve a lock for a fingerprint (non-blocking).
 
         Returns True if reserved by this caller. Cleans up stale locks older than ttl_seconds.
+        Uses retry logic for database lock contention.
         """
         from datetime import datetime, UTC
-        now = datetime.now(UTC)
-        cutoff = (now.timestamp() - ttl_seconds)
-        with self._get_conn() as conn:
-            # cleanup stale
+        max_retries = 5
+        for attempt in range(max_retries):
             try:
-                rows = conn.execute("SELECT fingerprint, reserved_at FROM fingerprint_locks").fetchall()
-                for row in rows:
+                now = datetime.now(UTC)
+                cutoff = (now.timestamp() - ttl_seconds)
+                with self._get_conn() as conn:
+                    # cleanup stale
                     try:
-                        ts = datetime.fromisoformat(row["reserved_at"]).timestamp()
-                        if ts < cutoff:
-                            conn.execute("DELETE FROM fingerprint_locks WHERE fingerprint = ?", (row["fingerprint"],))
+                        rows = conn.execute("SELECT fingerprint, reserved_at FROM fingerprint_locks").fetchall()
+                        for row in rows:
+                            try:
+                                ts = datetime.fromisoformat(row["reserved_at"]).timestamp()
+                                if ts < cutoff:
+                                    conn.execute("DELETE FROM fingerprint_locks WHERE fingerprint = ?", (row["fingerprint"],))
+                            except Exception:
+                                pass
                     except Exception:
                         pass
-            except Exception:
-                pass
-            try:
-                conn.execute(
-                    "INSERT INTO fingerprint_locks (fingerprint, reserved_by, reserved_at) VALUES (?, ?, ?)",
-                    (fingerprint, reserved_by, now.isoformat()),
-                )
-                conn.commit()
-                return True
-            except sqlite3.IntegrityError:
-                return False
+                    try:
+                        conn.execute(
+                            "INSERT INTO fingerprint_locks (fingerprint, reserved_by, reserved_at) VALUES (?, ?, ?)",
+                            (fingerprint, reserved_by, now.isoformat()),
+                        )
+                        conn.commit()
+                        return True
+                    except sqlite3.IntegrityError:
+                        return False
+            except sqlite3.OperationalError as e:
+                if "database is locked" in str(e) and attempt < max_retries - 1:
+                    time.sleep(0.1 * (2 ** attempt))
+                    continue
+                raise
+        return False
 
     def release_fingerprint_lock(self, fingerprint: str, reserved_by: str) -> None:
-        with self._get_conn() as conn:
-            conn.execute(
-                "DELETE FROM fingerprint_locks WHERE fingerprint = ? AND reserved_by = ?",
-                (fingerprint, reserved_by),
-            )
-            conn.commit()
+        self._execute_with_retry(
+            "DELETE FROM fingerprint_locks WHERE fingerprint = ? AND reserved_by = ?",
+            (fingerprint, reserved_by),
+        )
 
     # ------------------- Fingerprint Index Claim API -----------------
 
+    def _execute_with_retry(self, sql: str, params: tuple = (), max_retries: int = 5) -> int:
+        """Execute SQL with retry logic for lock contention. Returns rowcount."""
+        for attempt in range(max_retries):
+            try:
+                with self._get_conn() as conn:
+                    cur = conn.execute(sql, params)
+                    conn.commit()
+                    return cur.rowcount
+            except sqlite3.OperationalError as e:
+                if "database is locked" in str(e) and attempt < max_retries - 1:
+                    time.sleep(0.1 * (2 ** attempt))
+                    continue
+                raise
+        return 0
+
     def ensure_fingerprint_row(self, entity_type: str, fingerprint: str) -> None:
-        with self._get_conn() as conn:
-            conn.execute(
-                """
-                INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
-                VALUES (?, ?, NULL)
-                ON CONFLICT(fingerprint) DO NOTHING
-                """,
-                (fingerprint, entity_type),
-            )
-            conn.commit()
+        self._execute_with_retry(
+            """
+            INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
+            VALUES (?, ?, NULL)
+            ON CONFLICT(fingerprint) DO NOTHING
+            """,
+            (fingerprint, entity_type),
+        )
 
     def claim_fingerprint_handle(self, fingerprint: str, handle: str) -> int:
-        with self._get_conn() as conn:
-            cur = conn.execute(
-                "UPDATE fingerprint_index SET gramps_handle = ? WHERE fingerprint = ? AND gramps_handle IS NULL",
-                (handle, fingerprint),
-            )
-            conn.commit()
-            return cur.rowcount
+        return self._execute_with_retry(
+            "UPDATE fingerprint_index SET gramps_handle = ? WHERE fingerprint = ? AND gramps_handle IS NULL",
+            (handle, fingerprint),
+        )
 
     # --------------------- Wikidata Statement Cache ------------------
 
@@ -538,35 +567,26 @@ class SQLiteProjection:
     # ---------------------- Transaction helper ----------------------
 
     @contextmanager
-    def transaction(self):
-        with self._get_conn() as conn:
-            try:
-                conn.execute("BEGIN IMMEDIATE")
-                yield conn
-                conn.commit()
-            except Exception:
-                conn.rollback()
-                raise
+    def transaction(self, max_retries: int = 5):
+        """Transaction context manager with retry logic for lock contention."""
+        last_error: Exception | None = None
+        for attempt in range(max_retries):
+            with self._get_conn() as conn:
+                try:
+                    conn.execute("BEGIN IMMEDIATE")
+                    yield conn
+                    conn.commit()
+                    return
+                except sqlite3.OperationalError as e:
+                    conn.rollback()
+                    if "database is locked" in str(e) and attempt < max_retries - 1:
+                        last_error = e
+                        time.sleep(0.1 * (2 ** attempt))
+                        continue
+                    raise
+                except Exception:
+                    conn.rollback()
+                    raise
+        if last_error:
+            raise last_error
 
-    # -------------- Fingerprint index reservation/claim -------------
-
-    def ensure_fingerprint_row(self, entity_type: str, fingerprint: str) -> None:
-        with self._get_conn() as conn:
-            conn.execute(
-                """
-                INSERT INTO fingerprint_index (fingerprint, entity_type, gramps_handle)
-                VALUES (?, ?, NULL)
-                ON CONFLICT(fingerprint) DO NOTHING
-                """,
-                (fingerprint, entity_type),
-            )
-            conn.commit()
-
-    def claim_fingerprint_handle(self, fingerprint: str, handle: str) -> int:
-        with self._get_conn() as conn:
-            cur = conn.execute(
-                "UPDATE fingerprint_index SET gramps_handle = ? WHERE fingerprint = ? AND gramps_handle IS NULL",
-                (handle, fingerprint),
-            )
-            conn.commit()
-            return cur.rowcount

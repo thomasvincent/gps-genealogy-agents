@@ -6,9 +6,16 @@ import csv
 import hashlib
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
+
+
 from pathlib import Path
 from typing import Protocol, runtime_checkable
+
+
+def _utc_now() -> datetime:
+    """Return current UTC time (for use as default_factory)."""
+    return datetime.now(UTC)
 
 
 @dataclass
@@ -51,7 +58,7 @@ class DownloadedPhoto:
     filename: str  # Commons-safe filename
     photo: PhotoResult  # Original metadata
     sha256: str  # File hash for verification
-    download_time: datetime = field(default_factory=datetime.utcnow)
+    download_time: datetime = field(default_factory=_utc_now)
 
     def to_manifest_row(self) -> dict[str, str]:
         """Convert to a row for upload-manifest.csv."""
