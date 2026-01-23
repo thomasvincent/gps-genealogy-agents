@@ -8,6 +8,9 @@ This module provides:
    - Collection browsing URLs
    - Wiki access
    - Basic search result scraping (publicly visible data)
+
+The new FamilySearchClient in familysearch_client.py provides a modern,
+type-safe alternative with Pydantic models and async support.
 """
 from __future__ import annotations
 
@@ -21,6 +24,15 @@ from bs4 import BeautifulSoup
 
 from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
+from .familysearch_client import (
+    ClientConfig as FSClientConfig,
+    Environment as FSEnvironment,
+    FamilySearchClient,
+    Person as FSPerson,
+    RecordCollection,
+    SearchParams as FSSearchParams,
+    SearchResponse as FSSearchResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +76,18 @@ FAMILYSEARCH_COLLECTIONS = {
     "wwi_draft_cards": "1968530",
     "wwii_draft_cards": "2513478",
     "civil_war_soldiers": "1910717",
+    # Native American - Five Civilized Tribes (Oklahoma)
+    "five_civilized_tribes": "1852353",  # Dawes enrollment applications including rejected
+    "indian_census_rolls": "1914530",  # Indian Census Rolls 1885-1940
+    "dawes_packets": "1913517",  # Dawes enrollment packets (detailed applications)
+    "cherokee_freedmen": "1916102",  # Cherokee Freedmen applications
+    "choctaw_freedmen": "1916090",  # Choctaw Freedmen applications
+    "chickasaw_freedmen": "1916089",  # Chickasaw Freedmen applications
+    "creek_freedmen": "1916103",  # Creek Freedmen applications
+    "seminole_freedmen": "1916110",  # Seminole Freedmen applications
+    # Oklahoma Vital Records
+    "oklahoma_death_index": "1320895",  # Oklahoma Death Index 1908-1969
+    "oklahoma_marriages": "1674643",  # Oklahoma County Marriages
 }
 
 
@@ -385,6 +409,21 @@ class FamilySearchNoLoginSource(BaseSource):
         if any(state in location for state in ["north carolina", "south carolina", "georgia", "virginia", "alabama", "mississippi", "louisiana", "arkansas", "tennessee"]):
             relevant_collections.append(("freedmens_bureau", "Freedmen's Bureau Records", FAMILYSEARCH_COLLECTIONS["freedmens_bureau"]))
             relevant_collections.append(("slave_schedules_1860", "1860 Slave Schedules", FAMILYSEARCH_COLLECTIONS["slave_schedules_1860"]))
+
+        # Oklahoma and Native American collections
+        # Critical for Five Civilized Tribes research (Cherokee, Chickasaw, Choctaw, Creek, Seminole)
+        if "oklahoma" in location or "indian territory" in location or "cherokee" in location:
+            # Five Civilized Tribes enrollment applications (includes rejected)
+            relevant_collections.append(("five_civilized_tribes", "Five Civilized Tribes Enrollment", FAMILYSEARCH_COLLECTIONS["five_civilized_tribes"]))
+            # Indian Census Rolls
+            relevant_collections.append(("indian_census_rolls", "Indian Census Rolls 1885-1940", FAMILYSEARCH_COLLECTIONS["indian_census_rolls"]))
+            # Dawes enrollment packets (detailed applications)
+            relevant_collections.append(("dawes_packets", "Dawes Enrollment Packets", FAMILYSEARCH_COLLECTIONS["dawes_packets"]))
+            # Cherokee Freedmen (African Americans who were Cherokee citizens)
+            relevant_collections.append(("cherokee_freedmen", "Cherokee Freedmen Applications", FAMILYSEARCH_COLLECTIONS["cherokee_freedmen"]))
+            # Oklahoma vital records
+            relevant_collections.append(("oklahoma_death_index", "Oklahoma Death Index 1908-1969", FAMILYSEARCH_COLLECTIONS["oklahoma_death_index"]))
+            relevant_collections.append(("oklahoma_marriages", "Oklahoma County Marriages", FAMILYSEARCH_COLLECTIONS["oklahoma_marriages"]))
 
         # Build URLs for each collection
         for key, name, collection_id in relevant_collections[:10]:  # Limit
@@ -745,3 +784,138 @@ class FamilySearchSource(BaseSource):
             extracted_fields=extracted,
             accessed_at=datetime.now(UTC),
         )
+
+    def _build_name_variants(self, surname: str) -> list[str]:
+        """Build surname variants for broader matching.
+
+        Args:
+            surname: Original surname
+
+        Returns:
+            List of variant spellings
+        """
+        variants = [surname]
+
+        # Common phonetic substitutions
+        substitutions = [
+            ("ie", "y"),
+            ("y", "ie"),
+            ("ck", "k"),
+            ("k", "ck"),
+            ("ph", "f"),
+            ("f", "ph"),
+            ("gh", "g"),
+            ("ough", "o"),
+            ("son", "sen"),
+            ("sen", "son"),
+            ("man", "mann"),
+            ("mann", "man"),
+        ]
+
+        lower = surname.lower()
+        for old, new in substitutions:
+            if old in lower:
+                variant = lower.replace(old, new)
+                variants.append(variant.title())
+
+        return list(set(variants))
+
+    async def search_with_client(
+        self,
+        query: SearchQuery,
+        client: FamilySearchClient | None = None,
+    ) -> list[RawRecord]:
+        """Search using the new FamilySearchClient.
+
+        This method provides integration between the legacy BaseSource
+        interface and the modern FamilySearchClient.
+
+        Args:
+            query: Search parameters
+            client: Optional pre-configured client
+
+        Returns:
+            List of RawRecords
+        """
+        if client is None:
+            # Create client from environment
+            config = FSClientConfig(
+                client_id=self.client_id or "default",
+                client_secret=self.client_secret,
+            )
+            async with FamilySearchClient(config) as client:
+                return await self._search_with_client_impl(query, client)
+        else:
+            return await self._search_with_client_impl(query, client)
+
+    async def _search_with_client_impl(
+        self,
+        query: SearchQuery,
+        client: FamilySearchClient,
+    ) -> list[RawRecord]:
+        """Implementation of client-based search."""
+        if not client.is_authenticated:
+            if self._access_token:
+                await client.login(self._access_token)
+            else:
+                return []
+
+        params = FSSearchParams(
+            given_name=query.given_name,
+            surname=query.surname,
+            birth_year=query.birth_year,
+            birth_year_range=query.birth_year_range,
+            death_year=query.death_year,
+            death_year_range=query.death_year_range,
+            birth_place=query.birth_place,
+            father_given_name=query.father_name,
+            mother_given_name=query.mother_name,
+            spouse_given_name=query.spouse_name,
+            count=50,
+        )
+
+        response = await client.search_persons(params)
+        return self._convert_response_to_records(response)
+
+    def _convert_response_to_records(self, response: FSSearchResponse) -> list[RawRecord]:
+        """Convert FSSearchResponse to list of RawRecords."""
+        records = []
+        for person in response.all_persons:
+            extracted = {
+                "full_name": person.display_name,
+                "given_name": person.given_name,
+                "surname": person.surname,
+            }
+
+            if person.birth_date:
+                extracted["birth_date"] = person.birth_date.original
+                if person.birth_date.year:
+                    extracted["birth_year"] = person.birth_date.year
+
+            if person.birth_place:
+                extracted["birth_place"] = person.birth_place.original
+
+            if person.death_date:
+                extracted["death_date"] = person.death_date.original
+                if person.death_date.year:
+                    extracted["death_year"] = person.death_date.year
+
+            if person.death_place:
+                extracted["death_place"] = person.death_place.original
+
+            if person.gender:
+                extracted["gender"] = person.gender.value
+
+            records.append(
+                RawRecord(
+                    source=self.name,
+                    record_id=person.id,
+                    record_type="person",
+                    url=f"https://www.familysearch.org/tree/person/details/{person.id}",
+                    raw_data=person.model_dump(),
+                    extracted_fields=extracted,
+                    accessed_at=datetime.now(UTC),
+                )
+            )
+
+        return records
