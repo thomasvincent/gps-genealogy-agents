@@ -70,21 +70,29 @@ def _validate_timeline(person: Person, client: GrampsClient | None = None) -> No
     # parent age at child's birth (if parent known)
     if client is not None and person.parent_family_ids and person.birth and person.birth.date and person.birth.date.year:
         child_year = person.birth.date.year
-        for fam_handle in person.parent_family_ids:
-            fam = client.get_family(fam_handle)
-            if not fam:
+        
+        # Batch fetch families
+        families = client.get_families_batch(person.parent_family_ids)
+        
+        # Collect all parent handles
+        parent_handles = [
+            h for fam in families 
+            for h in [fam.husband_id, fam.wife_id] if h
+        ]
+        
+        # Batch fetch parents
+        parents = client.get_persons_batch(parent_handles)
+        
+        # Validate parent ages
+        for parent in parents:
+            if not parent.birth or not parent.birth.date or not parent.birth.date.year:
                 continue
-            parent_handles = [h for h in [fam.husband_id, fam.wife_id] if h]
-            for ph in parent_handles:
-                parent = client.get_person(ph)
-                if not parent or not parent.birth or not parent.birth.date or not parent.birth.date.year:
-                    continue
-                age = child_year - parent.birth.date.year
-                if age < CONFIG.min_parent_age or age > CONFIG.max_parent_age:
-                    raise IdempotencyBlock(
-                        reason=f"Timeline impossible: parent age {age} at birth outside [{CONFIG.min_parent_age},{CONFIG.max_parent_age}]",
-                        recommended_action="review_parent_or_child_birth",
-                    )
+            age = child_year - parent.birth.date.year
+            if age < CONFIG.min_parent_age or age > CONFIG.max_parent_age:
+                raise IdempotencyBlock(
+                    reason=f"Timeline impossible: parent age {age} at birth outside [{CONFIG.min_parent_age},{CONFIG.max_parent_age}]",
+                    recommended_action="review_parent_or_child_birth",
+                )
 
 
 def upsert_person(

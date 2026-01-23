@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import Enum
@@ -98,6 +99,17 @@ class FactLedger:
 
         if rocksdb is None:
             # Fallback to file-based storage for development
+            logger.warning(
+                "RocksDB not available, using file-based fallback. "
+                "NOT RECOMMENDED FOR PRODUCTION USE. "
+                "Install python-rocksdb for production deployments."
+            )
+            import os
+            if os.getenv("ENVIRONMENT", "development").lower() == "production":
+                raise RuntimeError(
+                    "RocksDB is required in production environments. "
+                    "Install with: pip install python-rocksdb"
+                )
             self._use_fallback = True
             self._fallback_path = self.db_path / "facts.jsonl"
             self._index_path = self.db_path / "index.json"

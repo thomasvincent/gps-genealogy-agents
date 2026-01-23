@@ -406,6 +406,28 @@ class GrampsClient:
         data = self._deserialize_blob(row["blob_data"])
         return self._family_from_gramps(handle, data)
 
+    def get_families_batch(self, handles: list[str]) -> list[Family]:
+        """Batch fetch multiple families by handle.
+        
+        Args:
+            handles: List of family handles to fetch
+            
+        Returns:
+            List of Family objects (excludes handles that don't exist)
+        """
+        return [fam for h in handles if h and (fam := self.get_family(h)) is not None]
+
+    def get_persons_batch(self, handles: list[str]) -> list[Person]:
+        """Batch fetch multiple persons by handle.
+        
+        Args:
+            handles: List of person handles to fetch
+            
+        Returns:
+            List of Person objects (excludes handles that don't exist)
+        """
+        return [person for h in handles if h and (person := self.get_person(h)) is not None]
+
     def _family_from_gramps(self, _handle: str, data: dict[str, Any]) -> Family:
         """Convert Gramps family data to our Family model."""
         return Family(

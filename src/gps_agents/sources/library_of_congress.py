@@ -84,13 +84,35 @@ class ChroniclingAmericaSource(BaseSource):
                 follow_redirects=True,
             ) as client:
                 resp = await client.get(search_url, params=params)
-
-                if resp.status_code == 200:
-                    soup = BeautifulSoup(resp.text, "html.parser")
-                    records = self._parse_search_results(soup, query)
-
-        except httpx.HTTPError as e:
-            logger.debug(f"Chronicling America search error: {e}")
+                resp.raise_for_status()
+                
+                soup = BeautifulSoup(resp.text, "html.parser")
+                records = self._parse_search_results(soup, query)
+                
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code >= 500:
+                logger.error(f"{self.name} server error {e.response.status_code}: {e}")
+                # Re-raise for retry logic
+                raise
+            elif e.response.status_code == 429:
+                logger.warning(f"{self.name} rate limit exceeded")
+                # Could implement exponential backoff here
+            else:
+                logger.error(f"{self.name} HTTP error {e.response.status_code}: {e}")
+                
+        except httpx.TimeoutException:
+            logger.warning(f"{self.name} request timeout after 30s")
+            
+        except httpx.RequestError as e:
+            logger.error(f"{self.name} request failed: {e}")
+            
+        except Exception as e:
+            logger.exception(f"{self.name} unexpected error: {e}")
+            
+        finally:
+            # Always return list, even on error
+            if 'records' not in locals():
+                records = []
 
         # Add search URL for manual access
         manual_url = f"{search_url}?{'&'.join(f'{k}={quote_plus(str(v))}' for k, v in params.items())}"
