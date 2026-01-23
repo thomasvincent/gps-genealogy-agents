@@ -35,6 +35,10 @@ class Region(str, Enum):
     USA = "usa"
     CANADA = "canada"
     WORLDWIDE = "worldwide"
+    # US State-level regions (for specialized sources)
+    CALIFORNIA = "california"
+    OKLAHOMA = "oklahoma"
+    NORTH_CAROLINA = "north_carolina"
 
 
 class RecordType(str, Enum):
@@ -55,7 +59,68 @@ class RecordType(str, Enum):
     NEWSPAPER = "newspaper"
     OBITUARY = "obituary"
     DNA = "dna"
+    # Specialized record types
+    TRIBAL = "tribal"  # Native American tribal enrollment records
+    FREEDMEN = "freedmen"  # Cherokee/Creek/etc Freedmen records
     OTHER = "other"
+
+
+# Keywords that suggest Freedmen/Native American research context
+FREEDMEN_CONTEXT_KEYWORDS = frozenset([
+    "oklahoma", "indian territory", "cherokee", "creek", "muscogee",
+    "choctaw", "chickasaw", "seminole", "freedmen", "freedman",
+    "dawes", "tribal", "five civilized tribes", "vinita", "muskogee",
+    "tahlequah", "mcalester", "ardmore", "durant", "tishomingo",
+])
+
+# Place names strongly associated with Five Civilized Tribes territory
+INDIAN_TERRITORY_PLACES = frozenset([
+    "vinita", "tahlequah", "muskogee", "okmulgee", "mcalester",
+    "ardmore", "durant", "tishomingo", "wewoka", "anadarko",
+    "thlequah", "claremore", "nowata", "pryor", "wagoner",
+])
+
+
+def detect_freedmen_context(query: "SearchQuery") -> bool:
+    """Detect if a query might involve Freedmen/Native American records.
+
+    Looks for contextual clues in birth_place, death_place, or notes
+    that suggest the ancestor may have been enrolled in tribal rolls.
+
+    Args:
+        query: The search query to analyze
+
+    Returns:
+        True if Freedmen/tribal sources should be prioritized
+    """
+    search_text = ""
+
+    # Gather all location and context text from query
+    for field in [query.birth_place, query.death_place]:
+        if field:
+            search_text += f" {field}"
+
+    # Check for explicit record types
+    if query.record_types:
+        if "tribal" in query.record_types or "freedmen" in query.record_types:
+            return True
+
+    # Normalize and check for keywords
+    search_lower = search_text.lower()
+
+    # Check for direct keyword matches
+    for keyword in FREEDMEN_CONTEXT_KEYWORDS:
+        if keyword in search_lower:
+            return True
+
+    # Check for Indian Territory place names
+    words = search_lower.split()
+    for word in words:
+        word_clean = word.strip(".,;:()")
+        if word_clean in INDIAN_TERRITORY_PLACES:
+            return True
+
+    return False
 
 
 @dataclass
@@ -194,24 +259,123 @@ class SearchRouter:
         Region.USA: ["familysearch", "wikitree", "findagrave", "accessgenealogy", "usgenweb", "fold3", "rootsweb", "nara1950", "nara1940"],
         Region.CANADA: ["familysearch", "wikitree", "findagrave"],
         Region.WORLDWIDE: ["familysearch", "wikitree", "geneanet", "findagrave"],
+        # California - comprehensive regional sources
+        Region.CALIFORNIA: [
+            "familysearch", "wikitree", "findagrave",
+            # Tri-Valley (Livermore, Pleasanton, Dublin)
+            "trivalleygenealogy", "lags", "bunshahindex", "pleasantonweekly", "calisphere",
+            # Gold Country (Highway 49 corridor)
+            "goldcountry", "eldoradocounty", "tuolumnecounty", "placercounty", "mariposacounty", "nevadacounty",
+            # Ventura County
+            "venturacounty", "venturacountygenealogy", "oxnardlibrary", "museumventuracounty",
+            # Los Angeles County
+            "losangelescounty", "altadenahistoricalsociety", "laplgenealogy", "huntingtonlibrary", "uscdigitallibrary",
+            # Pasadena
+            "pasadenanewsindex", "lacountynewspapers",
+        ],
+        # Oklahoma - Native American records, vital records, historical society
+        Region.OKLAHOMA: [
+            "familysearch", "wikitree", "findagrave",
+            # Oklahoma state sources
+            "oklahomageology", "oklahomahistoricalsociety", "oklahomavitalrecords",
+            "oklahomanativeamerican",
+            # African American records (significant for OK history)
+            "accessgenealogy", "africanamericangenealogy",
+        ],
+        # North Carolina - Wake/Durham Counties, vital records, African American
+        Region.NORTH_CAROLINA: [
+            "familysearch", "wikitree", "findagrave",
+            # NC state sources
+            "northcarolinageology", "ncstatearchives", "ncvitalrecords",
+            "ncafricanamerican", "nccountyrecords",
+            # African American records (significant for NC history)
+            "accessgenealogy", "africanamericangenealogy", "freedmansbureau",
+        ],
     }
 
     # Source recommendations by record type
     RECORD_TYPE_SOURCES: ClassVar[dict[RecordType, list[str]]] = {
         RecordType.BURIAL: ["findagrave", "familysearch", "accessgenealogy", "usgenweb"],
         RecordType.CEMETERY: ["findagrave", "accessgenealogy", "usgenweb"],
-        RecordType.DEATH: ["findagrave", "familysearch", "geneanet", "rootsweb"],
-        RecordType.BIRTH: ["familysearch", "geneanet", "usgenweb"],
-        RecordType.MARRIAGE: ["familysearch", "geneanet", "usgenweb"],
+        RecordType.DEATH: [
+            "findagrave", "familysearch", "geneanet", "rootsweb",
+            # California regional death indices
+            "venturacountygenealogy",  # 80,000+ death records
+            "goldcountry", "nevadacounty",  # Gold Country obituary/death indices
+            # Oklahoma death index (1908-1969 free via FamilySearch)
+            "oklahomavitalrecords",
+            # North Carolina death certificates (1906-1994 free via FamilySearch)
+            "ncvitalrecords",
+        ],
+        RecordType.BIRTH: [
+            "familysearch", "geneanet", "usgenweb",
+            # Oklahoma birth records (restricted)
+            "oklahomavitalrecords",
+            # North Carolina birth records (delayed birth certificates)
+            "ncvitalrecords",
+        ],
+        RecordType.MARRIAGE: [
+            "familysearch", "geneanet", "usgenweb",
+            # Oklahoma marriage records (1890-present)
+            "oklahomavitalrecords",
+            # North Carolina marriage records (1868-present)
+            "ncvitalrecords", "nccountyrecords",
+        ],
         RecordType.CENSUS: ["familysearch", "findmypast", "accessgenealogy", "usgenweb", "nara1950", "nara1940"],
         RecordType.IMMIGRATION: ["familysearch", "accessgenealogy"],
         RecordType.MILITARY: ["familysearch", "fold3", "accessgenealogy", "usgenweb"],
-        RecordType.OBITUARY: ["rootsweb", "findagrave"],
+        RecordType.OBITUARY: [
+            "rootsweb", "findagrave", "pasadenanewsindex", "lacountynewspapers",
+            "pleasantonweekly", "lags",
+            # California regional obituary/newspaper sources
+            "trivalleygenealogy", "bunshahindex",
+            "goldcountry", "nevadacounty",  # Searls Library 265,000+ names
+            "venturacounty", "museumventuracounty",  # Press-Courier morgue
+            "losangelescounty", "laplgenealogy", "uscdigitallibrary",  # LA Examiner
+        ],
+        RecordType.NEWSPAPER: [
+            "pasadenanewsindex", "lacountynewspapers", "bunshahindex", "trivalleygenealogy",
+            # California regional newspaper sources
+            "goldcountry", "eldoradocounty", "tuolumnecounty", "placercounty",
+            "venturacounty", "museumventuracounty",
+            "losangelescounty", "laplgenealogy", "uscdigitallibrary",  # 1.4M LA Examiner photos
+        ],
         RecordType.DNA: ["wikitree"],
-        RecordType.CHURCH: ["familysearch", "geneanet"],
-        RecordType.LAND: ["usgenweb", "familysearch"],
+        RecordType.CHURCH: [
+            "familysearch", "geneanet",
+            "huntingtonlibrary",  # ECPP - 250,000+ mission records 1769-1850
+        ],
+        RecordType.LAND: ["usgenweb", "familysearch", "venturacountygenealogy"],  # VCGS land indices
         RecordType.PROBATE: ["usgenweb", "familysearch"],
+        # Native American and Freedmen records
+        RecordType.TRIBAL: [
+            "ohsdawesrolls",  # OHS Dawes Rolls Final Rolls (searchable)
+            "oklahomanativeamerican",  # Oklahoma Native American records
+            "familysearch",  # FamilySearch Five Civilized Tribes collections
+            "accessgenealogy",  # Dawes Rolls transcriptions
+            "oklahomageology",  # Combined Oklahoma sources
+        ],
+        RecordType.FREEDMEN: [
+            "ohsdawesrolls",  # OHS Dawes Rolls (includes Freedmen enrollees)
+            "oklahomanativeamerican",  # Native American records (Freedmen sections)
+            "familysearch",  # Cherokee/Creek/etc Freedmen collections
+            "freedmansbureau",  # Freedman's Bureau records
+            "africanamericangenealogy",  # African American genealogy
+            "accessgenealogy",  # Dawes Rolls and Freedmen transcriptions
+        ],
     }
+
+    # Additional Freedmen-specific FamilySearch collections to recommend
+    FREEDMEN_FAMILYSEARCH_COLLECTIONS: ClassVar[list[str]] = [
+        "five_civilized_tribes",  # 1852353 - Enrollment applications (includes rejected)
+        "cherokee_freedmen",  # 1916102
+        "creek_freedmen",  # 1916103
+        "choctaw_freedmen",  # 1916090
+        "chickasaw_freedmen",  # 1916089
+        "seminole_freedmen",  # 1916110
+        "indian_census_rolls",  # 1914530 - Indian Census Rolls 1885-1940
+        "dawes_packets",  # 1913517 - Detailed enrollment packets
+    ]
 
     def __init__(self, config: RouterConfig | None = None) -> None:
         """Initialize the search router."""
@@ -373,6 +537,7 @@ class SearchRouter:
         sources: list[str] | None = None,
         region: Region | None = None,
         two_pass: bool | None = None,
+        auto_detect_freedmen: bool = True,
     ) -> UnifiedSearchResult:
         """Execute a unified search across multiple sources.
 
@@ -380,11 +545,17 @@ class SearchRouter:
         - Pass 1 (Recall): Search limited sources with broad query
         - Pass 2 (Precision): If confidence low, expand to more sources
 
+        Also supports automatic Freedmen/tribal record detection:
+        - Detects Oklahoma/Indian Territory context
+        - Automatically includes tribal enrollment sources
+        - Prioritizes Dawes Rolls and Freedmen collections
+
         Args:
             query: Search parameters
             sources: Specific sources to search (None = auto-select)
             region: Region for source recommendation
             two_pass: Override config for two-pass search
+            auto_detect_freedmen: Auto-detect and include Freedmen sources (default True)
 
         Returns:
             UnifiedSearchResult with aggregated records
@@ -392,15 +563,42 @@ class SearchRouter:
         start_time = time.time()
         enable_two_pass = two_pass if two_pass is not None else self.config.second_pass_enabled
 
+        # Auto-detect Freedmen context and augment query record types if needed
+        effective_record_types = list(query.record_types) if query.record_types else []
+        freedmen_detected = False
+
+        if auto_detect_freedmen and detect_freedmen_context(query):
+            freedmen_detected = True
+            # Add tribal/freedmen record types if not already present
+            if "tribal" not in effective_record_types:
+                effective_record_types.append("tribal")
+            if "freedmen" not in effective_record_types:
+                effective_record_types.append("freedmen")
+            # Also set region to Oklahoma if not specified
+            if region is None:
+                region = Region.OKLAHOMA
+
+        # Create effective query with augmented record types
+        effective_query = SearchQuery(
+            surname=query.surname,
+            given_name=query.given_name,
+            birth_year=query.birth_year,
+            birth_place=query.birth_place,
+            death_year=query.death_year,
+            death_place=query.death_place,
+            record_types=effective_record_types if effective_record_types else None,
+            exclude_sources=query.exclude_sources,
+        )
+
         # Determine which sources to search
         if sources:
             first_pass_sources = {k: v for k, v in self._sources.items() if k in sources}
             all_possible_sources = first_pass_sources  # No expansion if explicit sources
-        elif region or query.record_types:
+        elif region or effective_query.record_types:
             # Use record-type-aware routing with priority ranking
             recommended = self.get_recommended_sources(
                 region=region,
-                record_types=query.record_types,
+                record_types=effective_query.record_types,
                 limit=self.config.first_pass_source_limit if enable_two_pass else None,
             )
             first_pass_sources = {k: v for k, v in self._sources.items() if k in recommended}
@@ -408,7 +606,7 @@ class SearchRouter:
             # Get all possible sources for second pass (no limit)
             all_recommended = self.get_recommended_sources(
                 region=region,
-                record_types=query.record_types,
+                record_types=effective_query.record_types,
                 limit=None,
             )
             all_possible_sources = {k: v for k, v in self._sources.items() if k in all_recommended}
@@ -969,6 +1167,45 @@ class SearchRouter:
             record_types=["birth", "death", "marriage"],
         )
         return await self.search(query, region=region)
+
+    async def search_tribal_freedmen(
+        self,
+        surname: str,
+        given_name: str | None = None,
+        birth_year: int | None = None,
+        birth_place: str | None = None,
+        tribe: str | None = None,
+    ) -> UnifiedSearchResult:
+        """Search for tribal enrollment and Freedmen records.
+
+        Specifically targets Five Civilized Tribes records:
+        - Dawes Rolls (Final Rolls 1898-1914)
+        - Freedmen rolls and applications
+        - Indian Census Rolls 1885-1940
+
+        Args:
+            surname: Last name to search
+            given_name: Optional first name
+            birth_year: Optional approximate birth year
+            birth_place: Optional birth place (Oklahoma, Indian Territory, etc.)
+            tribe: Optional tribe filter (cherokee, creek, choctaw, chickasaw, seminole)
+
+        Returns:
+            UnifiedSearchResult with tribal enrollment records
+        """
+        # Set birth_place to Oklahoma/Indian Territory if tribe specified but no place
+        effective_birth_place = birth_place
+        if tribe and not birth_place:
+            effective_birth_place = f"{tribe.title()} Nation, Indian Territory"
+
+        query = SearchQuery(
+            surname=surname,
+            given_name=given_name,
+            birth_year=birth_year,
+            birth_place=effective_birth_place or "Oklahoma",
+            record_types=["tribal", "freedmen"],
+        )
+        return await self.search(query, region=Region.OKLAHOMA)
 
     async def close(self) -> None:
         """Close all source connections."""

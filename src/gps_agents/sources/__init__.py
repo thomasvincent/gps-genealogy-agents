@@ -9,6 +9,17 @@ from gps_agents.sources.familysearch import (
     FamilySearchNoLoginSource,
     FAMILYSEARCH_COLLECTIONS,
 )
+from gps_agents.sources.familysearch_client import (
+    FamilySearchClient,
+    ClientConfig as FamilySearchClientConfig,
+    Environment as FamilySearchEnvironment,
+    SearchParams as FamilySearchSearchParams,
+    SearchResponse as FamilySearchSearchResponse,
+    Person as FamilySearchPerson,
+    RecordCollection as FamilySearchCollection,
+    TokenResponse as FamilySearchTokenResponse,
+    quick_search as familysearch_quick_search,
+)
 from gps_agents.sources.findmypast import FindMyPastSource
 from gps_agents.sources.fold3 import Fold3Source
 from gps_agents.sources.gedcom import GedcomSource
@@ -23,11 +34,19 @@ from gps_agents.sources.router import (
     SourceSearchResult,
     UnifiedSearchResult,
     create_default_router,
+    detect_freedmen_context,
+    FREEDMEN_CONTEXT_KEYWORDS,
+    INDIAN_TERRITORY_PLACES,
 )
 from gps_agents.sources.chronicling_america import ChroniclingAmericaSource
 from gps_agents.sources.ssdi import SSDISource, SteveMorseOneStepSource
 from gps_agents.sources.usgenweb import USGenWebSource
-from gps_agents.sources.wikitree import WikiTreeSource
+from gps_agents.sources.wikitree import (
+    WikiTreeSource,
+    CensusRecord as WikiTreeCensusRecord,
+    US_CENSUS_YEARS,
+    CENSUS_PATTERNS as WIKITREE_CENSUS_PATTERNS,
+)
 
 # New free sources
 from gps_agents.sources.billiongraves import BillionGravesSource
@@ -71,6 +90,61 @@ from gps_agents.sources.nara_census import (
     InternetArchiveCensusSource,
     LibraryAccessSource,
 )
+from gps_agents.sources.pasadena_news_index import (
+    PasadenaNewsIndexSource,
+    LosAngelesCountyNewspapersSource,
+)
+from gps_agents.sources.tri_valley import (
+    LAGSSource,
+    BunshahIndexSource,
+    PleasantonWeeklySource,
+    CalisphereSource,
+    TriValleyGenealogySource,
+)
+from gps_agents.sources.gold_country import (
+    ElDoradoCountySource,
+    TuolumneCountySource,
+    PlacerCountySource,
+    MariposaCountySource,
+    NevadaCountySource,
+    GoldCountrySource,
+)
+from gps_agents.sources.ventura_county import (
+    VenturaCountyGenealogySource,
+    OxnardLibrarySource,
+    MuseumOfVenturaCountySource,
+    VenturaCountySource,
+)
+from gps_agents.sources.altadena_la_county import (
+    AltadenaHistoricalSocietySource,
+    LAPLGenealogySource,
+    HuntingtonLibrarySource,
+    USCDigitalLibrarySource,
+    LosAngelesCountySource,
+)
+from gps_agents.sources.oklahoma import (
+    OklahomaHistoricalSocietySource,
+    OklahomaVitalRecordsSource,
+    OklahomaNativeAmericanSource,
+    OklahomaGenealogySource,
+    OHSDawesRollsSource,
+    DAWES_TRIBAL_NATIONS,
+    parse_cross_references,
+)
+from gps_agents.sources.north_carolina import (
+    NCStateArchivesSource,
+    NCVitalRecordsSource,
+    NCAfricanAmericanSource,
+    NCCountyRecordsSource,
+    NorthCarolinaGenealogySource,
+)
+from gps_agents.sources.headless import (
+    HeadlessBrowser,
+    HeadlessConfig,
+    SearchResult as HeadlessSearchResult,
+    run_headless_search,
+    search_sync as headless_search_sync,
+)
 
 __all__ = [
     # Sources - Original
@@ -79,6 +153,16 @@ __all__ = [
     "FamilySearchSource",
     "FamilySearchNoLoginSource",
     "FAMILYSEARCH_COLLECTIONS",
+    # FamilySearch Client (modern API)
+    "FamilySearchClient",
+    "FamilySearchClientConfig",
+    "FamilySearchEnvironment",
+    "FamilySearchSearchParams",
+    "FamilySearchSearchResponse",
+    "FamilySearchPerson",
+    "FamilySearchCollection",
+    "FamilySearchTokenResponse",
+    "familysearch_quick_search",
     "FindMyPastSource",
     "Fold3Source",
     "GedcomSource",
@@ -89,6 +173,10 @@ __all__ = [
     "SteveMorseOneStepSource",
     "USGenWebSource",
     "WikiTreeSource",
+    # WikiTree Census utilities
+    "WikiTreeCensusRecord",
+    "US_CENSUS_YEARS",
+    "WIKITREE_CENSUS_PATTERNS",
     # Sources - Cemetery/Burial
     "BillionGravesSource",
     # Sources - UK Census
@@ -131,6 +219,53 @@ __all__ = [
     "NARACensusSource",
     "InternetArchiveCensusSource",
     "LibraryAccessSource",
+    # Sources - Local Newspapers (California)
+    "PasadenaNewsIndexSource",
+    "LosAngelesCountyNewspapersSource",
+    # Sources - Tri-Valley (Livermore, Pleasanton, Dublin)
+    "LAGSSource",
+    "BunshahIndexSource",
+    "PleasantonWeeklySource",
+    "CalisphereSource",
+    "TriValleyGenealogySource",
+    # Sources - Gold Country (Highway 49 Corridor)
+    "ElDoradoCountySource",
+    "TuolumneCountySource",
+    "PlacerCountySource",
+    "MariposaCountySource",
+    "NevadaCountySource",
+    "GoldCountrySource",
+    # Sources - Ventura County (Ventura, Oxnard, Camarillo)
+    "VenturaCountyGenealogySource",
+    "OxnardLibrarySource",
+    "MuseumOfVenturaCountySource",
+    "VenturaCountySource",
+    # Sources - Los Angeles County (Altadena, Pasadena, LA)
+    "AltadenaHistoricalSocietySource",
+    "LAPLGenealogySource",
+    "HuntingtonLibrarySource",
+    "USCDigitalLibrarySource",
+    "LosAngelesCountySource",
+    # Sources - Oklahoma (with Native American records)
+    "OklahomaHistoricalSocietySource",
+    "OklahomaVitalRecordsSource",
+    "OklahomaNativeAmericanSource",
+    "OklahomaGenealogySource",
+    "OHSDawesRollsSource",
+    "DAWES_TRIBAL_NATIONS",
+    "parse_cross_references",
+    # Sources - North Carolina (Wake/Durham Counties)
+    "NCStateArchivesSource",
+    "NCVitalRecordsSource",
+    "NCAfricanAmericanSource",
+    "NCCountyRecordsSource",
+    "NorthCarolinaGenealogySource",
+    # Headless browser utilities
+    "HeadlessBrowser",
+    "HeadlessConfig",
+    "HeadlessSearchResult",
+    "run_headless_search",
+    "headless_search_sync",
     # Base classes
     "BaseSource",
     "GenealogySource",
@@ -145,4 +280,8 @@ __all__ = [
     "SourceSearchResult",
     "UnifiedSearchResult",
     "create_default_router",
+    # Freedmen/tribal detection
+    "detect_freedmen_context",
+    "FREEDMEN_CONTEXT_KEYWORDS",
+    "INDIAN_TERRITORY_PLACES",
 ]
