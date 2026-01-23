@@ -1,6 +1,6 @@
 # Archer L. Durham - Wikipedia Featured Article Draft
 
-{{Short description|United States Air Force major general}}
+{{Short description|United States Air Force general and government official}}
 {{Use mdy dates|date=January 2026}}
 {{Infobox military person
 | name          = Archer L. Durham
@@ -367,7 +367,7 @@ The [[Distinguished Service Medal (Air Force)|Air Force Distinguished Service Me
 
 === The Maj. Gen. Archer L. Durham Award ===
 
-Following his retirement, Major General Durham's legacy was honored with the establishment of the **Maj. Gen. Archer L. Durham Award** at Dover Air Force Base.{{sfn|Dover AFB News|2016}}
+Following his retirement, Major General Durham's legacy was honored with the establishment of the '''Maj. Gen. Archer L. Durham Award''' at Dover Air Force Base.{{sfn|Dover AFB News|2016}}
 
 The award recognizes individuals who demonstrate exceptional leadership in fostering teamwork and awareness of various cultures.{{sfn|Dover AFB News|2016}} This recognition reflects Durham's commitment throughout his career to diversity, inclusion, and building bridges across different communities within the military.
 
