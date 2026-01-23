@@ -247,6 +247,80 @@ class PersistentIdempotencyCache(IdempotencyCache):
         self._save()
 
 
+class LLMCache:
+    """Simple file-based cache for LLM responses.
+    
+    This provides a lightweight caching layer for expensive LLM calls
+    using a simple file-based storage mechanism.
+    """
+    
+    def __init__(self, cache_dir: str | Path = ".llm_cache"):
+        """Initialize the cache.
+        
+        Args:
+            cache_dir: Directory to store cache files
+        """
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(exist_ok=True)
+    
+    def _get_cache_key(self, prompt: str, system_prompt: str) -> str:
+        """Generate cache key from prompts.
+        
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+            
+        Returns:
+            SHA-256 hash of combined prompts
+        """
+        content = f"{system_prompt}|{prompt}"
+        return hashlib.sha256(content.encode()).hexdigest()
+    
+    def get(self, prompt: str, system_prompt: str) -> str | None:
+        """Retrieve cached response.
+        
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+            
+        Returns:
+            Cached response or None if not found
+        """
+        cache_key = self._get_cache_key(prompt, system_prompt)
+        cache_file = self.cache_dir / f"{cache_key}.json"
+        
+        if cache_file.exists():
+            try:
+                data = json.loads(cache_file.read_text())
+                logger.debug(f"Cache hit for key {cache_key[:8]}...")
+                return data["response"]
+            except Exception as e:
+                logger.warning(f"Cache read error: {e}")
+        
+        return None
+    
+    def set(self, prompt: str, system_prompt: str, response: str) -> None:
+        """Store response in cache.
+        
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+            response: LLM response to cache
+        """
+        cache_key = self._get_cache_key(prompt, system_prompt)
+        cache_file = self.cache_dir / f"{cache_key}.json"
+        
+        try:
+            cache_file.write_text(json.dumps({
+                "prompt": prompt[:100] + "...",  # Truncate for readability
+                "response": response,
+                "cached_at": datetime.now(UTC).isoformat()
+            }, indent=2))
+            logger.debug(f"Cached response for key {cache_key[:8]}...")
+        except Exception as e:
+            logger.warning(f"Cache write error: {e}")
+
+
 # Global in-memory cache instance (can be replaced with persistent)
 _global_cache: IdempotencyCache | None = None
 
