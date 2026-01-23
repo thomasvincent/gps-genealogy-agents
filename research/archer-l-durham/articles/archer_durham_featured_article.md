@@ -17,11 +17,11 @@
 | serviceyears  = 1953–1989
 | rank          = [[File:US-O8 insignia.svg|25px]] [[Major general (United States)|Major General]]
 | unit          = [[Military Airlift Command]]<br>[[United States Transportation Command]]
-| commands      = [[436th Airlift Wing|436th Military Airlift Wing]]
+| commands      = [[436th Airlift Wing|436th Military Airlift Wing]]<br>76th Military Airlift Division<br>1606th Air Base Wing
 | battles       = [[Cold War]]
 | awards        = [[Distinguished Service Medal (Air Force)|Air Force Distinguished Service Medal]]<br>[[Defense Superior Service Medal]]<br>[[Legion of Merit]] (3)
 | relations     =
-| laterwork     =
+| laterwork     = [[United States Assistant Secretary of Energy for Human Resources and Administration|Assistant Secretary of Energy for Human Resources and Administration]]
 | signature     =
 | website       =
 | alma_mater    = [[Utah State University]] (BS)<br>[[George Washington University]] (MS)
@@ -33,7 +33,7 @@
 | wikidata      = Q137835093
 }}
 
-**Archer Lyman Durham** (born June 9, 1932) is a retired [[United States Air Force]] [[Major general (United States)|major general]] who served as Director of Deployment at [[United States Transportation Command]] (USTRANSCOM) at [[Scott Air Force Base]], Illinois.{{sfn|USAF Biography|2016}} A [[command pilot]] with more than 6,000 flying hours, Durham was a central figure in the modernization of strategic airlift operations and global deployment logistics during the final decade of the [[Cold War]].{{sfn|USAF Biography|2016}} He commanded the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware, and is notable for being among the African American general officers who rose to prominence during the post-[[desegregation of the United States armed forces|desegregation]] era of the U.S. military.{{sfn|Dover AFB News|2016}}
+**Archer Lyman Durham** (born June 9, 1932) is a retired [[United States Air Force]] [[Major general (United States)|major general]] who served as Director of Deployment at [[United States Transportation Command]] (USTRANSCOM) at [[Scott Air Force Base]], Illinois.{{sfn|USAF Biography|2016}} A [[command pilot]] with more than 6,000 flying hours, Durham was a central figure in the modernization of strategic airlift operations and global deployment logistics during the final decade of the [[Cold War]].{{sfn|USAF Biography|2016}} He commanded the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware, and the 76th Military Airlift Division at [[Joint Base Andrews|Andrews Air Force Base]], Maryland. Following his military career, he served as [[United States Assistant Secretary of Energy for Human Resources and Administration|Assistant Secretary of Energy for Human Resources and Administration]] during the [[Clinton administration]].{{sfn|U.S. Government Manual|1997}} Durham is notable for being among the African American general officers who rose to prominence during the post-[[desegregation of the United States armed forces|desegregation]] era of the U.S. military.{{sfn|Dover AFB News|2016}}
 
 Durham is also recognized for his documented [[Cherokee freedmen|Cherokee Freedmen]] ancestry through the [[Dawes Rolls]] and his institutional legacy in promoting cultural awareness within the [[United States Department of Defense|Department of Defense]].{{sfn|Oklahoma Historical Society|2026}} The Maj. Gen. Archer L. Durham Award, established at Dover Air Force Base, continues to recognize individuals who demonstrate exceptional leadership in fostering teamwork and cultural awareness.{{sfn|Dover AFB News|2016}}
 
@@ -211,6 +211,23 @@ After returning to the United States in 1966, Durham held several high-level sta
 
 His assignment to the [[Pentagon]] Directorate of Plans involved work on [[Joint Chiefs of Staff]] matters, providing exposure to the highest levels of defense policy and interservice coordination.{{sfn|USAF Biography|2016}}
 
+=== Base command assignments ===
+
+After graduating from the National War College in 1975 as a Distinguished Graduate, Durham was assigned to [[McGuire Air Force Base]], New Jersey.{{sfn|USAF Biography|2016}}
+
+{| class="wikitable"
+|-
+! Years !! Position !! Location
+|-
+| 1975–1976 || Deputy Base Commander || [[McGuire Air Force Base]], New Jersey
+|-
+| 1976–1977 || Base Commander || McGuire Air Force Base, New Jersey
+|-
+| 1977–1979 || Commander, 1606th Air Base Wing || [[Kirtland Air Force Base]], New Mexico
+|}
+
+The 1606th Air Base Wing at Kirtland AFB provided support to multiple tenant organizations, including the [[Air Force Weapons Laboratory]] and other defense research activities.{{sfn|USAF Biography|2016}}
+
 === Rise to general officer ===
 
 Durham's military career spanned thirty-six years, during which he rose from an aviation cadet to the rank of major general (O-8), a two-star general officer.{{sfn|USAF Biography|2016}} His advancement through the officer ranks reflected both his individual capabilities and the gradually expanding opportunities for African Americans in the post-desegregation military.{{sfn|Binkin|1982|p=67}}
@@ -219,7 +236,7 @@ The path to general officer was particularly challenging for African American of
 
 === Commander, 436th Military Airlift Wing ===
 
-From 1979 to 1982, Durham served as Commander of the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware.{{sfn|USAF Biography|2016}} This assignment placed him at the helm of one of the Air Force's premier strategic airlift units during a critical period in the development of American global power projection capabilities.{{sfn|Dover AFB|2016}}
+From February 1979 to February 1980, Durham served as Commander of the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware.{{sfn|USAF Biography|2016}} This assignment placed him at the helm of one of the Air Force's premier strategic airlift units during a critical period in the development of American global power projection capabilities.{{sfn|Dover AFB|2016}}
 
 ==== History of the 436th Military Airlift Wing ====
 
@@ -251,6 +268,24 @@ The 436th Military Airlift Wing conducted numerous significant operations during
 
 The wing's C-5 aircraft were essential to rapid deployment of heavy equipment and supplies to crisis areas around the globe, a capability that would prove crucial in subsequent conflicts.{{sfn|Owen|2013|p=195}}
 
+=== Commander, 76th Military Airlift Division ===
+
+In February 1980, Durham assumed command of the 76th Military Airlift Division at [[Joint Base Andrews|Andrews Air Force Base]], Maryland.{{sfn|USAF Biography|2016}} The 76th Military Airlift Division was a major subordinate unit of [[Military Airlift Command]], responsible for coordinating strategic airlift operations in the eastern United States.{{sfn|Owen|2013|p=198}}
+
+This division-level command placed Durham in charge of multiple wings and squadrons involved in airlift operations, further expanding his experience in large-scale military transportation logistics. He served in this capacity until February 1982.{{sfn|USAF Biography|2016}}
+
+=== Vice Commander, Military Traffic Management Command ===
+
+From February 1982 to March 1984, Durham served as Vice Commander of the [[Military Traffic Management Command]] (MTMC) in Washington, D.C.{{sfn|USAF Biography|2016}} MTMC was the Department of Defense component responsible for coordinating surface transportation for all military services.
+
+This joint assignment exposed Durham to the full spectrum of military transportation, including rail, road, and sea movement of troops and equipment. His experience at MTMC provided essential background for his subsequent roles in deployment coordination.{{sfn|USAF Biography|2016}}
+
+=== Director of Plans, Programs and Policy, U.S. Readiness Command ===
+
+In March 1984, Durham became the Director of Plans, Programs and Policy (J-5) and Inspector General at [[United States Readiness Command]] (USREDCOM), [[MacDill Air Force Base]], Florida.{{sfn|USAF Biography|2016}} USREDCOM was the unified combatant command responsible for planning and coordinating military operations within the continental United States.
+
+From April 1985, he served as Director of Deployment at the Joint Deployment Agency, also located at MacDill AFB.{{sfn|USAF Biography|2016}} This position prepared him for his final military assignment.
+
 === Director of Deployment, U.S. Transportation Command ===
 
 In June 1987, Durham was appointed Director of Deployment at the [[United States Transportation Command]] (USTRANSCOM), headquartered at [[Scott Air Force Base]], Illinois.{{sfn|USAF Biography|2016}} This would be his final and most senior assignment before retirement.
@@ -281,6 +316,14 @@ This position placed Durham at the nexus of American military power projection, 
 === Retirement ===
 
 Durham retired from the United States Air Force in 1989 at the rank of major general after a distinguished thirty-six-year career.{{sfn|USAF Biography|2016}} His retirement marked the conclusion of a military career that had witnessed and participated in the transformation of the American armed forces from segregated services to an integrated fighting force.
+
+== Post-military career ==
+
+Following his retirement from the Air Force, Durham continued his public service in civilian government. During the [[Clinton administration]], he served as [[United States Assistant Secretary of Energy for Human Resources and Administration|Assistant Secretary of Energy for Human Resources and Administration]] at the [[United States Department of Energy]].{{sfn|U.S. Government Manual|1997}}
+
+In this capacity, Durham was responsible for overseeing the department's human capital policies, including workforce development, labor relations, and administrative services. He also served in an acting capacity for Quality Management at the department.{{sfn|U.S. Government Manual|1997}}
+
+His appointment reflected both his extensive experience in large-scale organizational management developed during his military career and his commitment to continued public service. The transition from military to civilian federal service was a path followed by many senior military officers whose expertise in management, logistics, and leadership proved valuable in civilian agencies.{{sfn|Moskos|1988|p=112}}
 
 == Flight information ==
 
@@ -401,6 +444,7 @@ These structured data entries facilitate genealogical research and enable automa
 * {{cite web |title=Social Security Administration NUMIDENT Records |url=https://www.familysearch.org/search/collection/1202535 |website=FamilySearch |access-date=January 23, 2026 |ref={{sfnref|Social Security Administration|n.d.}}}}
 * {{cite web |title=Five Civilized Tribes Enrollment Cards |url=https://www.familysearch.org/search/collection/1852353 |website=FamilySearch |access-date=January 23, 2026 |ref={{sfnref|FamilySearch|2026}}}}
 * {{cite web |title=Wikidata: Q137835093 - Archer L. Durham |url=https://www.wikidata.org/wiki/Q137835093 |website=Wikidata |access-date=January 23, 2026 |ref={{sfnref|Wikidata|2026}}}}
+* {{cite web |title=1997 United States Government Manual |url=https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf |website=Government Publishing Office |year=1997 |access-date=January 23, 2026 |ref={{sfnref|U.S. Government Manual|1997}}}}
 * {{cite web |title=Air Force Personnel Center: Diversity and Inclusion |url=https://www.afpc.af.mil/ |website=Air Force Personnel Center |year=2020 |access-date=January 23, 2026 |ref={{sfnref|Air Force Personnel Center|2020}}}}
 * {{cite web |title=USAF Awards and Decorations |url=https://www.afpc.af.mil/Recognition/ |website=Air Force Personnel Center |year=2020 |access-date=January 23, 2026 |ref={{sfnref|USAF Awards|2020}}}}
 * {{cite press release |title=Cherokee Nation Citizenship for Freedmen Descendants |url=https://www.cherokee.org/ |publisher=Cherokee Nation |year=2017 |ref={{sfnref|Cherokee Nation|2017}}}}
@@ -479,5 +523,7 @@ These structured data entries facilitate genealogical research and enable automa
 [[Category:Recipients of the Air Force Distinguished Service Medal]]
 [[Category:Recipients of the Defense Superior Service Medal]]
 [[Category:Recipients of the Legion of Merit]]
+[[Category:Clinton administration personnel]]
+[[Category:United States Department of Energy officials]]
 
 {{Featured article}}
