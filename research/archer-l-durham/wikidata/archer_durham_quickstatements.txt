@@ -1,0 +1,150 @@
+# Wikidata QuickStatements for Archer L. Durham Family
+#
+# Upload at: https://quickstatements.toolforge.org/
+# Format: V1 QuickStatements
+#
+# ============================================================
+# ITEM 1: Major General Archer L. Durham
+# ============================================================
+
+CREATE
+
+LAST	Len	"Archer L. Durham"
+LAST	Den	"United States Air Force major general"
+LAST	Aen	"Archer Lyman Durham"
+
+# Instance of human
+LAST	P31	Q5
+
+# Sex or gender: male
+LAST	P21	Q6581097
+
+# Country of citizenship: United States
+LAST	P27	Q30
+
+# Date of birth: 9 June 1932
+LAST	P569	+1932-06-09T00:00:00Z/11
+
+# Place of birth: Pasadena, California (Q49171)
+LAST	P19	Q49171
+
+# Occupation: military officer (Q47064)
+LAST	P106	Q47064
+
+# Military branch: United States Air Force (Q11223)
+LAST	P241	Q11223
+
+# Military rank: major general (Q132851)
+LAST	P410	Q132851
+
+# Employer: United States Transportation Command (Q1754323)
+LAST	P108	Q1754323
+
+# Ethnic group: African Americans (Q49085)
+LAST	P172	Q49085
+
+# Ethnic group: Cherokee Freedmen (to be created or linked)
+# LAST	P172	QXXX
+
+# Mother: Ruby Zenobia Sorrell
+# (Not yet in Wikidata - would need to be created first)
+
+# Reference: Official USAF Biography
+LAST	P854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# ============================================================
+# ITEM 2: Morris A. Sorrell (Cherokee Freedmen)
+# ============================================================
+
+CREATE
+
+LAST	Len	"Morris A. Sorrell"
+LAST	Den	"Cherokee Freedman enrolled in the Dawes Rolls"
+LAST	Aen	"Maurice Sorrell"
+
+# Instance of human
+LAST	P31	Q5
+
+# Sex or gender: male
+LAST	P21	Q6581097
+
+# Date of birth: 28 May 1874
+LAST	P569	+1874-05-28T00:00:00Z/11
+
+# Place of birth: Indian Territory (Q841383)
+LAST	P19	Q841383
+
+# Ethnic group: Cherokee Freedmen
+# LAST	P172	QXXX
+
+# Ethnic group: African Americans (Q49085)
+LAST	P172	Q49085
+
+# Dawes Roll number (custom property or described at URL)
+# Cherokee Freedmen Card 193
+LAST	P973	"https://www.okhistory.org/research/dawes"
+LAST	P1810	"Morris A. Sorrell, Cherokee Freedmen Card 193"
+
+# Spouse: Ida Manley (marriage date 5 October 1902)
+# LAST	P26	QXXX	P580	+1902-10-05T00:00:00Z/11
+
+# ============================================================
+# ITEM 3: Ida Manley (Cherokee Freedmen)
+# ============================================================
+
+CREATE
+
+LAST	Len	"Ida Manley"
+LAST	Den	"Cherokee Freedman enrolled in the Dawes Rolls"
+
+# Instance of human
+LAST	P31	Q5
+
+# Sex or gender: female
+LAST	P21	Q6581072
+
+# Place of birth: Indian Territory or Cherokee Nation
+LAST	P19	Q841383
+
+# Ethnic group: African Americans (Q49085)
+LAST	P172	Q49085
+
+# Dawes Roll number
+# Roll #4136, Card #1515
+LAST	P973	"https://www.okhistory.org/research/dawes"
+LAST	P1810	"Ida Manley, Dawes Roll #4136, Card #1515"
+
+# Mother: Kate Manley
+# LAST	P25	QXXX
+
+# Spouse: Morris A. Sorrell
+# LAST	P26	QXXX	P580	+1902-10-05T00:00:00Z/11
+
+# ============================================================
+# ITEM 4: Kate Manley (Cherokee Freedmen)
+# ============================================================
+
+CREATE
+
+LAST	Len	"Kate Manley"
+LAST	Den	"Cherokee Freedman enrolled in the Dawes Rolls"
+
+# Instance of human
+LAST	P31	Q5
+
+# Sex or gender: female
+LAST	P21	Q6581072
+
+# Ethnic group: African Americans (Q49085)
+LAST	P172	Q49085
+
+# Dawes Roll number
+# Roll #4135, Card #1515
+# Also referenced from Cherokee Freedmen Card D628
+LAST	P973	"https://www.okhistory.org/research/dawes"
+LAST	P1810	"Kate Manley, Dawes Roll #4135, Card #1515 (transferred from D628)"
+
+# Children: Ida Manley, Frank Manley, Sarah Manley, Lela Manley,
+#           Joseph Manley Jr., Willie Manley, Daisy Manley
+# (Link after creating items)
+

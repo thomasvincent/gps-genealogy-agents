@@ -1,0 +1,187 @@
+{
+  "$schema": "https://www.wikidata.org/wiki/Special:EntitySchemaText/E10",
+  "description": "Wikidata items for Durham-Sorrell-Manley family research",
+  "created": "2026-01-23",
+  "items": [
+    {
+      "id": "NEW_ITEM_1",
+      "type": "item",
+      "labels": {
+        "en": "Archer L. Durham"
+      },
+      "descriptions": {
+        "en": "United States Air Force major general (born 1932)"
+      },
+      "aliases": {
+        "en": ["Archer Lyman Durham", "Maj. Gen. Archer L. Durham"]
+      },
+      "claims": {
+        "P31": [{"value": "Q5", "comment": "instance of: human"}],
+        "P21": [{"value": "Q6581097", "comment": "sex or gender: male"}],
+        "P27": [{"value": "Q30", "comment": "country of citizenship: United States"}],
+        "P569": [{"value": "+1932-06-09T00:00:00Z/11", "comment": "date of birth"}],
+        "P19": [{"value": "Q49171", "comment": "place of birth: Pasadena, California"}],
+        "P106": [{"value": "Q47064", "comment": "occupation: military officer"}],
+        "P241": [{"value": "Q11223", "comment": "military branch: United States Air Force"}],
+        "P410": [{"value": "Q132851", "comment": "military rank: major general"}],
+        "P108": [{"value": "Q1754323", "comment": "employer: United States Transportation Command"}],
+        "P172": [{"value": "Q49085", "comment": "ethnic group: African Americans"}]
+      },
+      "references": [
+        {
+          "P854": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/",
+          "comment": "Official USAF Biography"
+        },
+        {
+          "P248": "Q5752835",
+          "P854": "https://www.census.gov/",
+          "comment": "1940 United States Census"
+        }
+      ],
+      "notability_justification": "U.S. Air Force general officer with official biography; award named after him at Dover AFB"
+    },
+    {
+      "id": "NEW_ITEM_2",
+      "type": "item",
+      "labels": {
+        "en": "Morris A. Sorrell"
+      },
+      "descriptions": {
+        "en": "Cherokee Freedman enrolled in Dawes Rolls (1874–?)"
+      },
+      "aliases": {
+        "en": ["Maurice Sorrell", "Morris Sorrel", "Morris Sorrells"]
+      },
+      "claims": {
+        "P31": [{"value": "Q5", "comment": "instance of: human"}],
+        "P21": [{"value": "Q6581097", "comment": "sex or gender: male"}],
+        "P569": [{"value": "+1874-05-28T00:00:00Z/11", "comment": "date of birth: 28 May 1874"}],
+        "P19": [{"value": "Q841383", "comment": "place of birth: Indian Territory"}],
+        "P172": [{"value": "Q49085", "comment": "ethnic group: African Americans"}]
+      },
+      "qualifiers": {
+        "dawes_roll": {
+          "type": "Cherokee Freedmen",
+          "card_number": "193"
+        }
+      },
+      "references": [
+        {
+          "P854": "https://www.okhistory.org/research/dawes",
+          "P1810": "Morris A. Sorrell, Cherokee Freedmen Card 193",
+          "comment": "Oklahoma Historical Society Dawes Rolls Database"
+        }
+      ],
+      "notability_justification": "Enrolled in Dawes Rolls with permanent government identifier (Cherokee Freedmen Card 193)"
+    },
+    {
+      "id": "NEW_ITEM_3",
+      "type": "item",
+      "labels": {
+        "en": "Ida Manley"
+      },
+      "descriptions": {
+        "en": "Cherokee Freedman enrolled in Dawes Rolls"
+      },
+      "aliases": {
+        "en": ["Ida Madden", "Ida Sorrell"]
+      },
+      "claims": {
+        "P31": [{"value": "Q5", "comment": "instance of: human"}],
+        "P21": [{"value": "Q6581072", "comment": "sex or gender: female"}],
+        "P19": [{"value": "Q841383", "comment": "place of birth: Indian Territory"}],
+        "P172": [{"value": "Q49085", "comment": "ethnic group: African Americans"}]
+      },
+      "qualifiers": {
+        "dawes_roll": {
+          "type": "Cherokee Freedmen",
+          "roll_number": "4136",
+          "card_number": "1515"
+        },
+        "marriage": {
+          "spouse": "Morris A. Sorrell",
+          "date": "1902-10-05"
+        }
+      },
+      "references": [
+        {
+          "P854": "https://www.okhistory.org/research/dawes",
+          "P1810": "Ida Manley, Dawes Roll #4136, Card #1515",
+          "comment": "Oklahoma Historical Society Dawes Rolls Database"
+        }
+      ],
+      "notability_justification": "Enrolled in Dawes Rolls with permanent government identifier (Roll #4136, Card #1515)"
+    },
+    {
+      "id": "NEW_ITEM_4",
+      "type": "item",
+      "labels": {
+        "en": "Kate Manley"
+      },
+      "descriptions": {
+        "en": "Cherokee Freedman enrolled in Dawes Rolls, head of household"
+      },
+      "claims": {
+        "P31": [{"value": "Q5", "comment": "instance of: human"}],
+        "P21": [{"value": "Q6581072", "comment": "sex or gender: female"}],
+        "P172": [{"value": "Q49085", "comment": "ethnic group: African Americans"}]
+      },
+      "qualifiers": {
+        "dawes_roll": {
+          "type": "Cherokee Freedmen",
+          "roll_number": "4135",
+          "card_number": "1515",
+          "previous_card": "D628",
+          "note": "Transferred from Cherokee Freedmen Card D628"
+        },
+        "children": [
+          {"name": "Ida Manley", "roll_number": "4136"},
+          {"name": "Frank Manley", "roll_number": "4137"},
+          {"name": "Sarah Manley", "roll_number": "4138"},
+          {"name": "Lela Manley", "roll_number": "4139"},
+          {"name": "Joseph Manley Jr.", "roll_number": "4140"},
+          {"name": "Willie Manley", "roll_number": "4141"},
+          {"name": "Daisy Manley", "roll_number": "4142"}
+        ]
+      },
+      "references": [
+        {
+          "P854": "https://www.okhistory.org/research/dawes",
+          "P1810": "Kate Manley, Dawes Roll #4135, Card #1515 (transferred from D628)",
+          "comment": "Oklahoma Historical Society Dawes Rolls Database"
+        }
+      ],
+      "notability_justification": "Enrolled in Dawes Rolls with permanent government identifier (Roll #4135, Card #1515); head of household with 8 enrolled family members"
+    }
+  ],
+  "relationships_to_create": [
+    {"subject": "NEW_ITEM_1", "property": "P25", "object": "Ruby Zenobia Sorrell", "note": "mother - not yet notable for Wikidata"},
+    {"subject": "NEW_ITEM_2", "property": "P26", "object": "NEW_ITEM_3", "note": "spouse: Ida Manley"},
+    {"subject": "NEW_ITEM_3", "property": "P26", "object": "NEW_ITEM_2", "note": "spouse: Morris A. Sorrell"},
+    {"subject": "NEW_ITEM_3", "property": "P25", "object": "NEW_ITEM_4", "note": "mother: Kate Manley"},
+    {"subject": "NEW_ITEM_4", "property": "P40", "object": "NEW_ITEM_3", "note": "child: Ida Manley"}
+  ],
+  "wikidata_properties_used": {
+    "P31": "instance of",
+    "P21": "sex or gender",
+    "P27": "country of citizenship",
+    "P569": "date of birth",
+    "P19": "place of birth",
+    "P106": "occupation",
+    "P241": "military branch",
+    "P410": "military rank",
+    "P108": "employer",
+    "P172": "ethnic group",
+    "P25": "mother",
+    "P26": "spouse",
+    "P40": "child",
+    "P854": "reference URL",
+    "P1810": "subject named as",
+    "P248": "stated in"
+  },
+  "notes": {
+    "cherokee_freedmen_qid": "Consider creating or finding Wikidata item for 'Cherokee Freedmen' ethnic group if not exists",
+    "dawes_roll_property": "Consider proposing Wikidata property for 'Dawes Roll number' if not exists",
+    "upload_order": "Create items in order: Kate Manley (4), Ida Manley (3), Morris Sorrell (2), Archer Durham (1) to allow relationship linking"
+  }
+}
