@@ -408,10 +408,14 @@ class GrampsClient:
 
     def get_families_batch(self, handles: list[str]) -> list[Family]:
         """Batch fetch multiple families by handle.
-        
+
+        Note: This is a minimal implementation that calls get_family() for each handle.
+        For production optimization, consider implementing a single SQL query with
+        WHERE handle IN (...) to fetch all families in one database round-trip.
+
         Args:
             handles: List of family handles to fetch
-            
+
         Returns:
             List of Family objects (excludes handles that don't exist)
         """
@@ -419,10 +423,14 @@ class GrampsClient:
 
     def get_persons_batch(self, handles: list[str]) -> list[Person]:
         """Batch fetch multiple persons by handle.
-        
+
+        Note: This is a minimal implementation that calls get_person() for each handle.
+        For production optimization, consider implementing a single SQL query with
+        WHERE handle IN (...) to fetch all persons in one database round-trip.
+
         Args:
             handles: List of person handles to fetch
-            
+
         Returns:
             List of Person objects (excludes handles that don't exist)
         """

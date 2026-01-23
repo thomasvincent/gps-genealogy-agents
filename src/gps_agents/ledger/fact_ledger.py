@@ -104,7 +104,6 @@ class FactLedger:
                 "NOT RECOMMENDED FOR PRODUCTION USE. "
                 "Install python-rocksdb for production deployments."
             )
-            import os
             if os.getenv("ENVIRONMENT", "development").lower() == "production":
                 raise RuntimeError(
                     "RocksDB is required in production environments. "

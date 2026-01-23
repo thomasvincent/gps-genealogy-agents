@@ -167,9 +167,4 @@ class BaseHTMLSourceAdapter(BaseSource):
         except Exception as e:
             logger.exception(f"{self.name} unexpected error: {e}")
 
-        finally:
-            # Always return list, even on error
-            if "records" not in locals():
-                records = []
-
         return records
