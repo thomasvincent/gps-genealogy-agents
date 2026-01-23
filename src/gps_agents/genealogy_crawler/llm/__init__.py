@@ -6,6 +6,7 @@ hallucination firewall validation and idempotency caching.
 from .idempotency import (
     ContentFingerprint,
     IdempotencyCache,
+    LLMCache,
     PersistentIdempotencyCache,
     fingerprint_input,
     fingerprint_raw_text,
@@ -69,6 +70,7 @@ __all__ = [
     # Idempotency
     "ContentFingerprint",
     "IdempotencyCache",
+    "LLMCache",
     "PersistentIdempotencyCache",
     "fingerprint_input",
     "fingerprint_raw_text",

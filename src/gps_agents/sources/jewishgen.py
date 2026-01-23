@@ -150,45 +150,62 @@ class JewishGenSource(BaseSource):
                 follow_redirects=True,
             ) as client:
                 resp = await client.get(url, params=params)
+                resp.raise_for_status()
+                
+                soup = BeautifulSoup(resp.text, "html.parser")
 
-                if resp.status_code == 200:
-                    soup = BeautifulSoup(resp.text, "html.parser")
+                # Parse results table
+                tables = soup.find_all("table")
+                for table in tables:
+                    rows = table.find_all("tr")
+                    for row in rows[1:20]:  # Skip header, limit results
+                        cells = row.find_all("td")
+                        if len(cells) >= 3:
+                            surname = cells[0].get_text(strip=True)
+                            given = cells[1].get_text(strip=True) if len(cells) > 1 else ""
+                            town = cells[2].get_text(strip=True) if len(cells) > 2 else ""
 
-                    # Parse results table
-                    tables = soup.find_all("table")
-                    for table in tables:
-                        rows = table.find_all("tr")
-                        for row in rows[1:20]:  # Skip header, limit results
-                            cells = row.find_all("td")
-                            if len(cells) >= 3:
-                                surname = cells[0].get_text(strip=True)
-                                given = cells[1].get_text(strip=True) if len(cells) > 1 else ""
-                                town = cells[2].get_text(strip=True) if len(cells) > 2 else ""
-
-                                if surname.lower() == query.surname.lower():
-                                    records.append(
-                                        RawRecord(
-                                            source=self.name,
-                                            record_id=f"jgff-{surname}-{hash(town)}",
-                                            record_type="family_finder",
-                                            url=url,
-                                            raw_data={
-                                                "surname": surname,
-                                                "given": given,
-                                                "town": town,
-                                            },
-                                            extracted_fields={
-                                                "surname": surname,
-                                                "given_name": given,
-                                                "town": town,
-                                                "note": "Contact submitter through JewishGen for more info",
-                                            },
-                                            accessed_at=datetime.now(UTC),
-                                        )
+                            if surname.lower() == query.surname.lower():
+                                records.append(
+                                    RawRecord(
+                                        source=self.name,
+                                        record_id=f"jgff-{surname}-{hash(town)}",
+                                        record_type="family_finder",
+                                        url=url,
+                                        raw_data={
+                                            "surname": surname,
+                                            "given": given,
+                                            "town": town,
+                                        },
+                                        extracted_fields={
+                                            "surname": surname,
+                                            "given_name": given,
+                                            "town": town,
+                                            "note": "Contact submitter through JewishGen for more info",
+                                        },
+                                        accessed_at=datetime.now(UTC),
                                     )
+                                )
 
-        except httpx.HTTPError as e:
-            logger.debug(f"JewishGen Family Finder error: {e}")
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code >= 500:
+                logger.error(f"{self.name} server error {e.response.status_code}: {e}")
+                # Re-raise for retry logic
+                raise
+            elif e.response.status_code == 429:
+                logger.warning(f"{self.name} rate limit exceeded")
+                # Could implement exponential backoff here
+            else:
+                logger.error(f"{self.name} HTTP error {e.response.status_code}: {e}")
+                
+        except httpx.TimeoutException:
+            logger.warning(f"{self.name} request timeout after 30s")
+            
+        except httpx.RequestError as e:
+            logger.error(f"{self.name} request failed: {e}")
+            
+        except Exception as e:
+            logger.exception(f"{self.name} unexpected error: {e}")
 
         return records
 

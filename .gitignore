@@ -100,3 +100,5 @@ output/
 results/
 # Playwright MCP screenshots
 .playwright-mcp/
+# LLM cache
+.llm_cache/

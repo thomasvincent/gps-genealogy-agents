@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,30 +7,81 @@ on:
     branches: [ main ]
 
 jobs:
-  lint-and-test:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python: ['3.13', '3.14']
-    runs-on: ${{ matrix.os }}
+        python-version: ["3.13"]
+    
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install dependencies
+      
+      - name: Install system dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
-      - name: Ruff (lint)
-        run: ruff check .
-- name: Pytest (core)
-        run: pytest -q tests/test_idempotency.py tests/test_wiki_pipeline.py tests/test_cli_wiki.py
+          sudo apt-get update
+          sudo apt-get install -y librocksdb-dev
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: uv pip install -e ".[dev]" --system
+      
+      - name: Run linting
+        run: |
+          ruff check src/ tests/
+          ruff format --check src/ tests/
+      
+      - name: Run type checking
+        run: mypy src/ --ignore-missing-imports
+      
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src --cov-report=xml --cov-report=term -v
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
   docs-consistency:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -42,6 +93,8 @@ jobs:
 
   commitlint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4

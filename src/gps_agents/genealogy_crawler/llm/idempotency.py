@@ -3,6 +3,7 @@
 Prevents duplicate API calls by fingerprinting input content and caching results.
 Integrates with the system-wide fingerprinting from gps_agents.idempotency.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -11,12 +12,9 @@ import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from pydantic import BaseModel
-
-if TYPE_CHECKING:
-    pass
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +24,7 @@ OutputT = TypeVar("OutputT", bound=BaseModel)
 @dataclass(frozen=True)
 class ContentFingerprint:
     """SHA-256 fingerprint of content for deduplication."""
+
     kind: str
     value: str  # hex sha256
 
@@ -36,6 +35,7 @@ class ContentFingerprint:
 @dataclass
 class CachedResult(Generic[OutputT]):
     """Cached LLM result with metadata."""
+
     fingerprint: ContentFingerprint
     output_json: str  # JSON-serialized output
     created_at: datetime
@@ -54,6 +54,7 @@ class IdempotencyCache:
     This provides deduplication at the LLM call level to prevent
     re-processing the same content multiple times.
     """
+
     cache: dict[str, CachedResult] = field(default_factory=dict)
     max_age: timedelta = field(default_factory=lambda: timedelta(hours=24))
     max_size: int = 10000
@@ -245,6 +246,85 @@ class PersistentIdempotencyCache(IdempotencyCache):
     def close(self) -> None:
         """Save and close the cache."""
         self._save()
+
+
+class LLMCache:
+    """Simple file-based cache for LLM responses.
+
+    This provides a lightweight caching layer for expensive LLM calls
+    using a simple file-based storage mechanism.
+    """
+
+    def __init__(self, cache_dir: str | Path = ".llm_cache"):
+        """Initialize the cache.
+
+        Args:
+            cache_dir: Directory to store cache files
+        """
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(exist_ok=True)
+
+    def _get_cache_key(self, prompt: str, system_prompt: str) -> str:
+        """Generate cache key from prompts.
+
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+
+        Returns:
+            SHA-256 hash of combined prompts
+        """
+        content = f"{system_prompt}|{prompt}"
+        return hashlib.sha256(content.encode()).hexdigest()
+
+    def get(self, prompt: str, system_prompt: str) -> str | None:
+        """Retrieve cached response.
+
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+
+        Returns:
+            Cached response or None if not found
+        """
+        cache_key = self._get_cache_key(prompt, system_prompt)
+        cache_file = self.cache_dir / f"{cache_key}.json"
+
+        if cache_file.exists():
+            try:
+                data = json.loads(cache_file.read_text())
+                logger.debug(f"Cache hit for key {cache_key[:8]}...")
+                return data["response"]
+            except Exception as e:
+                logger.warning(f"Cache read error: {e}")
+
+        return None
+
+    def set(self, prompt: str, system_prompt: str, response: str) -> None:
+        """Store response in cache.
+
+        Args:
+            prompt: User prompt
+            system_prompt: System prompt
+            response: LLM response to cache
+        """
+        cache_key = self._get_cache_key(prompt, system_prompt)
+        cache_file = self.cache_dir / f"{cache_key}.json"
+
+        try:
+            cache_file.write_text(
+                json.dumps(
+                    {
+                        "prompt": prompt[:100] + "...",  # Truncate for readability
+                        "response": response,
+                        "cached_at": datetime.now(UTC).isoformat(),
+                    },
+                    indent=2,
+                )
+            )
+            logger.debug(f"Cached response for key {cache_key[:8]}...")
+        except Exception as e:
+            logger.warning(f"Cache write error: {e}")
 
 
 # Global in-memory cache instance (can be replaced with persistent)
