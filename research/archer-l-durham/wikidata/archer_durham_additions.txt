@@ -6,46 +6,48 @@
 # These additions are based on the Official USAF Biography:
 # https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/
 #
+# CORRECTED QIDs - 2026-01-23
+#
 # ============================================================
 # EDUCATION (P69)
 # ============================================================
 
-# Utah State University - BS Political Science, 1960
-Q137835093	P69	Q192408	P512	Q787674	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Utah State University (Q1052614) - BS Political Science, 1960
+Q137835093	P69	Q1052614	P512	Q787674	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# George Washington University - MS International Affairs, 1975
-Q137835093	P69	Q327576	P512	Q950900	P582	+1975-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# George Washington University (Q432637) - MS International Affairs, 1975
+Q137835093	P69	Q432637	P512	Q950900	P582	+1975-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# National War College - 1975, Distinguished Graduate
-Q137835093	P69	Q1967622	P582	+1975-00-00T00:00:00Z/9	P2868	Q21481732	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# National War College (Q137269) - 1975, Distinguished Graduate
+Q137835093	P69	Q137269	P582	+1975-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Air Command and Staff College - 1961
-Q137835093	P69	Q3603748	P582	+1961-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Air Command and Staff College (Q4697817) - 1961
+Q137835093	P69	Q4697817	P582	+1961-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Squadron Officer School - 1960
-Q137835093	P69	Q7581043	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Squadron Officer School (Q7581907) - 1960
+Q137835093	P69	Q7581907	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Industrial College of the Armed Forces - 1973
-Q137835093	P69	Q5030053	P582	+1973-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Eisenhower School (Q6027532, formerly Industrial College of the Armed Forces) - 1973
+Q137835093	P69	Q6027532	P582	+1973-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
 # ============================================================
 # AWARDS RECEIVED (P166)
 # ============================================================
 
-# Air Force Distinguished Service Medal
-Q137835093	P166	Q4698694	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Air Force Distinguished Service Medal (Q2731483)
+Q137835093	P166	Q2731483	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Defense Superior Service Medal
-Q137835093	P166	Q1181573	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Defense Superior Service Medal (Q2585651)
+Q137835093	P166	Q2585651	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Legion of Merit (3 awards) - using P1114 (quantity) per Wikidata:Property proposal/quantity
-Q137835093	P166	Q719421	P1114	3	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Legion of Merit (Q724443) - 3 awards using P1114 (quantity)
+Q137835093	P166	Q724443	P1114	3	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Meritorious Service Medal
-Q137835093	P166	Q1751805	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Meritorious Service Medal (Q1760530)
+Q137835093	P166	Q1760530	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Air Force Commendation Medal
-Q137835093	P166	Q4698684	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Air Force Commendation Medal (Q113629046)
+Q137835093	P166	Q113629046	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
 # ============================================================
 # SERVICE PERIOD
@@ -62,30 +64,26 @@ Q137835093	P2032	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biogr
 # ============================================================
 
 # Commander, 1606th Air Base Wing, Kirtland AFB (July 1977 - February 1979)
-Q137835093	P39	Q15978631	P580	+1977-07-00T00:00:00Z/10	P582	+1979-02-00T00:00:00Z/10	P276	Q1024594	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Using Q11247470 (commanding officer), P642 (of) for unit, P276 for location
+Q137835093	P39	Q11247470	P580	+1977-07-00T00:00:00Z/10	P582	+1979-02-00T00:00:00Z/10	P276	Q577946	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Commander, 436th Military Airlift Wing, Dover AFB (February 1979 - February 1980)
-# Note: 436th Airlift Wing is Q7713143
-Q137835093	P39	Q15978631	P642	Q7713143	P580	+1979-02-00T00:00:00Z/10	P582	+1980-02-00T00:00:00Z/10	P276	Q1063200	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Commander, 436th Military Airlift Wing (Q4637871), Dover AFB (February 1979 - February 1980)
+Q137835093	P39	Q11247470	P642	Q4637871	P580	+1979-02-00T00:00:00Z/10	P582	+1980-02-00T00:00:00Z/10	P276	Q755023	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
 # Commander, 76th Military Airlift Division, Andrews AFB (February 1980 - February 1982)
-Q137835093	P39	Q15978631	P580	+1980-02-00T00:00:00Z/10	P582	+1982-02-00T00:00:00Z/10	P276	Q757035	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+Q137835093	P39	Q11247470	P580	+1980-02-00T00:00:00Z/10	P582	+1982-02-00T00:00:00Z/10	P276	Q768542	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Vice Commander, Military Traffic Management Command (February 1982 - March 1984)
-# MTMC is Q6859055
-Q137835093	P39	Q1500050	P642	Q6859055	P580	+1982-02-00T00:00:00Z/10	P582	+1984-03-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Vice Commander, Surface Deployment and Distribution Command (Q2368472, formerly MTMC) (February 1982 - March 1984)
+Q137835093	P39	Q11247470	P642	Q2368472	P580	+1982-02-00T00:00:00Z/10	P582	+1984-03-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Director of Deployment, USTRANSCOM (June 1987 - 1989)
-Q137835093	P39	Q1162163	P642	Q1754323	P580	+1987-06-00T00:00:00Z/10	P582	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Director of Deployment, USTRANSCOM (Q1499989) (June 1987 - 1989)
+Q137835093	P39	Q11247470	P642	Q1499989	P580	+1987-06-00T00:00:00Z/10	P582	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
 # ============================================================
 # POSITION HELD (P39) - Post-Military Government Service
 # ============================================================
 
 # Assistant Secretary of Energy for Human Resources and Administration (May 1993 - 1998)
-# Note: The specific position item may need to be created in Wikidata
-# Using Q4806189 (United States Assistant Secretary of Energy) as position
-# Employer: Q217462 (United States Department of Energy)
+# Employer: Q217810 (United States Department of Energy)
 # Replaced by: Q512705 (Rose Gottemoeller)
-Q137835093	P39	Q4806189	P108	Q217462	P580	+1993-05-00T00:00:00Z/10	P582	+1998-00-00T00:00:00Z/9	P1366	Q512705	S854	"https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf"
-
+Q137835093	P39	Q11247470	P108	Q217810	P580	+1993-05-00T00:00:00Z/10	P582	+1998-00-00T00:00:00Z/9	P1366	Q512705	S854	"https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf"

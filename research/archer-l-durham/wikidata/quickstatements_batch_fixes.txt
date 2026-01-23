@@ -1,0 +1,93 @@
+# QuickStatements for Wikidata Item Q137835093 (Archer L. Durham)
+# Generated: 2026-01-23
+# Purpose: Correct errors, resolve inconsistencies, add missing data with references
+#
+# Upload at: https://quickstatements.toolforge.org/
+# Format: QuickStatements V2
+#
+# NOTES:
+# - Items already removed via browser: Hastrup family name, incorrect employers,
+#   military rank "871", standalone end time "1 July 1989"
+# - Run these in batches to monitor for constraint violations
+#
+# ============================================================
+# REMOVE ERRONEOUS STATEMENTS
+# ============================================================
+
+# Remove incorrect award (Air Force Distinguished Service Medal - not verified in USAF bio sources)
+-Q137835093|P166|Q2731483
+
+# Remove unverified conflicts (no specific battles or participation mentioned in bio)
+-Q137835093|P607|Q8683
+-Q137835093|P607|Q8740
+
+# ============================================================
+# UPDATE BIRTH DATE (more precise)
+# ============================================================
+
+# Remove existing birth date (imprecise year-only)
+-Q137835093|P569|""
+
+# Add precise birth date with reference
+Q137835093|P569|+1932-06-09T00:00:00Z/11|S854|"https://californiabirthindex.org"|S813|+2026-01-23T00:00:00Z/11
+
+# ============================================================
+# UPDATE AWARDS WITH QUANTITIES
+# ============================================================
+
+# Remove and re-add Meritorious Service Medal with quantity for oak leaf cluster (2 total awards)
+-Q137835093|P166|Q1760530
+Q137835093|P166|Q1760530|P1114|2|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Remove and re-add Air Force Commendation Medal with quantity for oak leaf cluster (2 total awards)
+-Q137835093|P166|Q113629046
+Q137835093|P166|Q113629046|P1114|2|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# ============================================================
+# ADD ADDITIONAL AWARDS
+# ============================================================
+
+# Add Air Force Outstanding Unit Award with quantity for three oak leaf clusters (4 total awards)
+Q137835093|P166|Q4697935|P1114|4|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add National Defense Service Medal with service star (2 qualifying periods)
+Q137835093|P166|Q2611552|P1114|2|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add Armed Forces Expeditionary Medal
+Q137835093|P166|Q4792992|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add Air Force Longevity Service Award with quantity for six oak leaf clusters (7 total awards)
+Q137835093|P166|Q4697919|P1114|7|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add Armed Forces Reserve Medal
+Q137835093|P166|Q4793010|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add Small Arms Expert Marksmanship Ribbon
+Q137835093|P166|Q7540694|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add Good Conduct Medal with military branch qualifier (Air Force)
+Q137835093|P166|Q558877|P241|Q11223|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# ============================================================
+# ADD EDUCATION WITH QUALIFIERS
+# ============================================================
+
+# Add education: Utah State University (B.S. in political science, 1960)
+Q137835093|P69|Q1052614|P512|Q189533|P812|Q36442|P582|+1960-00-00T00:00:00Z/9|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# Add education: George Washington University (M.S. in international affairs, 1975)
+Q137835093|P69|Q432637|P512|Q189091|P812|Q166542|P582|+1975-00-00T00:00:00Z/9|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11
+
+# ============================================================
+# ADD POST-MILITARY POSITION
+# ============================================================
+
+# Add post-military position: United States Assistant Secretary of Energy
+Q137835093|P39|Q7887240|P794|"Assistant Secretary of Energy for Human Resources and Administration"|P580|+1993-06-00T00:00:00Z/10|P582|+2001-01-00T00:00:00Z/10|S854|"https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf"|S813|+2026-01-23T00:00:00Z/11
+
+# ============================================================
+# ADD FLIGHT RECORD
+# ============================================================
+
+# Add flight record as occupation qualifier (command pilot with 6000+ flying hours)
+Q137835093|P106|Q2095549|P1114|6000|S1103|"flying hours"|S854|"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"|S813|+2026-01-23T00:00:00Z/11

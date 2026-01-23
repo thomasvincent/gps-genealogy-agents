@@ -1,111 +1,110 @@
 {{Short description|United States Air Force general and government official}}
 {{Infobox military person
-| name          = Archer L. Durham
-| image         =
-| caption       =
-| birth_date    = {{birth date and age|1932|6|9}}
-| birth_place   = [[Los Angeles County, California]], U.S.
-| death_date    =
-| death_place   =
+| name = Archer L. Durham
+| image =
+| caption =
+| birth_date = {{birth date and age|1932|6|9}}
+| birth_place = [[Los Angeles County, California]], U.S.
+| death_date =
+| death_place =
 | placeofburial =
-| nickname      =
-| allegiance    = {{flag|United States of America}}
-| branch        = {{Air force|United States}}
-| serviceyears  = 1953–c. 1988
-| rank          = [[File:US-O8 insignance.svg|25px]] [[Major general (United States)|Major General]]
-| unit          =
-| commands      = [[436th Airlift Wing|436th Military Airlift Wing]]<br>76th Military Airlift Division<br>1606th Air Base Wing
-| battles       =
-| awards        = [[Defense Superior Service Medal]]<br>[[Legion of Merit]] (3)<br>[[Meritorious Service Medal (United States)|Meritorious Service Medal]] (2)
-| relations     =
-| laterwork     = [[United States Assistant Secretary of Energy for Human Resources and Administration|Assistant Secretary of Energy for Human Resources and Administration]]
+| nickname =
+| allegiance = {{flag|United States of America}}
+| branch = {{Air force|United States}}
+| serviceyears = 1953–1989
+| rank = [[File:US-O8 insignia.svg|25px]] [[Major general (United States)|Major General]]
+| unit =
+| commands = [[436th Airlift Wing|436th Military Airlift Wing]]<br>[[76th Airlift Division|76th Military Airlift Division]]<br>1606th Air Base Wing
+| battles =
+| awards = [[Defense Superior Service Medal]]<br>[[Legion of Merit]] with two [[oak leaf cluster]]s<br>[[Meritorious Service Medal (United States)|Meritorious Service Medal]] with [[oak leaf cluster]]
+| relations =
+| laterwork = [[United States Assistant Secretary of Energy for Human Resources and Administration|Assistant Secretary of Energy for Human Resources and Administration]]
 }}
-
-'''Archer Lyman Durham''' (born June 9, 1932) is a retired [[United States Air Force]] [[Major general (United States)|major general]] who served as Director of Deployment at [[United States Transportation Command]]. Following his military career, he served as [[United States Assistant Secretary of Energy|Assistant Secretary of Energy]] for Human Resources and Administration during the [[Clinton administration]].
+'''Archer Lyman Durham''' (born June 9, 1932) is a retired [[United States Air Force]] [[Major general (United States)|major general]] who served as Director of Deployment at [[United States Transportation Command]].<ref name="USAFbio">{{cite web|url=https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/|title=Major General Archer L. Durham|publisher=United States Air Force|access-date=2026-01-20}}</ref> Following his military career, he served as [[United States Assistant Secretary of Energy|Assistant Secretary of Energy]] for Human Resources and Administration during the [[Clinton administration]].<ref name="nomination">{{cite web|url=https://www.presidency.ucsb.edu/documents/nomination-for-energy-department-and-ambassadorial-posts|title=Nomination for Energy Department and Ambassadorial Posts|publisher=The American Presidency Project|date=April 22, 1993|access-date=2026-01-23}}</ref><ref name="govmanual">{{cite web|url=https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf|title=1997 U.S. Government Manual|publisher=Office of the Federal Register|page=252|access-date=2026-01-23}}</ref>
 
 == Early life and education ==
-Durham was born on June 9, 1932, in [[Los Angeles County, California]].<ref>{{cite web|url=https://californiabirthindex.org|title=California Birth Index, 1905-1995|access-date=2026-01-20}}</ref> He grew up in [[Pasadena, California]] and graduated from Pasadena High School. He earned a [[Bachelor of Science]] degree in [[political science]] from [[Utah State University]] in 1960 and a [[Master of Science]] degree in international affairs from [[George Washington University]] in 1975.
+Durham was born on June 9, 1932, in [[Los Angeles County, California]].<ref>{{cite web|url=https://californiabirthindex.org|title=California Birth Index, 1905-1995|access-date=2026-01-20}}</ref><ref name="USAFbio"/> He grew up in [[Pasadena, California]] and graduated from Pasadena High School.<ref name="USAFbio"/> He earned a [[Bachelor of Science]] degree in [[political science]] from [[Utah State University]] in 1960 and a [[Master of Science]] degree in international affairs from [[George Washington University]] in 1975.<ref name="USAFbio"/>
 
-His military education includes [[Squadron Officer School]] (1960), [[Air Command and Staff College]] (1961), [[Industrial College of the Armed Forces]] (1973), and [[National War College]] (1975), from which he graduated as a distinguished graduate. He also completed executive education programs at [[Columbia Business School]] and the [[John F. Kennedy School of Government]] at [[Harvard University]].
+His military education includes [[Squadron Officer School]] (1960), [[Air Command and Staff College]] (1961), [[Industrial College of the Armed Forces]] (1973), and [[National War College]] (1975), from which he graduated as a distinguished graduate. He also completed executive education programs at [[Columbia Business School]] and the [[John F. Kennedy School of Government]] at [[Harvard University]].<ref name="USAFbio"/>
 
 == Military career ==
-Durham began his military career in January 1953 as an [[aviation cadet]] and received his commission and pilot wings at [[Laredo Air Force Base]], Texas, in April 1954.
+Durham began his military career in January 1953 as an [[aviation cadet]] and received his commission and pilot wings at [[Laredo Air Force Base]], Texas, in April 1954.<ref name="USAFbio"/>
 
 === Early assignments (1954–1966) ===
-His first operational assignment was as a pilot with the 744th Troop Carrier Squadron at [[Charleston Air Force Base]], South Carolina, in August 1954. In October 1955, he transferred with the squadron to [[Kadena Air Base]], Okinawa.
+His first operational assignment was as a pilot with the 744th Troop Carrier Squadron at [[Charleston Air Force Base]], South Carolina, in August 1954. In October 1955, he transferred with the squadron to [[Kadena Air Base]], Okinawa.<ref name="USAFbio"/>
 
-From June 1956 to June 1958, Durham served as a flight test maintenance officer with the 2720th Maintenance Group at [[Clark Air Base]], Philippines. He then served with the 28th Logistics Support Squadron (later redesignated the 28th Air Transport Squadron) at [[Hill Air Force Base]], Utah, as an aircraft commander and squadron plans and mobility officer.
+From June 1956 to June 1958, Durham served as a flight test maintenance officer with the 2720th Maintenance Group at [[Clark Air Base]], Philippines. He then served with the 28th Logistics Support Squadron (later redesignated the 28th Air Transport Squadron) at [[Hill Air Force Base]], Utah, as an aircraft commander and squadron plans and mobility officer.<ref name="USAFbio"/>
 
-In August 1963, Durham transferred to the 1622nd Support Squadron in Paris, France, where he served as an airlift command post controller until the squadron was disestablished in June 1964. From July 1964 to September 1966, he was assigned to the 322nd Air Division at [[Chateauroux Air Station]], France, as a plans officer in the Directorate of Plans and Programs.
+In August 1963, Durham transferred to the 1622nd Support Squadron in Paris, France, where he served as an airlift command post controller until the squadron was disestablished in June 1964. From July 1964 to September 1966, he was assigned to the 322nd Air Division at [[Chateauroux Air Station]], France, as a plans officer in the Directorate of Plans and Programs.<ref name="USAFbio"/>
 
 === Headquarters and staff assignments (1966–1975) ===
-Returning to the United States in October 1966, Durham served at Headquarters [[Military Airlift Command]], [[Scott Air Force Base]], Illinois, as chief of the Advanced Programming and Policy Division until December 1968.
+Returning to the United States in October 1966, Durham served at Headquarters [[Military Airlift Command]], [[Scott Air Force Base]], Illinois, as chief of the Advanced Programming and Policy Division until December 1968.<ref name="USAFbio"/>
 
-In January 1969, he was assigned to Headquarters [[U.S. Air Force]] at the [[Pentagon]], serving in the Directorate of Plans, Office of the Deputy Chief of Staff for Plans and Operations. During this tour, he served as a plans action officer and as assistant deputy director for plans and policy for [[Joint Chiefs of Staff]] matters.
+In January 1969, he was assigned to Headquarters [[U.S. Air Force]] at the [[Pentagon]], serving in the Directorate of Plans, Office of the Deputy Chief of Staff for Plans and Operations. During this tour, he served as a plans action officer and as assistant deputy director for plans and policy for [[Joint Chiefs of Staff]] matters.<ref name="USAFbio"/>
 
-From June 1973 to June 1974, Durham served as director of plans and programs for U.S. Air Forces in Korea at the 314th Air Division, [[Osan Air Base]], South Korea.
+From June 1973 to June 1974, Durham served as director of plans and programs for U.S. Air Forces in Korea at the 314th Air Division, [[Osan Air Base]], South Korea.<ref name="USAFbio"/>
 
 === Command assignments (1975–1987) ===
-After graduating from the National War College, Durham transferred to [[McGuire Air Force Base]], New Jersey, in August 1975 as deputy base commander, becoming base commander in February 1976.
+After graduating from the National War College, Durham transferred to [[McGuire Air Force Base]], New Jersey, in August 1975 as deputy base commander, becoming base commander in February 1976.<ref name="USAFbio"/>
 
-He commanded the 1606th Air Base Wing at [[Kirtland Air Force Base]], New Mexico, from July 1977 to February 1979. He then assumed command of the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware—the only all-[[Lockheed C-5 Galaxy|C-5 Galaxy]] wing in the Air Force at the time.
+He commanded the 1606th Air Base Wing at [[Kirtland Air Force Base]], New Mexico, from July 1977 to February 1979.<ref name="USAFbio"/><ref>{{cite web|url=http://usafunithistory.com/PDF/1000/1606%20AIR%20BASE%20WG.pdf|title=1606 AIR BASE WING|publisher=USAF Unit Histories|access-date=2026-01-23}}</ref> He then assumed command of the [[436th Airlift Wing|436th Military Airlift Wing]] at [[Dover Air Force Base]], Delaware—the only all-[[Lockheed C-5 Galaxy|C-5 Galaxy]] wing in the Air Force at the time.<ref name="USAFbio"/><ref>{{cite web|url=http://usafunithistory.com/PDF/0400/436%20AIRLIFT%20WG.pdf|title=436 AIRLIFT WING|publisher=USAF Unit Histories|access-date=2026-01-23}}</ref><ref>{{cite web|url=https://www.dover.af.mil/About-Us/Fact-Sheets/Display/Article/228967/436th-airlift-wing-history|title=436th Airlift Wing History|publisher=Dover AFB|access-date=2026-01-23}}</ref>
 
-In February 1980, Durham assumed command of the 76th Military Airlift Division at [[Joint Base Andrews|Andrews Air Force Base]], Maryland. In February 1982, he was assigned as vice commander of the [[Military Traffic Management Command]] in Washington, D.C.
+In February 1980, Durham assumed command of the 76th Military Airlift Division at [[Joint Base Andrews|Andrews Air Force Base]], Maryland.<ref name="USAFbio"/><ref>{{cite web|url=https://usafunithistory.com/PDF/75-100/76%20AIRLIFT%20DIVISION.pdf|title=76 AIRLIFT DIVISION|publisher=USAF Unit Histories|access-date=2026-01-23}}</ref> In February 1982, he was assigned as vice commander of the [[Military Traffic Management Command]] in Washington, D.C.<ref name="USAFbio"/>
 
-In March 1984, Durham became the director of plans, programs and policy (J-5) and inspector general at [[United States Readiness Command]], [[MacDill Air Force Base]], Florida. He was assigned as director of deployment at the Joint Deployment Agency at MacDill in April 1985 and assumed his final military position as director of deployment at [[United States Transportation Command]] in June 1987.
+In March 1984, Durham became the director of plans, programs and policy (J-5) and inspector general at [[United States Readiness Command]], [[MacDill Air Force Base]], Florida. He was assigned as director of deployment at the Joint Deployment Agency at MacDill in April 1985 and assumed his final military position as director of deployment at [[United States Transportation Command]] in June 1987.<ref name="USAFbio"/>
 
-Durham was promoted to major general on June 1, 1984, with date of rank of September 1, 1980.
+Durham was promoted to major general on June 1, 1984, with date of rank of September 1, 1980.<ref name="USAFbio"/>
 
 == Post-military career ==
-Following his retirement from the Air Force, Durham served in the [[Clinton administration]] as [[United States Assistant Secretary of Energy|Assistant Secretary of Energy]] for Human Resources and Administration at the [[United States Department of Energy]].<ref>{{cite web|url=https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf|title=1997 U.S. Government Manual|publisher=Office of the Federal Register}}</ref> He also served in an acting capacity for Quality Management at the department.
+Following his retirement from the Air Force, Durham served in the [[Clinton administration]] as [[United States Assistant Secretary of Energy|Assistant Secretary of Energy]] for Human Resources and Administration at the [[United States Department of Energy]].<ref name="nomination"/><ref name="govmanual"/><ref name="senate">{{cite web|url=https://www.senate.gov/legislative/LIS/executive_calendar/1993/06_18_1993.pdf|title=Senate of the United States|date=June 18, 1993|access-date=2026-01-23}}</ref> He also served in an acting capacity for Quality Management at the department.<ref name="govmanual"/>
 
 == Flight record ==
-Durham is a [[command pilot]] with more than 6,000 flying hours.
+Durham is a [[command pilot]] with more than 6,000 flying hours.<ref name="USAFbio"/>
 
 == Awards and decorations ==
 {| class="wikitable"
 |-
 |{{Ribbon devices|number=0|type=award-star|ribbon=US Defense Superior Service Medal ribbon.svg|width=106}}
-|[[Defense Superior Service Medal]]
+|[[Defense Superior Service Medal]]<ref name="USAFbio"/><ref name="valor">{{cite web|url=https://valor.militarytimes.com/hero/390891|title=Archer Durham|publisher=Military Times|access-date=2026-01-23}}</ref>
 |-
 |{{Ribbon devices|number=2|type=oak|ribbon=Legion of Merit ribbon.svg|width=106}}
-|[[Legion of Merit]] with two [[oak leaf cluster]]s
+|[[Legion of Merit]] with two [[oak leaf cluster]]s<ref name="USAFbio"/><ref name="valor"/>
 |-
 |{{Ribbon devices|number=1|type=oak|ribbon=Meritorious Service Medal ribbon.svg|width=106}}
-|[[Meritorious Service Medal (United States)|Meritorious Service Medal]] with oak leaf cluster
+|[[Meritorious Service Medal (United States)|Meritorious Service Medal]] with oak leaf cluster<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=1|type=oak|ribbon=Air Force Commendation ribbon.svg|width=106}}
-|[[Air Force Commendation Medal]] with oak leaf cluster
+|[[Air Force Commendation Medal]] with oak leaf cluster<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=3|type=oak|ribbon=Outstanding Unit ribbon.svg|width=106}}
-|[[Air Force Outstanding Unit Award]] with three oak leaf clusters
+|[[Air Force Outstanding Unit Award]] with three oak leaf clusters<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=0|type=award-star|ribbon=Good Conduct Medal ribbon.svg|width=106}}
-|[[Good Conduct Medal]]
+|[[Good Conduct Medal]]<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=1|type=service-star|ribbon=National Defense Service Medal ribbon.svg|width=106}}
-|[[National Defense Service Medal]] with service star
+|[[National Defense Service Medal]] with service star<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=0|type=award-star|ribbon=Armed Forces Expeditionary Medal ribbon.svg|width=106}}
-|[[Armed Forces Expeditionary Medal]]
+|[[Armed Forces Expeditionary Medal]]<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=6|type=oak|ribbon=Air Force Longevity Service ribbon.svg|width=106}}
-|[[Air Force Longevity Service Award]] with six oak leaf clusters
+|[[Air Force Longevity Service Award]] with six oak leaf clusters<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=0|type=award-star|ribbon=Armed Forces Reserve Medal ribbon.svg|width=106}}
-|[[Armed Forces Reserve Medal]]
+|[[Armed Forces Reserve Medal]]<ref name="USAFbio"/>
 |-
 |{{Ribbon devices|number=0|type=award-star|ribbon=USAF Marksmanship ribbon.svg|width=106}}
-|Small Arms Expert Marksmanship Ribbon
+|Small Arms Expert Marksmanship Ribbon<ref name="USAFbio"/>
 |}
 
 == References ==
 {{reflist}}
-* {{cite web|url=https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/|title=Major General Archer L. Durham|publisher=United States Air Force|access-date=2026-01-20}}
 
 == External links ==
 * [https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/ Official USAF Biography]
 
+{{Authority control}}
 {{DEFAULTSORT:Durham, Archer L.}}
 [[Category:1932 births]]
 [[Category:Living people]]
