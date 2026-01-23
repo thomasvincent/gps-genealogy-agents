@@ -1,8 +1,0 @@
-{
-  "entity": "NEW_ITEM",
-  "labels": {"en": "Archer L. Durham"},
-  "claims": [
-    {"property": "P31", "value": "Q5", "references": [{"P854": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"}]},
-    {"property": "P569", "value": {"time": "+1932-00-00T00:00:00Z", "precision": 9}, "references": [{"P854": "https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"}]}
-  ]
-}
