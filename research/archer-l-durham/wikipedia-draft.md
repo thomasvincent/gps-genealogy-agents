@@ -14,7 +14,7 @@
 | serviceyears  = 1953–c. 1988
 | rank          = [[File:US-O8 insignance.svg|25px]] [[Major general (United States)|Major General]]
 | unit          =
-| commands      = [[436th Airlift Wing|436th Military Airlift Wing]]<br>[[76th Air Refueling Squadron|76th Military Airlift Division]]<br>1606th Air Base Wing
+| commands      = [[436th Airlift Wing|436th Military Airlift Wing]]<br>76th Military Airlift Division<br>1606th Air Base Wing
 | battles       =
 | awards        = [[Defense Superior Service Medal]]<br>[[Legion of Merit]] (3)<br>[[Meritorious Service Medal (United States)|Meritorious Service Medal]] (2)
 | relations     =
