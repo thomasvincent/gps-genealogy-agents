@@ -20,6 +20,18 @@ The documented history of Archer Durham's maternal family begins with **Kate Man
 
 The Cherokee Freedmen were African Americans who had been enslaved by Cherokee citizens prior to the Civil War. Following the conflict, the Treaty of 1866 between the United States and the Cherokee Nation granted citizenship rights to these freedmen and their descendants. This treaty represented a significant milestone, recognizing the Freedmen as full Cherokee citizens with the same rights as other Cherokee by blood.
 
+#### The Cherokee Freedmen Citizenship Dispute (1980s–2021)
+
+The citizenship status of Cherokee Freedmen descendants became a contentious issue in the latter half of the 20th century. Beginning in the 1980s, the Cherokee Nation amended its citizenship requirements to include "by blood" language, effectively excluding Freedmen descendants who lacked documented Cherokee ancestry beyond the Dawes Rolls' Freedmen designation.
+
+This dispute continued for decades, with Freedmen descendants arguing that the 1866 Treaty guaranteed their citizenship rights regardless of blood quantum. The matter was finally resolved through two landmark decisions:
+
+1. **2017 Federal Court Ruling**: A U.S. federal court ruled that the 1866 Treaty remained binding and that Cherokee Freedmen descendants were entitled to full citizenship in the Cherokee Nation.
+
+2. **2021 Cherokee Nation Supreme Court Ruling**: In February 2021, the Cherokee Nation Supreme Court struck down the "by blood" language from the tribal constitution, affirming that citizenship is not determined by blood quantum alone. This ruling formally ended the decades-long dispute and fully restored Freedmen descendants' citizenship rights.
+
+Secretary of the Interior Deb Haaland subsequently approved the new Cherokee Nation constitution, which guarantees full citizenship rights for all Freedmen descendants—a historic moment of reconciliation.
+
 Kate Manley appears on the Dawes Rolls—the official enrollment of citizens of the Five Civilized Tribes conducted between 1898 and 1914. Her enrollment card (#1515) notes she was "Transferred from Cherokee Freedmen Card D628," indicating prior documentation of her citizenship status dating to earlier rolls. She was assigned Roll Number 4135.
 
 Kate headed a household of eight family members, all enrolled as Cherokee Freedmen on the same card:
@@ -108,9 +120,17 @@ As Director of Deployment, Durham was the senior officer responsible for:
 
 ## Part IV: Legacy and Recognition
 
+### Cherokee Nation Medal of Patriotism Award (2024)
+
+On December 2024, Major General Archer L. Durham received the **Medal of Patriotism Award** from the **Cherokee Nation** at the tribe's annual Holiday Awards Ceremony held at the Hard Rock Hotel & Casino in Tulsa, Oklahoma.
+
+The Medal of Patriotism is awarded to Cherokee Nation citizens who have served honorably in the United States armed forces. This recognition by the Cherokee Nation is particularly significant given Durham's Cherokee Freedmen heritage and the historical context of the citizenship dispute that was only fully resolved in 2021.
+
+Durham's receipt of this award confirms his official status as a citizen of the Cherokee Nation, completing a circle that began with his great-grandmother Kate Manley's enrollment on the Dawes Rolls over a century ago. The award recognizes not only his distinguished military service but also affirms the Cherokee Nation's commitment to honoring all of its citizens—including Freedmen descendants—who have served their country.
+
 ### The Maj. Gen. Archer L. Durham Award
 
-Following his retirement, Major General Durham's legacy was honored with the establishment of the **Maj. Gen. Archer L. Durham Award** at Dover Air Force Base.
+Following his retirement from the Air Force, Major General Durham's legacy was honored with the establishment of the **Maj. Gen. Archer L. Durham Award** at Dover Air Force Base.
 
 The award recognizes individuals who demonstrate exceptional leadership in **fostering teamwork and awareness of various cultures**. This recognition reflects Durham's commitment throughout his career to diversity, inclusion, and building bridges across different communities within the military.
 
@@ -120,13 +140,15 @@ The award continues to be presented annually, keeping Durham's legacy alive and 
 
 Major General Archer L. Durham's life story represents the intersection of several important threads of American history:
 
-1. **Cherokee Freedmen Heritage**: His documented ancestry through the Dawes Rolls connects him to the complex history of African Americans in Indian Territory and the ongoing struggle of Cherokee Freedmen for recognition of their citizenship rights.
+1. **Cherokee Freedmen Heritage**: His documented ancestry through the Dawes Rolls connects him to the complex history of African Americans in Indian Territory and the decades-long struggle of Cherokee Freedmen for recognition of their citizenship rights. His 2024 Medal of Patriotism award from the Cherokee Nation symbolizes the resolution of this dispute and the full recognition of Freedmen descendants as Cherokee citizens.
 
 2. **The Great Migration**: Both sides of his family participated in the great demographic movements of African Americans—from the Deep South (his father from Georgia) and from Indian Territory (his mother from Oklahoma) to California.
 
 3. **African American Military Achievement**: Rising to the rank of Major General, Durham exemplifies the service and sacrifice of Black Americans in the United States military, following in the tradition of pioneers who broke barriers in the armed forces.
 
 4. **Diversity and Inclusion**: The award established in his name at Dover AFB specifically recognizes cultural awareness and teamwork—values that Durham championed and that continue to shape the military's approach to diversity.
+
+5. **Cherokee Freedmen Reconciliation**: Durham's recognition by the Cherokee Nation in 2024 occurred just three years after the formal resolution of the citizenship dispute, making him one of the first Freedmen descendants to receive tribal honors following the 2021 ruling—a symbol of reconciliation and healing.
 
 ---
 
@@ -170,6 +192,10 @@ Kate Manley (c. 1860s–?)
 | Ruby Zenobia Sorrell born | c. 1903 | Vinita, Cherokee Nation |
 | Archer Lyman Durham born | 9 June 1932 | Pasadena, California |
 | 1940 Census records family | 1940 | Pasadena, California |
+| Cherokee "by blood" amendments begin | 1980s | Cherokee Nation |
+| Federal court restores Freedmen rights | 2017 | United States |
+| Cherokee Supreme Court ends dispute | February 2021 | Cherokee Nation |
+| Medal of Patriotism Award | December 2024 | Tulsa, Oklahoma |
 
 ---
 
@@ -200,6 +226,14 @@ Kate Manley (c. 1860s–?)
 3. Dover Air Force Base Historical Records
 
 4. U.S. Transportation Command Historical Records
+
+### Cherokee Freedmen Dispute and Recognition Sources
+
+5. "Cherokee Nation celebrates tribal citizens during annual Holiday Awards Ceremony." *Anadisgoi* (Cherokee Nation News). December 2024. https://anadisgoi.com/index.php/culture-stories/cherokee-nation-celebrates-tribal-citizens-during-annual-holiday-awards-ceremony
+
+6. "Secretary Haaland Approves New Constitution for Cherokee Nation Guaranteeing Full Citizenship Rights for Cherokee Freedmen." U.S. Department of the Interior Press Release. 2021. https://www.doi.gov/pressreleases/secretary-haaland-approves-new-constitution-cherokee-nation-guaranteeing-full
+
+7. "Cherokee Nation Supreme Court Rules Citizenship Not Determined By Blood." KOSU. February 23, 2021. https://www.kosu.org/local-news/2021-02-23/cherokee-nation-supreme-court-rules-citizenship-not-determined-by-blood
 
 ### Online Resources
 
@@ -234,5 +268,7 @@ Kate Manley (c. 1860s–?)
 
 *Document prepared using genealogical research tools with Cherokee Freedmen-aware search capabilities.*
 
-*Last updated: January 2026*
+*Last updated: January 23, 2026*
+
+*Updated to include Cherokee Freedmen citizenship dispute history and 2024 Medal of Patriotism Award.*
 

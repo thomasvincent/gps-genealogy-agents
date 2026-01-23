@@ -130,6 +130,8 @@
 - [x] Commons sitelink added to Wikidata
 - [x] Ethnic group claim added with reference
 - [x] WikiTree search completed (no profile exists)
+- [x] Cherokee Freedmen citizenship dispute documented
+- [x] 2024 Cherokee Nation Medal of Patriotism Award documented
 
 ### Remaining Tasks
 - [ ] Upload additional NARA/DVIDS images to Commons category
@@ -137,6 +139,7 @@
 - [ ] Submit Wikipedia draft for review
 - [ ] Create WikiTree profile (requires WikiTree account)
 - [ ] Fix Good Conduct Medal claim (Q558877 error)
+- [ ] Add Cherokee Nation citizenship to Wikidata (P172 with Q5765)
 
 ---
 
