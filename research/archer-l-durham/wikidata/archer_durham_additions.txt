@@ -1,0 +1,76 @@
+# Wikidata QuickStatements - Additional Claims for Archer L. Durham (Q137835093)
+#
+# Upload at: https://quickstatements.toolforge.org/
+# Format: V1 QuickStatements
+#
+# These additions are based on the Official USAF Biography:
+# https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/
+#
+# ============================================================
+# EDUCATION (P69)
+# ============================================================
+
+# Utah State University - BS Political Science, 1960
+Q137835093	P69	Q192408	P512	Q787674	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# George Washington University - MS International Affairs, 1975
+Q137835093	P69	Q327576	P512	Q950900	P582	+1975-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# National War College - 1975, Distinguished Graduate
+Q137835093	P69	Q1967622	P582	+1975-00-00T00:00:00Z/9	P2868	Q21481732	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Air Command and Staff College - 1961
+Q137835093	P69	Q3603748	P582	+1961-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Squadron Officer School - 1960
+Q137835093	P69	Q7581043	P582	+1960-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Industrial College of the Armed Forces - 1973
+Q137835093	P69	Q5030053	P582	+1973-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# ============================================================
+# AWARDS RECEIVED (P166)
+# ============================================================
+
+# Air Force Distinguished Service Medal
+Q137835093	P166	Q4698694	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Defense Superior Service Medal
+Q137835093	P166	Q1181573	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Legion of Merit (first award)
+Q137835093	P166	Q719421	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Legion of Merit (second award)
+Q137835093	P166	Q719421	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Legion of Merit (third award)
+Q137835093	P166	Q719421	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Meritorious Service Medal
+Q137835093	P166	Q1751805	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Air Force Commendation Medal
+Q137835093	P166	Q4698684	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# ============================================================
+# SERVICE PERIOD
+# ============================================================
+
+# Work period (start) - January 1953
+Q137835093	P2031	+1953-01-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Work period (end) - 1989
+Q137835093	P2032	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# ============================================================
+# POSITION HELD (P39)
+# ============================================================
+
+# Commander, 436th Military Airlift Wing (1979-1982)
+# Note: 436th Airlift Wing is Q7713143
+Q137835093	P39	Q15978631	P642	Q7713143	P580	+1979-00-00T00:00:00Z/9	P582	+1982-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Director of Deployment, USTRANSCOM (June 1987)
+Q137835093	P39	Q1162163	P642	Q1754323	P580	+1987-06-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
