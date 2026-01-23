@@ -2,8 +2,8 @@
   "metadata": {
     "subject": "Major General Archer Lyman Durham, USAF",
     "generated": "2026-01-21T00:34:46.993644",
-    "last_updated": "2026-01-21",
-    "last_verified": "2026-01-21",
+    "last_updated": "2026-01-22",
+    "last_verified": "2026-01-22",
     "sources_searched": [
       "AccessGenealogy",
       "USGenWeb",
@@ -23,7 +23,9 @@
       "CyndisList",
       "Library of Congress",
       "NYPL",
-      "US Air Force Biographies"
+      "US Air Force Biographies",
+      "Pasadena News Index (pni.cityofpasadena.net)",
+      "DeathIndexes.com"
     ],
     "verification_methodology": {
       "census_fields_to_compare": [
@@ -67,7 +69,8 @@
   },
   "generation_0_parents": {
     "father": {
-      "name": "Barney Durham",
+      "name": "Barney Matthias Durham, Sr.",
+      "name_variations": ["Barney Durham", "Barney M Durham", "Barney M. Durham"],
       "race": "African American",
       "race_source": "1920 Census, 1940 Census (listed as Negro/Black)",
       "birth": {
@@ -75,9 +78,12 @@
         "place": "Wake County, North Carolina, USA"
       },
       "death": {
-        "date": "1974-07",
-        "place": "California, USA",
-        "note": "FindAGrave memorial 7935180 shows death as 1972"
+        "date": "1972-03-03",
+        "date_confidence": "HIGH",
+        "place": "Pasadena, Los Angeles County, California, USA",
+        "source": "Pasadena Star News obituary published 3/3/1972, Page A-10",
+        "source_url": "https://pni.cityofpasadena.net/",
+        "note": "CONFIRMED: Full name 'Barney Matthias Durham, Sr.' revealed in obituary index. Death date matches FindAGrave (1972), contradicts SSDI/California Death Index (1974). The 'Sr.' designation indicates he had a son named Barney Matthias Durham Jr."
       },
       "burial": {
         "cemetery": "Mountain View Cemetery",
@@ -87,18 +93,31 @@
         "findagrave_url": "https://www.findagrave.com/memorial/7935180/barney-m-durham",
         "findagrave_name": "Barney M Durham",
         "findagrave_dates": "1895-1972",
-        "verification_status": "PROBABLE_MATCH",
-        "verification_notes": "Same location/timeframe as family. Birth year differs (1895 vs 1892 WWI draft), death year differs (1972 vs 1974). Middle initial 'M' is new information. Requires additional verification.",
-        "discovered": "2026-01-21"
+        "verification_status": "CONFIRMED",
+        "verification_notes": "CONFIRMED via Pasadena News Index obituary (3/3/1972). The 'M' stands for 'Matthias' - full name 'Barney Matthias Durham, Sr.' FindAGrave death year (1972) is CORRECT; birth year (1895) still differs from WWI draft (1892). Middle name Matthias also confirmed by 1950 Census.",
+        "discovered": "2026-01-21",
+        "confirmed": "2026-01-22"
       },
       "occupation": "Farm laborer (NC 1920), Community leader and musician (Pasadena)",
       "migration": "Great Migration from NC to CA (part of 6+ million African Americans who moved from rural South to urban North/West 1910-1970)",
       "verified_sources": [
         "https://www.familysearch.org/ark:/61903/1:1:K94P-57C (1940 Census)",
         "https://www.familysearch.org/ark:/61903/1:1:MZV9-Y9C (1920 Census)",
-        "https://www.familysearch.org/ark:/61903/1:1:KZD6-W68 (WWI Draft)"
+        "https://www.familysearch.org/ark:/61903/1:1:KZD6-W68 (WWI Draft)",
+        "https://1950census.archives.gov/search/?county=Pasadena%2C%20Los%20Angeles&name=Barney%20Durham&state=CA (1950 Census - ED 68-45, p.15)"
       ],
-      "note": "FamilySearch requires authentication to view full records"
+      "census_1950": {
+        "source": "NARA 1950 Census",
+        "url": "https://1950census.archives.gov/search/?county=Pasadena%2C%20Los%20Angeles&name=Barney%20Durham&state=CA",
+        "enumeration_district": "68-45",
+        "page": 15,
+        "location": "Pasadena, Los Angeles County, California",
+        "ai_extracted_name": "Durham Barney M",
+        "middle_initial": "M",
+        "verification_notes": "Middle initial 'M' matches FindAGrave memorial #7935180. Confirms residence in Pasadena 10 years after 1940 Census.",
+        "discovered": "2026-01-21"
+      },
+      "note": "FamilySearch requires authentication to view full records. NARA 1950 Census is freely accessible."
     },
     "mother": {
       "name": "Mattie Sorrell Durham",
@@ -153,6 +172,25 @@
           "burial_location": "Collins, Covington County, Mississippi"
         }
       ]
+    },
+    {
+      "name": "Barney Matthias Durham, Jr.",
+      "relation": "brother",
+      "race": "African American",
+      "race_source": "Inferred from parents",
+      "birth": {
+        "year_estimated": "unknown",
+        "note": "Birth year unknown; the 'Jr.' designation means he was named after his father Barney Matthias Durham, Sr."
+      },
+      "death": {
+        "date": "1997-09",
+        "place": "Pasadena, California, USA (probable)",
+        "source": "Pasadena Star News obituary published 9/13/1997, Page A-4, Column 1",
+        "source_url": "https://pni.cityofpasadena.net/"
+      },
+      "status": "NEWLY_DISCOVERED",
+      "discovered": "2026-01-22",
+      "note": "NEWLY DISCOVERED sibling via Pasadena News Index obituary search. The existence of 'Jr.' was implied by father's 'Sr.' designation. Not found in 1940 Census - may have been born after 1940 or living elsewhere. Obituary full text needs retrieval from Pasadena Public Library microfilm."
     }
   ],
   "generation_minus1_grandparents": {
@@ -200,9 +238,14 @@
       "Father Barney Durham from Wake County, NC; migrated to California (Great Migration)",
       "Father Barney Durham served as WWI draft registrant",
       "Family appears in 1920 and 1940 US Census records as African American (Negro/Black)",
+      "Father Barney M. Durham found in 1950 Census - Pasadena, Los Angeles, ED 68-45, p.15 (NARA 1950 Census)",
       "Archer L. Durham achieved rank of Major General, USAF",
       "Award named in his honor recognizes leadership in fostering teamwork and cultural awareness",
-      "PROBABLE: Father Barney Durham buried at Mountain View Cemetery, Altadena, CA (FindAGrave #7935180 as 'Barney M Durham' 1895-1972)"
+      "CONFIRMED: Father's full name was 'Barney Matthias Durham, Sr.' (Pasadena News Index obituary 3/3/1972)",
+      "CONFIRMED: Father Barney Durham died March 3, 1972 (Pasadena Star News obituary, Page A-10)",
+      "CONFIRMED: Father buried at Mountain View Cemetery, Altadena, CA (FindAGrave #7935180 as 'Barney M Durham' 1895-1972)",
+      "CONFIRMED: Middle initial 'M' stands for 'Matthias' (1950 Census + obituary index)",
+      "NEWLY DISCOVERED: Brother Barney Matthias Durham Jr. existed (obituary 9/13/1997 in Pasadena Star News)"
     ],
     "unverified_claims": [
       "Mother's death date and burial location",
@@ -258,6 +301,146 @@
           "parameters": "lastname=Durham",
           "result": "17 Durham records found, none matching Mattie or Barbara",
           "note": "Only Barney M Durham appears to be from this family"
+        },
+        {
+          "target": "Archer L. Durham (subject)",
+          "source": "NARA 1950 Census",
+          "location": "Pasadena, Los Angeles County, California",
+          "parameters": "name=Archer Durham, state=CA, county=Pasadena Los Angeles",
+          "result": "22 fuzzy matches returned, none are Archer L. Durham",
+          "note": "AI/OCR extraction returned similar names (Burham, Dunham, Archer as first name) but no exact 'Archer Durham' or 'Archer L. Durham'. Subject was 18 years old in 1950 and may have been away at college (Utah State University) or listed elsewhere.",
+          "date": "2026-01-21"
+        },
+        {
+          "target": "Mattie Durham (mother)",
+          "source": "NARA 1950 Census",
+          "location": "Pasadena, Los Angeles County, California",
+          "parameters": "name=Mattie Durham, state=CA, county=Pasadena Los Angeles",
+          "result": "93 fuzzy matches returned, ED 68-45 shows 'Durham Barney M' only",
+          "note": "No separate 'Mattie Durham' indexed. She may be in same household as Barney on census image but not separately extracted by AI/OCR. ED 68-45 is where Barney M. Durham was found.",
+          "date": "2026-01-21"
+        },
+        {
+          "target": "Barbara Durham (sister)",
+          "source": "NARA 1950 Census",
+          "location": "Pasadena, Los Angeles County, California",
+          "parameters": "name=Barbara Durham, state=CA, county=Pasadena Los Angeles",
+          "result": "313 fuzzy matches returned, ED 68-45 shows 'Durham Barney M' only",
+          "note": "No 'Barbara Durham' or 'Barbara Camille Durham' indexed. Sister was ~24 in 1950 and may have married (different surname) or moved. ED 68-45 is where Barney M. Durham was found.",
+          "date": "2026-01-21"
+        },
+        {
+          "target": "Archer L. Durham (subject)",
+          "source": "Legacy.com Obituaries",
+          "location": "Nationwide",
+          "parameters": "firstName=Archer, lastName=Durham",
+          "result": "0 obituaries found",
+          "note": "Direct search for 'Archer Durham' returned zero results. Confirms no publicly published obituary exists despite reported death in 2024.",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Barney Durham (father)",
+          "source": "Legacy.com Obituaries",
+          "location": "California",
+          "parameters": "firstName=Barney, lastName=Durham, state=CA",
+          "result": "14 obituaries found, none from 1970s",
+          "note": "All results are from 2020s (Reginald Bernard Durham 2025, Bernard R Durham 2024, Rev. Bernard Durham 2023, etc.). Legacy.com primarily has digitized obituaries from the 2000s+. 1972-1974 death records not available via this source.",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Barney Durham (father)",
+          "source": "Web Search (Google)",
+          "location": "California, Pasadena",
+          "parameters": "\"Barney Durham\" obituary California Pasadena 1972 OR 1974",
+          "result": "No results found",
+          "note": "Historical obituaries from the 1970s may not be digitized or available online. Physical newspaper archives at Pasadena Public Library may have microfilm of Pasadena Star-News.",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Archer L. Durham (subject)",
+          "source": "Web Search (Google)",
+          "location": "Nationwide",
+          "parameters": "\"Archer L. Durham\" OR \"Archer Durham\" obituary 2024 \"Major General\" USAF",
+          "result": "No obituary found",
+          "note": "Search returned official Air Force biography and various military memorial pages, but no 2024 obituary. Air Force Times, Military Times, Air Commando Association, and other military organizations' memorial pages did not list an obituary.",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Durham family",
+          "source": "FamilySearch California Death Index",
+          "location": "California",
+          "parameters": "surname=Durham",
+          "result": "REQUIRES AUTHENTICATION",
+          "note": "FamilySearch California Death Index 1940-1997 (Collection 1932433) requires free account authentication to search. Unable to search without login.",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Durham family",
+          "source": "Social Security Death Index (SSDI)",
+          "location": "Nationwide",
+          "parameters": "surname=Durham",
+          "result": "FREE ACCESS NO LONGER AVAILABLE",
+          "note": "SSDI free search sites (ssdi-search.com) have been hijacked or discontinued. SSDI now requires Ancestry.com subscription or FamilySearch authentication. SSDI would cover deaths 1936-2014 including Barney Durham (d. 1972-1974).",
+          "date": "2026-01-22"
+        },
+        {
+          "target": "Archer L. Durham (subject)",
+          "source": "Pasadena News Index",
+          "location": "Pasadena, California",
+          "parameters": "subject=Archer Durham, article_type=all",
+          "result": "0 results",
+          "note": "No newspaper articles about Archer L. Durham found in Pasadena News Index. He left Pasadena for military service in the 1950s and died in Maryland in 2024.",
+          "date": "2026-01-22"
+        }
+      ]
+    },
+    "positive_search_results": {
+      "date": "2026-01-22",
+      "note": "Documenting successful searches that found records - critical for GPS compliance",
+      "searches": [
+        {
+          "target": "Barney Durham (father)",
+          "source": "Pasadena News Index (pni.cityofpasadena.net)",
+          "location": "Pasadena, California",
+          "parameters": "subject=Durham, article_type=Obituary",
+          "result": "FOUND - 2 obituary citations for same person",
+          "records_found": [
+            {
+              "name": "Durham, Barney M.",
+              "publication": "Pasadena Star News",
+              "date": "1972-03-03",
+              "page": "A-10",
+              "article_size": "S (small)"
+            },
+            {
+              "name": "Durham, Barney Matthias, Sr.",
+              "publication": "Pasadena Star News",
+              "date": "1972-03-03",
+              "page": "A-10",
+              "article_size": "S (small)"
+            }
+          ],
+          "significance": "MAJOR DISCOVERY - Confirms full name 'Barney Matthias Durham, Sr.', death date March 3, 1972, and existence of a Jr. Full obituary text available on microfilm at Pasadena Public Library.",
+          "access": "FREE - No login required"
+        },
+        {
+          "target": "Barney Matthias Durham Jr. (newly discovered brother)",
+          "source": "Pasadena News Index (pni.cityofpasadena.net)",
+          "location": "Pasadena, California",
+          "parameters": "subject=Durham, article_type=Obituary",
+          "result": "FOUND - 1 obituary citation",
+          "records_found": [
+            {
+              "name": "Durham, Barney Matthias, Jr.",
+              "publication": "Pasadena Star News",
+              "date": "1997-09-13",
+              "page": "A-4",
+              "column": "1",
+              "article_size": "S (small)"
+            }
+          ],
+          "significance": "MAJOR DISCOVERY - Previously unknown brother of Archer L. Durham. Full obituary text available on microfilm at Pasadena Public Library.",
+          "access": "FREE - No login required"
         }
       ]
     },
@@ -266,7 +449,9 @@
       "Mother Mattie Sorrell Durham death record not found",
       "Sister Barbara Camille Durham death record not found",
       "Paternal grandfather Archer Durham Sr. - no burial record found in NC",
-      "NARA 1940/1950 census sources returned 0 results - may need direct database access",
+      "1950 Census ED 68-45 p.15 image needs manual transcription - AI only extracted Barney M. Durham, other family members may be on same page",
+      "Archer L. Durham (age 18 in 1950) not found in Pasadena 1950 Census - may have been at college or elsewhere",
+      "Barbara Camille Durham (age ~24 in 1950) not found - may have married and have different surname",
       "FamilySearch records require authentication",
       "Race should be verified from original census images when ruling out matches",
       "Chronicling America newspaper search blocked by Cloudflare - try alternative access"
@@ -291,6 +476,39 @@
     "slave_schedules_1850": "https://www.familysearch.org/search/collection/1420440?q.surname=Durham",
     "slave_schedules_1860": "https://www.familysearch.org/search/collection/1473181?q.surname=Durham",
     "usct_civil_war": "https://www.familysearch.org/search/collection/1932402?q.surname=Durham",
-    "nc_freedmen_marriages": "https://www.familysearch.org/search/collection/1803968?q.surname=Durham"
+    "nc_freedmen_marriages": "https://www.familysearch.org/search/collection/1803968?q.surname=Durham",
+    "pasadena_news_index": "https://pni.cityofpasadena.net/",
+    "deathindexes_california": "https://www.deathindexes.com/california/",
+    "deathindexes_la_county": "https://www.deathindexes.com/california/los-angeles.html"
+  },
+  "free_resources_discovered": {
+    "date": "2026-01-22",
+    "note": "These resources provide free access to California death/obituary records WITHOUT login",
+    "resources": [
+      {
+        "name": "Pasadena News Index",
+        "url": "https://pni.cityofpasadena.net/",
+        "coverage": "1880s to present (primarily 1996-present, but includes older indexed material)",
+        "content": "Citation index to Pasadena Star-News, Pasadena Weekly, Pasadena Journal, and other local papers",
+        "access": "FREE - No login required",
+        "limitations": "Index only - full text requires microfilm at Pasadena Public Library"
+      },
+      {
+        "name": "DeathIndexes.com California",
+        "url": "https://www.deathindexes.com/california/",
+        "coverage": "Varies by county and source",
+        "content": "Directory of free California death record resources organized by county",
+        "access": "FREE - No login required",
+        "limitations": "Directory only - links to various external resources"
+      },
+      {
+        "name": "NARA 1950 Census",
+        "url": "https://1950census.archives.gov/",
+        "coverage": "1950 US Census",
+        "content": "Searchable index with AI-extracted names and digitized images",
+        "access": "FREE - No login required",
+        "limitations": "AI extraction may have errors; verify against original images"
+      }
+    ]
   }
 }

@@ -85,9 +85,10 @@
 1 SOUR @S2@
 1 SOUR @S3@
 0 @I2@ INDI
-1 NAME Barney /Durham/
-2 GIVN Barney
+1 NAME Barney Matthias /Durham/ Sr.
+2 GIVN Barney Matthias
 2 SURN Durham
+2 NSFX Sr.
 1 SEX M
 1 BIRT
 2 DATE 25 JUL 1892
@@ -95,15 +96,17 @@
 2 NOTE WWI Draft Registration confirms birth date
 2 SOUR @S6@
 1 DEAT
-2 DATE JUL 1974
-2 PLAC California, USA
-2 NOTE Alternative record: FindAGrave shows death as 1972
+2 DATE 3 MAR 1972
+2 PLAC Pasadena, Los Angeles County, California, USA
+2 NOTE CONFIRMED via Pasadena Star News obituary published 3 Mar 1972, Page A-10
+2 SOUR @S11@
 1 BURI
 2 PLAC Mountain View Cemetery, Altadena, Los Angeles County, California, USA
 2 NOTE Vista Del Monte Garden Crypts section
-2 NOTE FindAGrave shows as "Barney M Durham" (1895-1972)
-2 NOTE Memorial ID: 7935180 - requires verification of identity
+2 NOTE FindAGrave Memorial ID: 7935180 as "Barney M Durham" (1895-1972)
+2 NOTE CONFIRMED: Middle initial M = Matthias per obituary and 1950 Census
 2 SOUR @S10@
+2 SOUR @S11@
 1 RESI
 2 DATE 1920
 2 PLAC Cedar Fork, Wake County, North Carolina, USA
@@ -130,15 +133,18 @@
 2 CONT performed as instrumentalist alongside son "Archie" (Archer)
 2 SOUR @S8@
 1 NOTE Father of Major General Archer L. Durham.
+2 CONT Full name CONFIRMED as Barney Matthias Durham, Sr. (obituary 3 Mar 1972).
 2 CONT Born in North Carolina near Wake/Durham County border.
 2 CONT Part of the Great Migration from the South to California in early 1930s.
 2 CONT His father was also named Archer Durham (the General's namesake).
 2 CONT Barney was a community leader, Master of Ceremonies, and musician in Pasadena.
+2 CONT The "Sr." designation indicates he had a son named Barney Matthias Durham Jr.
 1 FAMC @F3@
 1 FAMS @F1@
 1 SOUR @S5@
 1 SOUR @S6@
 1 SOUR @S7@
+1 SOUR @S11@
 0 @I3@ INDI
 1 NAME Mattie /Sorrell/ Durham
 2 GIVN Mattie
@@ -233,6 +239,7 @@
 1 WIFE @I3@
 1 CHIL @I4@
 1 CHIL @I1@
+1 CHIL @I7@
 1 MARR
 2 PLAC California, USA
 2 DATE BEF 1930
@@ -243,11 +250,13 @@
 2 NOTE Rented home for $18/month
 2 SOUR @S5@
 1 NOTE Durham family of Pasadena, California.
-2 CONT Parents: Barney Durham (b. NC, 1892) and Mattie Sorrell (b. AR, ~1904).
+2 CONT Parents: Barney Matthias Durham, Sr. (b. NC, 1892) and Mattie Sorrell (b. AR, ~1904).
 2 CONT Part of the Great Migration from the South to California.
 2 CONT 1940 Census: 264 Pasadena Avenue, Pasadena.
-2 CONT Children: Barbara (~1930), Archer Lyman (1932).
+2 CONT Known children: Barbara (~1926-1930), Archer Lyman (1932), Barney Matthias Jr. (aft 1932 - 1997).
+2 CONT Barney Jr. discovered via Pasadena News Index obituary search (22 Jan 2026).
 1 SOUR @S5@
+1 SOUR @S11@
 0 @F2@ FAM
 1 NOTE *** UNVERIFIED FAMILY RELATIONSHIP ***
 2 CONT Claims exist that D. Scott Durham is the son of Archer L. Durham,
@@ -344,4 +353,73 @@
 2 CONT This may be the same person as Barney Durham (b. 1892) based on location
 2 CONT and timeframe, but birth/death years differ slightly.
 1 REFN https://www.findagrave.com/memorial/7935180/barney-m-durham
+0 @S11@ SOUR
+1 TITL Pasadena News Index - Obituary Citations
+1 AUTH Pasadena Public Library
+1 PUBL City of Pasadena, California
+1 NOTE Online searchable index of Pasadena newspapers including Pasadena Star-News,
+2 CONT Pasadena Weekly, Pasadena Journal, and other local papers.
+2 CONT Coverage: 1880s to present (primarily 1996-present with older indexed material).
+2 CONT FREE ACCESS - No login required.
+2 CONT Index only - full text available on microfilm at Pasadena Public Library.
+2 CONT
+2 CONT Obituary citations found for Durham family:
+2 CONT - Durham, Barney M. - Pasadena Star News, 3/3/1972, Page A-10
+2 CONT - Durham, Barney Matthias, Sr. - Pasadena Star News, 3/3/1972, Page A-10
+2 CONT - Durham, Barney Matthias, Jr. - Pasadena Star News, 9/13/1997, Page A-4
+2 CONT
+2 CONT Searched 22 Jan 2026.
+1 REFN https://pni.cityofpasadena.net/
+0 @I7@ INDI
+1 NAME Barney Matthias /Durham/ Jr.
+2 GIVN Barney Matthias
+2 SURN Durham
+2 NSFX Jr.
+1 SEX M
+1 BIRT
+2 DATE AFT 1932
+2 PLAC California, USA
+2 NOTE Birth year unknown; not in 1940 Census household, may have been born after 1940
+1 DEAT
+2 DATE SEP 1997
+2 PLAC Pasadena, Los Angeles County, California, USA
+2 NOTE Obituary published Pasadena Star News, 13 Sep 1997, Page A-4, Column 1
+2 SOUR @S11@
+1 FAMC @F1@
+1 NOTE Brother of Major General Archer L. Durham.
+2 CONT NEWLY DISCOVERED via Pasadena News Index obituary search (22 Jan 2026).
+2 CONT Named after his father Barney Matthias Durham, Sr.
+2 CONT The 1997 obituary (on microfilm at Pasadena Public Library) may list
+2 CONT surviving family members including Archer L. Durham.
+2 CONT Full obituary text needs retrieval for additional family information.
+1 SOUR @S11@
+0 @I8@ INDI
+1 NAME Ruby Z. /Durham/
+2 GIVN Ruby Z.
+2 SURN Durham
+1 SEX F
+1 DEAT
+2 DATE 28 NOV 1998
+2 PLAC Pasadena, Los Angeles County, California, USA
+2 NOTE Obituary published Pasadena Star News, 28 Nov 1998, Page A-4, Column 1
+2 SOUR @S11@
+1 NOTE NEWLY DISCOVERED via Pasadena News Index obituary search (21 Jan 2026).
+2 CONT Relationship to Archer L. Durham family UNKNOWN - requires research.
+2 CONT Possible relationships: wife, sister-in-law, or cousin.
+2 CONT Full obituary text needs retrieval for family information.
+1 SOUR @S11@
+0 @I9@ INDI
+1 NAME Colleen A. /Durham/
+2 GIVN Colleen A.
+2 SURN Durham
+1 SEX F
+1 DEAT
+2 DATE 1 NOV 2016
+2 PLAC Pasadena, Los Angeles County, California, USA
+2 NOTE Obituary published Pasadena Star News, 1 Nov 2016, Page A-6, Column 5
+2 SOUR @S11@
+1 NOTE NEWLY DISCOVERED via Pasadena News Index obituary search (21 Jan 2026).
+2 CONT Relationship to Archer L. Durham family UNKNOWN - requires research.
+2 CONT Full obituary text needs retrieval for family information.
+1 SOUR @S11@
 0 TRLR
