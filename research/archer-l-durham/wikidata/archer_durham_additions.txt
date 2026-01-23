@@ -64,13 +64,34 @@ Q137835093	P2031	+1953-01-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biog
 Q137835093	P2032	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
 # ============================================================
-# POSITION HELD (P39)
+# POSITION HELD (P39) - Military Commands
 # ============================================================
 
-# Commander, 436th Military Airlift Wing (1979-1982)
-# Note: 436th Airlift Wing is Q7713143
-Q137835093	P39	Q15978631	P642	Q7713143	P580	+1979-00-00T00:00:00Z/9	P582	+1982-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Commander, 1606th Air Base Wing, Kirtland AFB (July 1977 - February 1979)
+Q137835093	P39	Q15978631	P580	+1977-07-00T00:00:00Z/10	P582	+1979-02-00T00:00:00Z/10	P276	Q1024594	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
 
-# Director of Deployment, USTRANSCOM (June 1987)
-Q137835093	P39	Q1162163	P642	Q1754323	P580	+1987-06-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+# Commander, 436th Military Airlift Wing, Dover AFB (February 1979 - February 1980)
+# Note: 436th Airlift Wing is Q7713143
+Q137835093	P39	Q15978631	P642	Q7713143	P580	+1979-02-00T00:00:00Z/10	P582	+1980-02-00T00:00:00Z/10	P276	Q1063200	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Commander, 76th Military Airlift Division, Andrews AFB (February 1980 - February 1982)
+Q137835093	P39	Q15978631	P580	+1980-02-00T00:00:00Z/10	P582	+1982-02-00T00:00:00Z/10	P276	Q757035	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Vice Commander, Military Traffic Management Command (February 1982 - March 1984)
+# MTMC is Q6859055
+Q137835093	P39	Q1500050	P642	Q6859055	P580	+1982-02-00T00:00:00Z/10	P582	+1984-03-00T00:00:00Z/10	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# Director of Deployment, USTRANSCOM (June 1987 - 1989)
+Q137835093	P39	Q1162163	P642	Q1754323	P580	+1987-06-00T00:00:00Z/10	P582	+1989-00-00T00:00:00Z/9	S854	"https://www.af.mil/About-Us/Biographies/Display/Article/107179/major-general-archer-l-durham/"
+
+# ============================================================
+# POSITION HELD (P39) - Post-Military Government Service
+# ============================================================
+
+# Assistant Secretary of Energy for Human Resources and Administration (May 1993 - 1998)
+# Note: The specific position item may need to be created in Wikidata
+# Using Q4806189 (United States Assistant Secretary of Energy) as position
+# Employer: Q217462 (United States Department of Energy)
+# Replaced by: Q512705 (Rose Gottemoeller)
+Q137835093	P39	Q4806189	P108	Q217462	P580	+1993-05-00T00:00:00Z/10	P582	+1998-00-00T00:00:00Z/9	P1366	Q512705	S854	"https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf"
 

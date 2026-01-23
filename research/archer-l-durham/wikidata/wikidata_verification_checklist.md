@@ -38,8 +38,13 @@
 | P166 (award) | Q4698684 (AFCM) | USAF Bio | ⬜ Add |
 | P2031 (work period start) | 1953-01 | USAF Bio | ⬜ Add |
 | P2032 (work period end) | 1989 | USAF Bio | ⬜ Add |
-| P39 (position held) | Commander, 436th MAW | USAF Bio | ⬜ Add |
-| P39 (position held) | Director of Deployment | USAF Bio | ⬜ Add |
+| P39 (position held) | Commander, 1606th ABW (1977-1979) | USAF Bio | ⬜ Add |
+| P39 (position held) | Commander, 436th MAW (1979-1980) | USAF Bio | ⬜ Add |
+| P39 (position held) | Commander, 76th MAD (1980-1982) | USAF Bio | ⬜ Add |
+| P39 (position held) | Vice Commander, MTMC (1982-1984) | USAF Bio | ⬜ Add |
+| P39 (position held) | Director of Deployment, USTRANSCOM (1987-1989) | USAF Bio | ⬜ Add |
+| P39 (position held) | Asst Sec Energy HR&Admin (1993-1998) | Gov Manual | ⬜ Add |
+| P1366 (replaced by) | Rose Gottemoeller (Q512705) | Senate Cal | ⬜ Add as qualifier |
 
 ### Constraint Checks
 
@@ -182,4 +187,28 @@ Look for the "Constraint violations" link in the sidebar on each item.
 | Dawes Rolls Database | https://www.okhistory.org/research/dawes | Kate, Ida, Morris |
 | Dover AFB Awards | https://www.dover.af.mil/News/Article/762117/team-dover-members-win-maj-gen-archer-l-durham-awards/ | Durham |
 | 1940 Census | https://www.census.gov/ | Durham |
+| 1997 U.S. Gov Manual | https://www.govinfo.gov/content/pkg/GOVMAN-1997-05-30/pdf/GOVMAN-1997-05-30-Pg252.pdf | Durham (DOE) |
+| Senate Nominations 1993 | https://www.govinfo.gov/content/pkg/PPP-1993-book1/pdf/PPP-1993-book1-app-pp1269.pdf | Durham (DOE) |
+| Senate Exec Calendar 1998 | https://www.senate.gov/legislative/LIS/executive_calendar/1998/Final_1998.pdf | Durham (successor) |
+
+## Wikipedia Manual of Style Issues
+
+The following issues were identified in the shared Wikipedia draft:
+
+| Issue | Location | Fix |
+|-------|----------|-----|
+| Typo in image filename | Infobox | `insignance.svg` → `insignia.svg` |
+| Wrong parameter name | Infobox | `born` → `birth_date` |
+| Invalid template | Infobox | `{{USAFA}}` → `{{air force|United States}}` |
+| Bold in running text | Senior Command section | Remove `**bold**` formatting (MOS:BOLD) |
+| Missing template | End of article | Add `{{Authority control}}` |
+| Short description | Top | Update to include "government official" |
+
+## Wikidata Items to Create
+
+The following Wikidata items may need to be created:
+
+| Label | Instance of | Notes |
+|-------|-------------|-------|
+| Assistant Secretary of Energy for Human Resources and Administration | Q4164871 (public office) | Position within DOE, if not exists as Q4806189 variant |
 
