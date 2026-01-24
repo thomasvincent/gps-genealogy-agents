@@ -146,6 +146,43 @@ from gps_agents.sources.headless import (
     search_sync as headless_search_sync,
 )
 
+# International sources - Ireland
+from gps_agents.sources.ireland import (
+    IrishGenealogySource,
+    RootsIrelandSource,
+    GRONISource,
+    IrishGenealogyAggregateSource,
+    IRISH_COUNTIES,
+)
+
+# International sources - Germany
+from gps_agents.sources.germany import (
+    ArchionSource,
+    MatriculaSource,
+    GenealogyNetSource,
+    FamilienkundeSource,
+    GermanGenealogyAggregateSource,
+    GERMAN_NAME_SUBSTITUTIONS,
+    GERMAN_STATES,
+)
+
+# International sources - Scandinavia
+from gps_agents.sources.scandinavia import (
+    DigitalarkivetSource,
+    ArkivDigitalSource,
+    DanishArchivesSource,
+    FinnishArchivesSource,
+    IcelandicArchivesSource,
+    ScandinavianGenealogyAggregateSource,
+    SWEDISH_CENSUS_YEARS,
+    NORWEGIAN_CENSUS_YEARS,
+    DANISH_CENSUS_YEARS,
+    SCANDINAVIAN_PATRONYMICS,
+)
+
+# FreeBMD (UK)
+from gps_agents.sources.freebmd import FreeBMDSource
+
 __all__ = [
     # Sources - Original
     "AccessGenealogySource",
@@ -284,4 +321,31 @@ __all__ = [
     "detect_freedmen_context",
     "FREEDMEN_CONTEXT_KEYWORDS",
     "INDIAN_TERRITORY_PLACES",
+    # International Sources - Ireland
+    "IrishGenealogySource",
+    "RootsIrelandSource",
+    "GRONISource",
+    "IrishGenealogyAggregateSource",
+    "IRISH_COUNTIES",
+    # International Sources - Germany
+    "ArchionSource",
+    "MatriculaSource",
+    "GenealogyNetSource",
+    "FamilienkundeSource",
+    "GermanGenealogyAggregateSource",
+    "GERMAN_NAME_SUBSTITUTIONS",
+    "GERMAN_STATES",
+    # International Sources - Scandinavia
+    "DigitalarkivetSource",
+    "ArkivDigitalSource",
+    "DanishArchivesSource",
+    "FinnishArchivesSource",
+    "IcelandicArchivesSource",
+    "ScandinavianGenealogyAggregateSource",
+    "SWEDISH_CENSUS_YEARS",
+    "NORWEGIAN_CENSUS_YEARS",
+    "DANISH_CENSUS_YEARS",
+    "SCANDINAVIAN_PATRONYMICS",
+    # UK Sources
+    "FreeBMDSource",
 ]

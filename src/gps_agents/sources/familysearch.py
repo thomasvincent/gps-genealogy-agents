@@ -17,7 +17,7 @@ from __future__ import annotations
 import logging
 import re
 from datetime import UTC, datetime
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import urlencode
 
 import httpx
 from bs4 import BeautifulSoup
@@ -26,10 +26,7 @@ from ..models.search import RawRecord, SearchQuery
 from .base import BaseSource
 from .familysearch_client import (
     ClientConfig as FSClientConfig,
-    Environment as FSEnvironment,
     FamilySearchClient,
-    Person as FSPerson,
-    RecordCollection,
     SearchParams as FSSearchParams,
     SearchResponse as FSSearchResponse,
 )
@@ -105,6 +102,9 @@ class FamilySearchNoLoginSource(BaseSource):
 
     name = "FamilySearchNoLogin"
     base_url = "https://www.familysearch.org"
+
+    # Class-level constants to avoid repeated list creation
+    _CENSUS_YEARS: tuple[int, ...] = (1950, 1940, 1930, 1920, 1910, 1900, 1880, 1870, 1860, 1850)
 
     def requires_auth(self) -> bool:
         return False
@@ -392,7 +392,7 @@ class FamilySearchNoLoginSource(BaseSource):
 
         # US Census collections based on birth year
         if query.birth_year:
-            for year in [1950, 1940, 1930, 1920, 1910, 1900, 1880, 1870, 1860, 1850]:
+            for year in self._CENSUS_YEARS:
                 if query.birth_year - 5 <= year <= query.birth_year + 80:
                     key = f"us_census_{year}"
                     if key in FAMILYSEARCH_COLLECTIONS:
@@ -525,6 +525,22 @@ class FamilySearchSource(BaseSource):
     name = "FamilySearch"
     base_url = "https://api.familysearch.org"
 
+    # Class-level constant for phonetic substitutions (avoids repeated list creation)
+    _NAME_SUBSTITUTIONS: tuple[tuple[str, str], ...] = (
+        ("ie", "y"),
+        ("y", "ie"),
+        ("ck", "k"),
+        ("k", "ck"),
+        ("ph", "f"),
+        ("f", "ph"),
+        ("gh", "g"),
+        ("ough", "o"),
+        ("son", "sen"),
+        ("sen", "son"),
+        ("man", "mann"),
+        ("mann", "man"),
+    )
+
     def __init__(self, client_id: str | None = None, client_secret: str | None = None, token_file: str | None = None) -> None:
         """Initialize FamilySearch source.
 
@@ -601,11 +617,6 @@ class FamilySearchSource(BaseSource):
             pass
         # Could implement OAuth flows here; for now, require a token
         raise RuntimeError("FamilySearch access token not configured. Set FAMILYSEARCH_ACCESS_TOKEN or place {\"access_token\":\"...\"} in data/fs_token.json.")
-        """Ensure we have a valid access token."""
-        if self._access_token is None:
-            # In production, implement OAuth2 flow
-            # For now, assume token is provided
-            pass
 
     async def search(self, query: SearchQuery) -> list[RawRecord]:
         """Search FamilySearch records.
@@ -794,31 +805,15 @@ class FamilySearchSource(BaseSource):
         Returns:
             List of variant spellings
         """
-        variants = [surname]
-
-        # Common phonetic substitutions
-        substitutions = [
-            ("ie", "y"),
-            ("y", "ie"),
-            ("ck", "k"),
-            ("k", "ck"),
-            ("ph", "f"),
-            ("f", "ph"),
-            ("gh", "g"),
-            ("ough", "o"),
-            ("son", "sen"),
-            ("sen", "son"),
-            ("man", "mann"),
-            ("mann", "man"),
-        ]
+        variants = {surname}  # Use set directly for O(1) deduplication
 
         lower = surname.lower()
-        for old, new in substitutions:
+        for old, new in self._NAME_SUBSTITUTIONS:
             if old in lower:
                 variant = lower.replace(old, new)
-                variants.append(variant.title())
+                variants.add(variant.title())
 
-        return list(set(variants))
+        return list(variants)
 
     async def search_with_client(
         self,

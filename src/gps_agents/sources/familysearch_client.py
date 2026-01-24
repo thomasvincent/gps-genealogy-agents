@@ -24,15 +24,15 @@ import logging
 import os
 import time
 import webbrowser
+from html import escape as html_escape
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from functools import wraps
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 from urllib.parse import parse_qs, urlencode, urlparse
 
 import httpx
@@ -99,18 +99,41 @@ class RecordCollection(str, Enum):
 
 @dataclass
 class ClientConfig:
-    """Configuration for FamilySearch API client."""
+    """Configuration for FamilySearch API client.
+
+    SECURITY NOTES:
+    - redirect_uri uses http:// for localhost which is acceptable per OAuth spec
+      (RFC 8252 allows http for loopback addresses). Do NOT use http:// for
+      non-localhost URIs in production.
+    - token_file and cache_dir should have restricted file permissions (0600)
+    - Credentials should be stored securely, not in plain text config files
+    """
 
     client_id: str
     client_secret: str | None = None
     environment: Environment = Environment.PRODUCTION
-    redirect_uri: str = "http://localhost:8765/callback"
+    # SECURITY: http is acceptable for localhost per RFC 8252. Port is configurable
+    # via FAMILYSEARCH_OAUTH_PORT environment variable.
+    redirect_uri: str = field(
+        default_factory=lambda: f"http://localhost:{os.getenv('FAMILYSEARCH_OAUTH_PORT', '8765')}/callback"
+    )
     timeout: float = 30.0
     max_retries: int = 3
     retry_delay: float = 1.0
     token_file: Path = field(default_factory=lambda: Path("data/fs_token.json"))
     cache_dir: Path = field(default_factory=lambda: Path("data/fs_cache"))
     user_agent: str = "GPSGenealogyAgents/1.0"
+
+    def __post_init__(self) -> None:
+        """Validate configuration after initialization."""
+        # SECURITY: Ensure redirect_uri is localhost only (no open redirects)
+        from urllib.parse import urlparse
+        parsed = urlparse(self.redirect_uri)
+        if parsed.hostname not in ("localhost", "127.0.0.1", "::1"):
+            raise ValueError(
+                f"SECURITY: redirect_uri must use localhost, not '{parsed.hostname}'. "
+                "Using non-localhost redirect URIs exposes the application to open redirect attacks."
+            )
 
     @property
     def base_url(self) -> str:
@@ -179,9 +202,18 @@ class TokenResponse(BaseModel):
 
 
 class SearchParams(BaseModel):
-    """Parameters for FamilySearch searches."""
+    """Parameters for FamilySearch searches.
+
+    SECURITY: All string fields are validated for max length and dangerous characters.
+    Year fields are validated for reasonable historical ranges.
+    """
 
     model_config = {"populate_by_name": True}
+
+    # Maximum lengths for input validation
+    _MAX_NAME_LENGTH: int = 200
+    _MAX_PLACE_LENGTH: int = 500
+    _MAX_COLLECTION_ID_LENGTH: int = 100
 
     # Name parameters
     given_name: str | None = None
@@ -214,6 +246,85 @@ class SearchParams(BaseModel):
     # Pagination
     count: int = 20
     start: int = 0
+
+    @field_validator(
+        "given_name", "surname", "father_given_name", "father_surname",
+        "mother_given_name", "mother_surname", "spouse_given_name", "spouse_surname",
+        mode="before"
+    )
+    @classmethod
+    def validate_name_field(cls, v: str | None) -> str | None:
+        """Validate name fields for length and safe characters."""
+        if v is None:
+            return v
+        if len(v) > 200:
+            raise ValueError(f"Name field exceeds maximum length of 200 characters")
+        # Strip control characters but allow Unicode letters/spaces
+        cleaned = "".join(c for c in v if c.isprintable() or c.isspace())
+        return cleaned.strip()
+
+    @field_validator("birth_place", "death_place", "any_place", mode="before")
+    @classmethod
+    def validate_place_field(cls, v: str | None) -> str | None:
+        """Validate place fields for length and safe characters."""
+        if v is None:
+            return v
+        if len(v) > 500:
+            raise ValueError(f"Place field exceeds maximum length of 500 characters")
+        # Strip control characters
+        cleaned = "".join(c for c in v if c.isprintable() or c.isspace())
+        return cleaned.strip()
+
+    @field_validator("collection_id", mode="before")
+    @classmethod
+    def validate_collection_id(cls, v: str | None) -> str | None:
+        """Validate collection ID for safe characters."""
+        if v is None:
+            return v
+        if len(v) > 100:
+            raise ValueError(f"Collection ID exceeds maximum length of 100 characters")
+        # Collection IDs should be alphanumeric with limited punctuation
+        import re
+        if not re.match(r"^[a-zA-Z0-9_\-:.]+$", v):
+            raise ValueError("Collection ID contains invalid characters")
+        return v
+
+    @field_validator("birth_year", "death_year", mode="before")
+    @classmethod
+    def validate_year(cls, v: int | None) -> int | None:
+        """Validate year is within reasonable historical range."""
+        if v is None:
+            return v
+        # Reasonable range: 1000 AD to current year + 1
+        from datetime import datetime
+        current_year = datetime.now().year
+        if v < 1000 or v > current_year + 1:
+            raise ValueError(f"Year must be between 1000 and {current_year + 1}")
+        return v
+
+    @field_validator("birth_year_range", "death_year_range", mode="before")
+    @classmethod
+    def validate_year_range(cls, v: int) -> int:
+        """Validate year range is reasonable."""
+        if v < 0 or v > 100:
+            raise ValueError("Year range must be between 0 and 100")
+        return v
+
+    @field_validator("count", mode="before")
+    @classmethod
+    def validate_count(cls, v: int) -> int:
+        """Validate pagination count."""
+        if v < 1 or v > 100:
+            raise ValueError("Count must be between 1 and 100")
+        return v
+
+    @field_validator("start", mode="before")
+    @classmethod
+    def validate_start(cls, v: int) -> int:
+        """Validate pagination start."""
+        if v < 0:
+            raise ValueError("Start must be non-negative")
+        return v
 
     def to_api_params(self) -> dict[str, str]:
         """Convert to FamilySearch API query parameters."""
@@ -379,7 +490,13 @@ class Gender(BaseModel):
 
 
 class Person(BaseModel):
-    """A person from FamilySearch."""
+    """A person from FamilySearch.
+
+    Properties are cached after first access using a fact index built at model
+    validation time, providing O(1) lookups instead of O(n) list scans.
+    """
+
+    model_config = {"populate_by_name": True}
 
     id: str
     names: list[Name] = []
@@ -387,63 +504,74 @@ class Person(BaseModel):
     facts: list[Fact] = []
     links: dict[str, Any] = {}
 
-    @property
-    def display_name(self) -> str:
+    # Private cached attributes (not serialized)
+    _fact_index: dict[str, Fact] = {}
+    _display_name: str | None = None
+    _given_name: str | None = None
+    _surname: str | None = None
+
+    def model_post_init(self, __context: Any) -> None:
+        """Build fact index and cache name lookups after model initialization."""
+        # Build fact type -> fact index for O(1) lookups
+        fact_index: dict[str, Fact] = {}
+        for fact in self.facts:
+            ft = fact.fact_type
+            if ft not in fact_index:  # Keep first occurrence of each type
+                fact_index[ft] = fact
+        object.__setattr__(self, "_fact_index", fact_index)
+
+        # Cache name lookups
+        display_name = "Unknown"
+        given_name = None
+        surname = None
         for name in self.names:
             if name.preferred and name.full_name:
-                return name.full_name
-        if self.names and self.names[0].full_name:
-            return self.names[0].full_name
-        return "Unknown"
+                display_name = name.full_name
+            if given_name is None and name.given_name:
+                given_name = name.given_name
+            if surname is None and name.surname:
+                surname = name.surname
+        if display_name == "Unknown" and self.names and self.names[0].full_name:
+            display_name = self.names[0].full_name
+        object.__setattr__(self, "_display_name", display_name)
+        object.__setattr__(self, "_given_name", given_name)
+        object.__setattr__(self, "_surname", surname)
+
+    @property
+    def display_name(self) -> str:
+        return self._display_name or "Unknown"
 
     @property
     def given_name(self) -> str | None:
-        for name in self.names:
-            if name.given_name:
-                return name.given_name
-        return None
+        return self._given_name
 
     @property
     def surname(self) -> str | None:
-        for name in self.names:
-            if name.surname:
-                return name.surname
-        return None
+        return self._surname
 
     @property
     def birth_date(self) -> DateInfo | None:
-        for fact in self.facts:
-            if fact.fact_type == "birth":
-                return fact.date
-        return None
+        birth = self._fact_index.get("birth")
+        return birth.date if birth else None
 
     @property
     def birth_place(self) -> PlaceInfo | None:
-        for fact in self.facts:
-            if fact.fact_type == "birth":
-                return fact.place
-        return None
+        birth = self._fact_index.get("birth")
+        return birth.place if birth else None
 
     @property
     def death_date(self) -> DateInfo | None:
-        for fact in self.facts:
-            if fact.fact_type == "death":
-                return fact.date
-        return None
+        death = self._fact_index.get("death")
+        return death.date if death else None
 
     @property
     def death_place(self) -> PlaceInfo | None:
-        for fact in self.facts:
-            if fact.fact_type == "death":
-                return fact.place
-        return None
+        death = self._fact_index.get("death")
+        return death.place if death else None
 
     def get_fact(self, fact_type: str) -> Fact | None:
-        """Get a specific fact by type."""
-        for fact in self.facts:
-            if fact.fact_type == fact_type.lower():
-                return fact
-        return None
+        """Get a specific fact by type (O(1) lookup)."""
+        return self._fact_index.get(fact_type.lower())
 
 
 class SearchEntry(BaseModel):
@@ -581,10 +709,12 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
             self.send_response(400)
             self.send_header("Content-type", "text/html")
             self.end_headers()
+            # SECURITY: Escape error message to prevent XSS attacks
+            safe_error = html_escape(OAuthCallbackHandler.error)
             self.wfile.write(f"""
                 <html><body>
                 <h1>Authorization Failed</h1>
-                <p>Error: {OAuthCallbackHandler.error}</p>
+                <p>Error: {safe_error}</p>
                 </body></html>
             """.encode())
         else:
@@ -974,6 +1104,15 @@ class FamilySearchClient:
         """Clear authentication."""
         self.auth.logout()
 
+    def _make_cache_key(self, method: str, path: str, params: dict[str, str] | None) -> str:
+        """Build cache key using tuple hashing (faster than json.dumps)."""
+        if params:
+            # Sorted tuple of items is faster to hash than JSON serialization
+            param_key = tuple(sorted(params.items()))
+        else:
+            param_key = ()
+        return f"{method}:{path}:{hash(param_key)}"
+
     async def _request(
         self,
         method: str,
@@ -989,8 +1128,8 @@ class FamilySearchClient:
         if not self.is_authenticated:
             raise FamilySearchAPIError("Not authenticated")
 
-        # Check cache for GET requests
-        cache_key = f"{method}:{path}:{json.dumps(params or {}, sort_keys=True)}"
+        # Check cache for GET requests (using fast hash-based key)
+        cache_key = self._make_cache_key(method, path, params)
         if method == "GET" and use_cache:
             cached = self.cache.get(cache_key)
             if cached:
@@ -1000,6 +1139,7 @@ class FamilySearchClient:
         await self.rate_limiter.acquire()
 
         url = f"{self.config.base_url}{path}"
+        # Build headers once outside retry loop
         headers = {"Authorization": f"Bearer {self.auth.access_token}"}
 
         for attempt in range(self.config.max_retries):
@@ -1016,6 +1156,7 @@ class FamilySearchClient:
                     # Token expired, try refresh
                     if self.auth.token and self.auth.token.refresh_token:
                         await self.auth.refresh_token()
+                        # Update headers after refresh
                         headers["Authorization"] = f"Bearer {self.auth.access_token}"
                         continue
                     raise FamilySearchAPIError("Unauthorized", 401)

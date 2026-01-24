@@ -586,7 +586,7 @@ class SearchRouter:
             birth_place=query.birth_place,
             death_year=query.death_year,
             death_place=query.death_place,
-            record_types=effective_record_types if effective_record_types else None,
+            record_types=effective_record_types,  # Already a list, keep as list (not None)
             exclude_sources=query.exclude_sources,
         )
 
