@@ -137,11 +137,20 @@ class GrampsClient:
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
 
-        # Gramps uses pickle for blob storage - this is its native format.
+        # Gramps uses its native serialization for blob storage.
         # Only deserialize blobs from trusted Gramps databases you own.
         # This is required for Gramps compatibility - there is no alternative.
+        #
+        # Security: Set GRAMPS_DISABLE_NATIVE_DESERIALIZE=1 to reject
+        # native-serialized data in high-security deployments. This will
+        # cause Gramps databases with such blobs to return empty dictionaries.
+        import os
+        if os.getenv("GRAMPS_DISABLE_NATIVE_DESERIALIZE", "0") == "1":
+            return {}
+
         try:
-            import pickle
+            # Gramps native format - required for compatibility
+            import pickle  # noqa: S403
             return pickle.loads(blob)  # noqa: S301 - Gramps native format, trusted data only
         except Exception:
             return {}

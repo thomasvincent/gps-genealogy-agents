@@ -132,13 +132,18 @@ class FactLedger:
         self._index: dict[str, dict[int, int]] = {}  # fact_id -> {version: byte_offset}
         if self._index_path.exists():
             try:
-                self._index = json.loads(self._index_path.read_text())
+                raw_index = json.loads(self._index_path.read_text())
+                # Validate structure - values must be dicts, not lists
+                if raw_index and isinstance(next(iter(raw_index.values()), {}), list):
+                    # Old/corrupted format with lists - rebuild
+                    self._rebuild_index_from_facts()
+                    return
                 # Convert nested dicts to int keys (JSON stores keys as strings)
                 self._index = {
                     fact_id: {int(v): offset for v, offset in versions.items()}
-                    for fact_id, versions in self._index.items()
+                    for fact_id, versions in raw_index.items()
                 }
-            except (json.JSONDecodeError, OSError):
+            except (json.JSONDecodeError, OSError, AttributeError, TypeError):
                 # Index corrupted or unreadable - rebuild from facts file
                 self._rebuild_index_from_facts()
 

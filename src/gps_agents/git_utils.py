@@ -33,10 +33,9 @@ def commit_if_changed(repo: Path | str, files: Iterable[Path | str], message: st
     """Legacy helper: compares working tree to HEAD for listed files and commits if changed."""
     import os
     repo = Path(repo)
-    if not sign:
-        sign = bool(int(os.getenv("SAFE_COMMIT_SIGN", "0")))
+    sign = bool(int(os.getenv("SAFE_COMMIT_SIGN", "0")))
     # Stage then compare staged content
-    return safe_commit(repo, files, message)
+    return safe_commit(repo, files, message, sign=sign)
 
 
 def _index_file_bytes(repo: Path, relpath: str) -> bytes | None:

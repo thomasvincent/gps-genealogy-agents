@@ -6,8 +6,10 @@ quorum, integrity validation, and Paper Trail of Doubt preservation.
 from __future__ import annotations
 
 import asyncio
+import bisect
 import logging
 import uuid
+from collections import defaultdict
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
@@ -44,7 +46,6 @@ from .reviewers import (
     TiebreakerInput,
     TiebreakerReviewerLLM,
     # Linguist Agent
-    AcceptedFact,
     LinguistInput,
     LinguistLLM,
     LinguistOutput,
@@ -289,22 +290,47 @@ class PublishingManager:
         Returns:
             QuorumDecision with both verdicts (and tiebreaker if triggered)
         """
-        # Run the async version synchronously
-        return asyncio.get_event_loop().run_until_complete(
-            self.run_quorum_async(
-                pipeline=pipeline,
-                events=events,
-                claims=claims,
-                claims_with_citations=claims_with_citations,
-                source_summaries=source_summaries,
-                key_facts=key_facts,
-                subject_name=subject_name,
-                birth_date=birth_date,
-                death_date=death_date,
-                relationships=relationships,
-                run_tiebreaker=run_tiebreaker,
+        # Safely run async code from sync context
+        # Try to get running loop first (if called from async context)
+        try:
+            loop = asyncio.get_running_loop()
+            # Already in async context - create a new thread to avoid nested loop
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(
+                    asyncio.run,
+                    self.run_quorum_async(
+                        pipeline=pipeline,
+                        events=events,
+                        claims=claims,
+                        claims_with_citations=claims_with_citations,
+                        source_summaries=source_summaries,
+                        key_facts=key_facts,
+                        subject_name=subject_name,
+                        birth_date=birth_date,
+                        death_date=death_date,
+                        relationships=relationships,
+                        run_tiebreaker=run_tiebreaker,
+                    )
+                )
+                return future.result()
+        except RuntimeError:
+            # No running loop - safe to use asyncio.run()
+            return asyncio.run(
+                self.run_quorum_async(
+                    pipeline=pipeline,
+                    events=events,
+                    claims=claims,
+                    claims_with_citations=claims_with_citations,
+                    source_summaries=source_summaries,
+                    key_facts=key_facts,
+                    subject_name=subject_name,
+                    birth_date=birth_date,
+                    death_date=death_date,
+                    relationships=relationships,
+                    run_tiebreaker=run_tiebreaker,
+                )
             )
-        )
 
     async def run_quorum_async(
         self,
@@ -863,6 +889,124 @@ class PublishingManager:
 
         return output
 
+    def _validate_git_workflow_script(self, script: str) -> tuple[bool, str]:
+        """Validate a git workflow script for safety.
+
+        Only allows a whitelist of safe git commands to prevent shell injection.
+
+        Args:
+            script: The shell script to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import os
+        import re
+        import shlex
+
+        # Allowed commands whitelist
+        allowed_commands = {
+            "git", "echo", "cd", "mkdir", "cp", "mv", "rm", "cat",
+            "date", "pwd", "ls", "test", "[", "true", "false", "set",
+        }
+
+        # Dangerous patterns to reject (applied only to executable lines, not heredoc content)
+        dangerous_patterns = [
+            r"`",      # Backtick command substitution
+            r"\|",     # Pipe (could chain dangerous commands)
+            r";",      # Semicolon command chaining
+            r">\s*/",  # Redirect to root paths
+            r"rm\s+-rf?\s+/",  # Dangerous rm
+            r"sudo|su\s",  # Privilege escalation
+        ]
+
+        dangerous_subcommands = {"curl", "wget", "nc", "netcat", "rm", "eval", "exec", "bash", "sh", "python", "perl", "ruby"}
+
+        # Parse script line by line, separating executable lines from heredoc content
+        lines = script.strip().split("\n")
+        in_heredoc = False
+        heredoc_delimiter = None
+        executable_lines: list[str] = []
+
+        for line in lines:
+            stripped = line.strip()
+
+            # Check for heredoc start (<<EOF, <<'EOF', <<"EOF", etc.)
+            if not in_heredoc:
+                heredoc_match = re.search(r"<<\s*['\"]?(\w+)['\"]?", line)
+                if heredoc_match:
+                    in_heredoc = True
+                    heredoc_delimiter = heredoc_match.group(1)
+                    # The line starting the heredoc IS executable (e.g., git commit -m "$(cat <<'EOF'")
+                    executable_lines.append(line)
+                    continue
+
+            # Check for heredoc end
+            if in_heredoc and stripped == heredoc_delimiter:
+                in_heredoc = False
+                heredoc_delimiter = None
+                continue
+
+            # Skip heredoc content (not executable)
+            if in_heredoc:
+                continue
+
+            executable_lines.append(line)
+
+        # Apply dangerous pattern checks only to executable lines
+        executable_content = "\n".join(executable_lines)
+        for pattern in dangerous_patterns:
+            if re.search(pattern, executable_content, re.IGNORECASE):
+                return False, f"Script contains dangerous pattern: {pattern}"
+
+        # Check command substitution $() more carefully
+        # Allow safe patterns like $(cat <<'EOF' for heredocs
+        # Block dangerous patterns like $(curl, $(wget, $(rm, etc.
+        cmd_sub_matches = re.findall(r"\$\(([^)]+)", executable_content)
+        for match in cmd_sub_matches:
+            # Get the first word in the command substitution
+            first_word = match.strip().split()[0] if match.strip() else ""
+            # Use basename to handle absolute paths like /bin/bash
+            first_word_basename = os.path.basename(first_word)
+            # Allow cat for heredocs
+            if first_word_basename == "cat":
+                continue
+            # Block if it's a dangerous command (check both full path and basename)
+            if first_word in dangerous_subcommands or first_word_basename in dangerous_subcommands:
+                return False, f"Dangerous command in substitution: {first_word}"
+
+        # Validate each executable line
+        for line in executable_lines:
+            stripped = line.strip()
+
+            # Skip empty lines, comments, and closing constructs
+            if not stripped or stripped.startswith("#") or stripped in (')"', ')\"', 'EOF'):
+                continue
+
+            # Extract the first command from the line
+            try:
+                tokens = shlex.split(stripped)
+                if not tokens:
+                    continue
+                cmd = tokens[0]
+                cmd_basename = os.path.basename(cmd)
+
+                # Handle common shell constructs
+                if cmd in ("if", "then", "else", "fi", "for", "do", "done", "while", "case", "esac"):
+                    continue
+
+                # Check both full path and basename against whitelist
+                if cmd not in allowed_commands and cmd_basename not in allowed_commands:
+                    return False, f"Command not in whitelist: {cmd}"
+
+            except ValueError:
+                # shlex parsing error - skip lines with complex shell syntax
+                # (e.g., command substitution continuations)
+                # The dangerous pattern check already covers executable content
+                continue
+
+        return True, ""
+
     def execute_git_workflow(
         self,
         workflow: DevOpsWorkflowOutput,
@@ -876,8 +1020,18 @@ class PublishingManager:
 
         Returns:
             Tuple of (success, output/error message)
+
+        Security:
+            The script is validated against a whitelist of safe commands
+            before execution to prevent shell injection attacks.
         """
         import subprocess
+
+        # Validate script before execution
+        is_valid, error_msg = self._validate_git_workflow_script(workflow.shell_script)
+        if not is_valid:
+            logger.error(f"Git workflow script validation failed: {error_msg}")
+            return False, f"Script validation failed: {error_msg}"
 
         if dry_run:
             logger.info("Dry run - git workflow script:")
@@ -955,6 +1109,8 @@ class AdjudicationGate:
         self._storage = storage
         self._revisit_queue = revisit_queue if revisit_queue is not None else []
         self._decisions: dict[str, PublishDecision] = {}
+        # Index for O(1) subject_id lookups
+        self._decisions_by_subject: dict[str, list[str]] = defaultdict(list)
 
     # =========================================================================
     # Core Adjudication Logic
@@ -996,21 +1152,15 @@ class AdjudicationGate:
             and source_verdict == Verdict.PASS
         )
 
-        # Categorize issues by severity
-        critical_issues: list[ReviewIssue] = []
-        high_issues: list[ReviewIssue] = []
-        medium_issues: list[ReviewIssue] = []
-        low_issues: list[ReviewIssue] = []
-
+        # Categorize issues by severity using defaultdict for O(n) single-pass
+        issues_by_severity: dict[Severity, list[ReviewIssue]] = defaultdict(list)
         for issue in quorum_decision.all_issues:
-            if issue.severity == Severity.CRITICAL:
-                critical_issues.append(issue)
-            elif issue.severity == Severity.HIGH:
-                high_issues.append(issue)
-            elif issue.severity == Severity.MEDIUM:
-                medium_issues.append(issue)
-            else:
-                low_issues.append(issue)
+            issues_by_severity[issue.severity].append(issue)
+
+        critical_issues = issues_by_severity[Severity.CRITICAL]
+        high_issues = issues_by_severity[Severity.HIGH]
+        medium_issues = issues_by_severity[Severity.MEDIUM]
+        low_issues = issues_by_severity[Severity.LOW]
 
         # Step 2: AUTO-DOWNGRADE PROTOCOL
         allowed_platforms, blocked_platforms = self._apply_auto_downgrade(
@@ -1066,6 +1216,8 @@ class AdjudicationGate:
         )
 
         self._decisions[decision_id] = decision
+        # Update subject_id index for O(1) lookups
+        self._decisions_by_subject[subject_id].append(decision_id)
 
         logger.info(
             f"Adjudication {decision_id}: approved={is_approved}, "
@@ -1273,26 +1425,30 @@ class AdjudicationGate:
 
         return request
 
+    # Class-level constant for keyword mapping (avoid recreating dict each call)
+    _SOURCE_TYPE_KEYWORDS: dict[str, str] = {
+        "census": "census_records",
+        "vital": "vital_records",
+        "birth": "birth_records",
+        "death": "death_records",
+        "marriage": "marriage_records",
+        "military": "military_records",
+        "immigration": "immigration_records",
+        "newspaper": "newspapers",
+        "obituary": "obituaries",
+    }
+
     def _extract_missing_source_types(self, missing_evidence: list[str]) -> list[str]:
         """Extract source types from missing evidence descriptions."""
-        source_types = set()
-        keywords = {
-            "census": "census_records",
-            "vital": "vital_records",
-            "birth": "birth_records",
-            "death": "death_records",
-            "marriage": "marriage_records",
-            "military": "military_records",
-            "immigration": "immigration_records",
-            "newspaper": "newspapers",
-            "obituary": "obituaries",
-        }
+        source_types: set[str] = set()
 
-        for evidence in missing_evidence:
-            lower_evidence = evidence.lower()
-            for keyword, source_type in keywords.items():
-                if keyword in lower_evidence:
-                    source_types.add(source_type)
+        # Pre-lowercase all evidence strings once
+        lowered_evidence = [e.lower() for e in missing_evidence]
+
+        for keyword, source_type in self._SOURCE_TYPE_KEYWORDS.items():
+            # Check if keyword appears in any evidence string
+            if any(keyword in evidence for evidence in lowered_evidence):
+                source_types.add(source_type)
 
         return list(source_types)
 
@@ -1305,37 +1461,35 @@ class AdjudicationGate:
             queries.append(query)
         return queries
 
+    # Priority ordering for bisect-based insertion (lower value = higher priority)
+    _PRIORITY_ORDER: dict[str, int] = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+
     def _add_to_revisit_queue(self, request: SearchRevisionRequest) -> None:
         """Add tie-breaker queries to the RevisitQueue with priority.
 
+        Uses bisect for O(log n) sorted insertion instead of O(n) list.insert().
         The RevisitQueue must prioritize queries generated during adjudication.
         """
+        priority_order = self._PRIORITY_ORDER.get(request.priority, 3)
+
         revisit_item = {
             "type": "tie_breaker",
             "request_id": request.request_id,
             "subject_id": request.subject_id,
             "queries": request.search_queries,
             "priority": request.priority,
+            "_priority_order": priority_order,  # For sorting
             "created_at": request.created_at.isoformat(),
         }
 
-        # Insert at appropriate position based on priority
-        if request.priority == "critical":
-            self._revisit_queue.insert(0, revisit_item)
-        elif request.priority == "high":
-            # Insert after critical items
-            insert_pos = 0
-            for i, item in enumerate(self._revisit_queue):
-                if item.get("priority") != "critical":
-                    insert_pos = i
-                    break
-            self._revisit_queue.insert(insert_pos, revisit_item)
-        else:
-            self._revisit_queue.append(revisit_item)
+        # Use bisect to find insertion point based on priority order
+        # Extract priority orders as a sorted key list for bisect
+        keys = [item.get("_priority_order", 3) for item in self._revisit_queue]
+        insert_pos = bisect.bisect_right(keys, priority_order)
+        self._revisit_queue.insert(insert_pos, revisit_item)
 
         logger.debug(
-            f"Added tie-breaker to RevisitQueue at position "
-            f"{self._revisit_queue.index(revisit_item)}"
+            f"Added tie-breaker to RevisitQueue at position {insert_pos}"
         )
 
     # =========================================================================
@@ -1347,5 +1501,6 @@ class AdjudicationGate:
         return self._decisions.get(decision_id)
 
     def get_decisions_for_subject(self, subject_id: str) -> list[PublishDecision]:
-        """Get all decisions for a subject."""
-        return [d for d in self._decisions.values() if d.subject_id == subject_id]
+        """Get all decisions for a subject using O(1) index lookup."""
+        decision_ids = self._decisions_by_subject.get(subject_id, [])
+        return [self._decisions[d_id] for d_id in decision_ids if d_id in self._decisions]

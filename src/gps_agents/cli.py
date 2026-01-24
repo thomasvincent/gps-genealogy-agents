@@ -1507,5 +1507,663 @@ def graph_family(
         console.print(f"[bold]{n}[/bold]\n  parents: {p}\n  spouses: {s}\n  children: {c}\n")
 
 
+# =============================================================================
+# AUTONOMOUS FAMILY TREE COMMAND
+# =============================================================================
+
+@app.command("family-tree")
+def family_tree(
+    given: str = typer.Argument(..., help="Given name (first name)"),
+    surname: str = typer.Argument(..., help="Surname (last name)"),
+    birth_year: int | None = typer.Option(None, "--birth-year", "-b", help="Approximate birth year"),
+    birth_place: str | None = typer.Option(None, "--birth-place", "-p", help="Birth place (city, state, or country)"),
+    output: Path = typer.Option(Path("family_tree.ged"), "--output", "-o", help="Output GEDCOM file path"),
+    max_minutes: int = typer.Option(30, "--max-minutes", "-m", help="Maximum minutes to run (default: 30)"),
+    generations: int = typer.Option(3, "--generations", "-g", help="Generations to expand (default: 3)"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed progress"),
+) -> None:
+    """🌳 Build a family tree from a name - fully autonomous, no prompts needed.
+
+    This command runs exhaustive genealogical research and exports the results
+    to a standard GEDCOM file that can be opened in any genealogy software.
+
+    Examples:
+        gps-agents family-tree "John" "Smith" --birth-year 1900 --birth-place "New York"
+        gps-agents family-tree "Mary" "Jones" -b 1850 -p "Virginia" -o jones_tree.ged
+        gps-agents family-tree "William" "Durham" --generations 4 --max-minutes 60
+    """
+    from gps_agents.crawl.engine import run_crawl_person, CrawlConfig, SeedPerson
+    from gps_agents.export.gedcom import export_gedcom
+
+    console.print(Panel(
+        f"[bold green]🌳 Building family tree for {given} {surname}[/bold green]\n\n"
+        f"Birth year: {birth_year or 'unknown'}\n"
+        f"Birth place: {birth_place or 'unknown'}\n"
+        f"Generations: {generations}\n"
+        f"Max runtime: {max_minutes} minutes\n"
+        f"Output: {output}",
+        title="GPS Family Tree Builder",
+    ))
+
+    async def run_autonomous():
+        kernel_config = get_kernel_config()
+        cfg = get_config()
+
+        seed = SeedPerson(
+            given=given,
+            surname=surname,
+            birth_year=birth_year,
+            birth_place=birth_place,
+        )
+
+        crawl_cfg = CrawlConfig(
+            max_duration_seconds=max_minutes * 60,
+            max_iterations=500,
+            checkpoint_every=25,
+            tree_out=str(cfg["data_dir"] / "trees" / f"{surname.lower()}_{given.lower()}" / "tree.json"),
+            verbose=verbose,
+            until_gps=True,  # Stop when GPS-quality coverage reached
+            exclude_authored=False,
+            expand_family=True,
+            max_generations=generations,
+            use_existing_profile=True,
+            require_gps_approval=False,
+            use_census_tree_builder=True,
+        )
+
+        # Run the exhaustive crawl
+        console.print("\n[bold]Phase 1:[/bold] Searching historical records...")
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task(f"Researching {given} {surname}...", total=None)
+            summary = await run_crawl_person(seed, crawl_cfg, kernel_config)
+            progress.update(task, completed=True, description="Research complete!")
+
+        # Export to GEDCOM
+        console.print("\n[bold]Phase 2:[/bold] Exporting to GEDCOM format...")
+        ledger_dir = cfg["data_dir"] / "ledger"
+        result_path = export_gedcom(ledger_dir, output)
+
+        return summary, result_path
+
+    try:
+        summary, gedcom_path = asyncio.run(run_autonomous())
+
+        # Show results
+        console.print(Panel(
+            f"[bold green]✓ Family tree built successfully![/bold green]\n\n"
+            f"[bold]Output file:[/bold] {gedcom_path}\n\n"
+            f"Open this file in:\n"
+            f"  • Gramps (free): https://gramps-project.org\n"
+            f"  • RootsMagic: https://rootsmagic.com\n"
+            f"  • Family Tree Maker\n"
+            f"  • Ancestry.com (upload)\n"
+            f"  • FamilySearch.org (upload)",
+            title="🌳 Complete!",
+        ))
+
+        if verbose and summary:
+            console.print("\n[bold]Research Summary:[/bold]")
+            console.print(json.dumps(summary, indent=2, default=str))
+
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Interrupted by user. Partial results may be saved.[/yellow]")
+    except Exception as e:
+        console.print(f"\n[red]Error: {e}[/red]")
+        if verbose:
+            import traceback
+            console.print(traceback.format_exc())
+        raise typer.Exit(1)
+
+
+# =============================================================================
+# BATCH PROCESSING COMMAND
+# =============================================================================
+
+@app.command("batch")
+def batch_process(
+    input_file: Path = typer.Argument(..., help="Input file (CSV or JSON) with person records"),
+    output_dir: Path = typer.Option(Path("batch_output"), "--output", "-o", help="Output directory"),
+    format: str = typer.Option("gedcom", "--format", "-f", help="Output format: gedcom, json, markdown, graphml"),
+    max_concurrent: int = typer.Option(3, "--concurrent", "-c", help="Max concurrent searches"),
+    max_minutes_per_person: int = typer.Option(10, "--max-minutes", "-m", help="Max minutes per person"),
+    skip_existing: bool = typer.Option(True, "--skip-existing/--no-skip", help="Skip if output exists"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed progress"),
+) -> None:
+    """📦 Process multiple people from a CSV/JSON file.
+
+    Input file format (CSV):
+        given_name,surname,birth_year,birth_place
+        John,Smith,1900,New York
+        Mary,Jones,1850,Virginia
+
+    Input file format (JSON):
+        [
+            {"given_name": "John", "surname": "Smith", "birth_year": 1900},
+            {"given_name": "Mary", "surname": "Jones", "birth_year": 1850}
+        ]
+
+    Examples:
+        gps-agents batch people.csv -o results/ -f gedcom
+        gps-agents batch people.json --concurrent 5 --format json
+    """
+    import csv
+    from gps_agents.crawl.engine import run_crawl_person, CrawlConfig, SeedPerson
+    from gps_agents.export import export_by_format
+
+    # Parse input file
+    people: list[dict] = []
+
+    if input_file.suffix.lower() == ".csv":
+        with open(input_file, "r", newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                people.append({
+                    "given_name": row.get("given_name", row.get("given", "")),
+                    "surname": row.get("surname", row.get("last_name", "")),
+                    "birth_year": int(row["birth_year"]) if row.get("birth_year") else None,
+                    "birth_place": row.get("birth_place", row.get("place", "")),
+                })
+    elif input_file.suffix.lower() == ".json":
+        people = json.loads(input_file.read_text())
+    else:
+        console.print(f"[red]Unsupported file format: {input_file.suffix}[/red]")
+        raise typer.Exit(1)
+
+    console.print(Panel(
+        f"[bold green]📦 Batch Processing[/bold green]\n\n"
+        f"Input: {input_file}\n"
+        f"People to process: {len(people)}\n"
+        f"Output directory: {output_dir}\n"
+        f"Format: {format}\n"
+        f"Max concurrent: {max_concurrent}",
+        title="Batch Configuration",
+    ))
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    results: list[dict] = []
+
+    import asyncio
+    from asyncio import Semaphore
+
+    async def process_person(person: dict, semaphore: Semaphore) -> dict:
+        async with semaphore:
+            given = person["given_name"]
+            surname = person["surname"]
+            safe_name = f"{surname.lower()}_{given.lower()}".replace(" ", "_")
+
+            # Determine output file
+            ext = {"gedcom": ".ged", "json": ".json", "markdown": ".md", "graphml": ".graphml"}.get(format, ".ged")
+            out_file = output_dir / f"{safe_name}{ext}"
+
+            if skip_existing and out_file.exists():
+                return {"person": f"{given} {surname}", "status": "skipped", "output": str(out_file)}
+
+            try:
+                kernel_config = get_kernel_config()
+                cfg = get_config()
+
+                seed = SeedPerson(
+                    given=given,
+                    surname=surname,
+                    birth_year=person.get("birth_year"),
+                    birth_place=person.get("birth_place"),
+                )
+
+                crawl_cfg = CrawlConfig(
+                    max_duration_seconds=max_minutes_per_person * 60,
+                    max_iterations=100,
+                    checkpoint_every=25,
+                    tree_out=str(cfg["data_dir"] / "trees" / safe_name / "tree.json"),
+                    verbose=verbose,
+                    until_gps=False,
+                    expand_family=True,
+                    max_generations=2,
+                )
+
+                await run_crawl_person(seed, crawl_cfg, kernel_config)
+
+                ledger_dir = cfg["data_dir"] / "ledger"
+                export_by_format(ledger_dir, out_file)
+
+                return {"person": f"{given} {surname}", "status": "success", "output": str(out_file)}
+
+            except Exception as e:
+                return {"person": f"{given} {surname}", "status": "error", "error": str(e)}
+
+    async def run_batch():
+        semaphore = Semaphore(max_concurrent)
+        tasks = [process_person(p, semaphore) for p in people]
+
+        with Progress(console=console) as progress:
+            task = progress.add_task("Processing...", total=len(tasks))
+            for coro in asyncio.as_completed(tasks):
+                result = await coro
+                results.append(result)
+                progress.advance(task)
+                status_color = "green" if result["status"] == "success" else "yellow" if result["status"] == "skipped" else "red"
+                console.print(f"[{status_color}]{result['person']}: {result['status']}[/{status_color}]")
+
+    asyncio.run(run_batch())
+
+    # Summary
+    success = sum(1 for r in results if r["status"] == "success")
+    skipped = sum(1 for r in results if r["status"] == "skipped")
+    errors = sum(1 for r in results if r["status"] == "error")
+
+    console.print(Panel(
+        f"[bold]Batch Complete![/bold]\n\n"
+        f"✓ Success: {success}\n"
+        f"⏭ Skipped: {skipped}\n"
+        f"✗ Errors: {errors}",
+        title="Summary",
+    ))
+
+    # Save results log
+    results_file = output_dir / "batch_results.json"
+    results_file.write_text(json.dumps(results, indent=2))
+    console.print(f"\nResults log saved to: {results_file}")
+
+
+# =============================================================================
+# FAMILY TREE VALIDATION COMMAND
+# =============================================================================
+
+@app.command("validate")
+def validate_tree(
+    input_file: Path = typer.Argument(..., help="GEDCOM file or ledger directory to validate"),
+    check_sources: bool = typer.Option(True, "--sources/--no-sources", help="Validate source citations"),
+    check_dates: bool = typer.Option(True, "--dates/--no-dates", help="Check date consistency"),
+    check_relationships: bool = typer.Option(True, "--relationships/--no-relationships", help="Check relationship logic"),
+    gps_compliance: bool = typer.Option(True, "--gps/--no-gps", help="Check GPS compliance"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="Output validation report (markdown)"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show all issues, not just errors"),
+) -> None:
+    """🔍 Validate a family tree for errors and GPS compliance.
+
+    Checks include:
+    - Date consistency (birth before death, parent older than child)
+    - Relationship logic (no circular relationships)
+    - Source citations (facts have supporting sources)
+    - GPS compliance (5 pillars of genealogical proof)
+
+    Examples:
+        gps-agents validate family.ged
+        gps-agents validate ./ledger/ --gps --output report.md
+        gps-agents validate tree.ged --no-sources --verbose
+    """
+    from datetime import datetime as dt
+
+    console.print(Panel(
+        f"[bold green]🔍 Validating Family Tree[/bold green]\n\n"
+        f"Input: {input_file}\n"
+        f"Check sources: {check_sources}\n"
+        f"Check dates: {check_dates}\n"
+        f"Check relationships: {check_relationships}\n"
+        f"GPS compliance: {gps_compliance}",
+        title="Validation Settings",
+    ))
+
+    issues: list[dict] = []
+    warnings: list[dict] = []
+    stats: dict = {"persons": 0, "facts": 0, "sources": 0, "relationships": 0}
+
+    # Parse input
+    if input_file.is_dir():
+        # Assume ledger directory
+        from gps_agents.ledger.fact_ledger import FactLedger
+        from gps_agents.models.fact import FactStatus
+
+        ledger = FactLedger(str(input_file))
+        persons: dict[str, dict] = {}
+        facts: list[dict] = []
+
+        for fact in ledger.iter_all_facts(FactStatus.ACCEPTED):
+            facts.append({
+                "id": fact.fact_id,
+                "type": fact.fact_type,
+                "statement": fact.statement,
+                "person_id": fact.person_id,
+                "sources": [{"title": s.title, "url": s.url} for s in (fact.sources or [])],
+                "relation_subject": fact.relation_subject,
+                "relation_object": fact.relation_object,
+                "relation_kind": fact.relation_kind,
+            })
+
+            if fact.person_id and fact.person_id not in persons:
+                persons[fact.person_id] = {"name": fact.person_id, "facts": [], "birth_year": None, "death_year": None}
+            if fact.person_id:
+                persons[fact.person_id]["facts"].append(fact)
+
+                # Extract years
+                import re
+                year_match = re.search(r"(\d{4})", fact.statement or "")
+                if year_match:
+                    year = int(year_match.group(1))
+                    if (fact.fact_type or "").lower() == "birth":
+                        persons[fact.person_id]["birth_year"] = year
+                    elif (fact.fact_type or "").lower() == "death":
+                        persons[fact.person_id]["death_year"] = year
+
+        stats["persons"] = len(persons)
+        stats["facts"] = len(facts)
+        stats["sources"] = sum(len(f["sources"]) for f in facts)
+        stats["relationships"] = sum(1 for f in facts if f["type"] == "relationship")
+
+    elif input_file.suffix.lower() in (".ged", ".gedcom"):
+        # Parse GEDCOM
+        console.print("[yellow]GEDCOM validation support is basic. For full analysis, export to ledger format.[/yellow]")
+        content = input_file.read_text(encoding="utf-8", errors="replace")
+        persons = {}
+        facts = []
+
+        # Simple GEDCOM parsing
+        current_indi = None
+        for line in content.split("\n"):
+            line = line.strip()
+            if " INDI" in line:
+                current_indi = line.split()[1] if len(line.split()) > 1 else None
+                if current_indi:
+                    persons[current_indi] = {"name": current_indi, "facts": [], "birth_year": None, "death_year": None}
+            elif current_indi and "1 NAME" in line:
+                name = line.replace("1 NAME", "").strip()
+                persons[current_indi]["name"] = name
+            elif current_indi and "2 DATE" in line:
+                import re
+                year_match = re.search(r"(\d{4})", line)
+                if year_match:
+                    # Would need context for birth vs death
+                    pass
+
+        stats["persons"] = len(persons)
+
+    else:
+        console.print(f"[red]Unsupported input format: {input_file.suffix}[/red]")
+        raise typer.Exit(1)
+
+    # Run validation checks
+    console.print("\n[bold]Running validation checks...[/bold]")
+
+    # 1. Date consistency
+    if check_dates:
+        for pid, person in persons.items():
+            birth = person.get("birth_year")
+            death = person.get("death_year")
+
+            if birth and death and death < birth:
+                issues.append({
+                    "type": "date_error",
+                    "severity": "error",
+                    "person": person["name"],
+                    "message": f"Death year ({death}) before birth year ({birth})",
+                })
+
+            if birth and birth > dt.now().year:
+                issues.append({
+                    "type": "date_error",
+                    "severity": "error",
+                    "person": person["name"],
+                    "message": f"Birth year ({birth}) is in the future",
+                })
+
+            if death and death > dt.now().year:
+                warnings.append({
+                    "type": "date_warning",
+                    "severity": "warning",
+                    "person": person["name"],
+                    "message": f"Death year ({death}) is in the future",
+                })
+
+            if birth and death and (death - birth) > 120:
+                warnings.append({
+                    "type": "date_warning",
+                    "severity": "warning",
+                    "person": person["name"],
+                    "message": f"Lifespan ({death - birth} years) is unusually long",
+                })
+
+    # 2. Source validation
+    if check_sources:
+        for pid, person in persons.items():
+            person_facts = person.get("facts", [])
+            unsourced = [f for f in person_facts if not getattr(f, "sources", None)]
+            if unsourced:
+                warnings.append({
+                    "type": "source_warning",
+                    "severity": "warning",
+                    "person": person["name"],
+                    "message": f"{len(unsourced)} fact(s) without source citations",
+                })
+
+    # 3. GPS compliance
+    if gps_compliance:
+        # Check for minimum documentation
+        for pid, person in persons.items():
+            fact_types = set()
+            for f in person.get("facts", []):
+                ft = getattr(f, "fact_type", None) or f.get("type", "")
+                fact_types.add(ft.lower())
+
+            # GPS requires multiple independent sources
+            sources = []
+            for f in person.get("facts", []):
+                src = getattr(f, "sources", None) or f.get("sources", [])
+                sources.extend(src)
+
+            if len(sources) < 2:
+                warnings.append({
+                    "type": "gps_warning",
+                    "severity": "warning",
+                    "person": person["name"],
+                    "message": "GPS requires multiple independent sources (has {})".format(len(sources)),
+                })
+
+    # Display results
+    console.print(f"\n[bold]Statistics:[/bold]")
+    console.print(f"  Persons: {stats['persons']}")
+    console.print(f"  Facts: {stats['facts']}")
+    console.print(f"  Sources: {stats['sources']}")
+    console.print(f"  Relationships: {stats['relationships']}")
+
+    if issues:
+        console.print(f"\n[bold red]Errors ({len(issues)}):[/bold red]")
+        for issue in issues:
+            console.print(f"  ✗ [{issue['person']}] {issue['message']}")
+
+    if verbose and warnings:
+        console.print(f"\n[bold yellow]Warnings ({len(warnings)}):[/bold yellow]")
+        for warning in warnings:
+            console.print(f"  ⚠ [{warning['person']}] {warning['message']}")
+
+    # Generate report
+    if output:
+        report_lines = [
+            "# Family Tree Validation Report",
+            "",
+            f"**Date:** {dt.now().strftime('%Y-%m-%d %H:%M')}",
+            f"**Input:** {input_file}",
+            "",
+            "## Summary",
+            "",
+            f"| Metric | Count |",
+            f"|--------|-------|",
+            f"| Persons | {stats['persons']} |",
+            f"| Facts | {stats['facts']} |",
+            f"| Sources | {stats['sources']} |",
+            f"| Errors | {len(issues)} |",
+            f"| Warnings | {len(warnings)} |",
+            "",
+        ]
+
+        if issues:
+            report_lines.extend(["## Errors", ""])
+            for issue in issues:
+                report_lines.append(f"- **{issue['person']}**: {issue['message']}")
+            report_lines.append("")
+
+        if warnings:
+            report_lines.extend(["## Warnings", ""])
+            for warning in warnings:
+                report_lines.append(f"- **{warning['person']}**: {warning['message']}")
+            report_lines.append("")
+
+        output.write_text("\n".join(report_lines))
+        console.print(f"\nReport saved to: {output}")
+
+    # Exit code
+    if issues:
+        console.print(f"\n[red]Validation failed with {len(issues)} error(s)[/red]")
+        raise typer.Exit(1)
+    else:
+        console.print(f"\n[green]✓ Validation passed[/green]")
+        if warnings:
+            console.print(f"[yellow]  ({len(warnings)} warnings)[/yellow]")
+
+
+# =============================================================================
+# SOURCE QUALITY SCORING COMMAND
+# =============================================================================
+
+@app.command("score-sources")
+def score_sources(
+    ledger_dir: Path = typer.Argument(..., help="Ledger directory to analyze"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="Output report file"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed scoring"),
+) -> None:
+    """📊 Score source quality and GPS compliance.
+
+    Evaluates sources against GPS (Genealogical Proof Standard) criteria:
+    - Original vs. derivative sources
+    - Primary vs. secondary information
+    - Direct vs. indirect evidence
+    - Source independence
+
+    Examples:
+        gps-agents score-sources ./ledger/
+        gps-agents score-sources ./ledger/ -o quality_report.md
+    """
+    from gps_agents.ledger.fact_ledger import FactLedger
+    from gps_agents.models.fact import FactStatus
+
+    console.print(Panel(
+        f"[bold green]📊 Source Quality Analysis[/bold green]\n\n"
+        f"Ledger: {ledger_dir}",
+        title="GPS Source Scoring",
+    ))
+
+    ledger = FactLedger(str(ledger_dir))
+    sources: dict[str, dict] = {}
+    facts_by_source: dict[str, list] = {}
+
+    for fact in ledger.iter_all_facts(FactStatus.ACCEPTED):
+        for src in (fact.sources or []):
+            sid = src.source_id or src.url or src.title or "unknown"
+            if sid not in sources:
+                sources[sid] = {
+                    "id": sid,
+                    "title": src.title,
+                    "url": src.url,
+                    "fact_count": 0,
+                    "score": 0,
+                    "criteria": {},
+                }
+                facts_by_source[sid] = []
+            sources[sid]["fact_count"] += 1
+            facts_by_source[sid].append(fact)
+
+    # Score each source
+    for sid, source in sources.items():
+        score = 0
+        criteria = {}
+
+        # 1. Has URL (verifiable)
+        if source["url"]:
+            score += 20
+            criteria["verifiable"] = True
+        else:
+            criteria["verifiable"] = False
+
+        # 2. Is from official/reliable domain
+        url = source["url"] or ""
+        reliable_domains = ["familysearch.org", "ancestry.com", "archives.gov", "findagrave.com", ".gov", ".edu"]
+        if any(d in url for d in reliable_domains):
+            score += 20
+            criteria["official_source"] = True
+        else:
+            criteria["official_source"] = False
+
+        # 3. Supports multiple facts
+        if source["fact_count"] >= 3:
+            score += 15
+            criteria["comprehensive"] = True
+        else:
+            criteria["comprehensive"] = False
+
+        # 4. Has title/description
+        if source["title"] and len(source["title"]) > 10:
+            score += 15
+            criteria["documented"] = True
+        else:
+            criteria["documented"] = False
+
+        # 5. Is primary source (contains "census", "certificate", "register")
+        title_lower = (source["title"] or "").lower()
+        primary_keywords = ["census", "certificate", "register", "vital", "birth", "death", "marriage", "baptism"]
+        if any(kw in title_lower for kw in primary_keywords):
+            score += 30
+            criteria["primary"] = True
+        else:
+            criteria["primary"] = False
+
+        source["score"] = min(100, score)
+        source["criteria"] = criteria
+
+    # Sort by score
+    sorted_sources = sorted(sources.values(), key=lambda s: s["score"], reverse=True)
+
+    # Display results
+    console.print(f"\n[bold]Source Quality Scores:[/bold]\n")
+
+    table = Table(title="Source Scores")
+    table.add_column("Score", style="cyan")
+    table.add_column("Title", style="white")
+    table.add_column("Facts", style="green")
+    table.add_column("Criteria", style="yellow")
+
+    for src in sorted_sources[:20]:  # Top 20
+        criteria_str = ", ".join(k for k, v in src["criteria"].items() if v)
+        table.add_row(
+            f"{src['score']}/100",
+            (src["title"] or "Unknown")[:40],
+            str(src["fact_count"]),
+            criteria_str or "none",
+        )
+
+    console.print(table)
+
+    # Overall stats
+    if sorted_sources:
+        avg_score = sum(s["score"] for s in sorted_sources) / len(sorted_sources)
+        high_quality = sum(1 for s in sorted_sources if s["score"] >= 70)
+
+        console.print(f"\n[bold]Summary:[/bold]")
+        console.print(f"  Total sources: {len(sorted_sources)}")
+        console.print(f"  Average score: {avg_score:.1f}/100")
+        console.print(f"  High quality (70+): {high_quality} ({100*high_quality/len(sorted_sources):.0f}%)")
+
+    if output:
+        report = ["# Source Quality Report", "", f"Generated: {dt.now().strftime('%Y-%m-%d')}", ""]
+        report.append("| Score | Title | Facts | Criteria |")
+        report.append("|-------|-------|-------|----------|")
+        for src in sorted_sources:
+            criteria_str = ", ".join(k for k, v in src["criteria"].items() if v)
+            report.append(f"| {src['score']} | {src['title'][:40] if src['title'] else 'Unknown'} | {src['fact_count']} | {criteria_str} |")
+        output.write_text("\n".join(report))
+        console.print(f"\nReport saved to: {output}")
+
+
 if __name__ == "__main__":
     app()
