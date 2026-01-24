@@ -80,11 +80,18 @@ MANIFEST-*
 CURRENT
 OPTIONS-*
 
-# Secrets
+# Secrets and credentials
 .env.local
+.env.production
 *.pem
 *.key
+*.secret
 credentials.json
+*credentials*.json
+*_token.json
+fs_token.json
+secrets.yaml
+secrets.yml
 
 # macOS
 .DS_Store
