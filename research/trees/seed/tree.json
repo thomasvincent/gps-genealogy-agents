@@ -1,0 +1,72 @@
+{
+  "seed": {
+    "given": "Archer",
+    "surname": "Durham",
+    "birth_year": 1932,
+    "birth_place": "Pasadena, California"
+  },
+  "coverage": {
+    "sources": [
+      "accessgenealogy",
+      "findagrave",
+      "nara1940",
+      "nara1950",
+      "usgenweb",
+      "wikitree"
+    ],
+    "records": 3,
+    "primary": 0,
+    "secondary": 3,
+    "authored": 0
+  },
+  "records": [
+    {
+      "source": "FindAGrave",
+      "record_id": "80384035",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/80384035/a-d-durham",
+      "raw_data": {
+        "name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
+      },
+      "extracted_fields": {
+        "full_name": "A. D. Durham24 Nov 1932 \u2013 4 May 1996"
+      },
+      "accessed_at": "2026-01-26T02:35:43.849133Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "57079016",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/57079016/a-w-durham",
+      "raw_data": {
+        "name": "A. W. DurhamFlowers have been left.1932 \u2013 1999"
+      },
+      "extracted_fields": {
+        "full_name": "A. W. DurhamFlowers have been left.1932 \u2013 1999"
+      },
+      "accessed_at": "2026-01-26T02:35:43.849187Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    },
+    {
+      "source": "FindAGrave",
+      "record_id": "23242466",
+      "record_type": "burial",
+      "url": "https://www.findagrave.com/memorial/23242466/donald-adam",
+      "raw_data": {
+        "name": "HonoringDonald AdamBirth1947Death2007"
+      },
+      "extracted_fields": {
+        "full_name": "HonoringDonald AdamBirth1947Death2007"
+      },
+      "accessed_at": "2026-01-26T02:35:43.849202Z",
+      "confidence_hint": null,
+      "needs_translation": false,
+      "language": "en"
+    }
+  ]
+}
