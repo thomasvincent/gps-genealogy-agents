@@ -1,0 +1,394 @@
+{
+  "generated_at": "2026-01-27T20:45:00",
+  "family_name": "Brown",
+  "origin": "Ireland",
+  "migration_path": "Ireland → California Gold Rush (1850s) → Nevada City → Fresno",
+  "total_profiles": 10,
+  "research_status": "initial_documentation",
+  "source": "Death record + Census research",
+  "key_identifier": "Bridget Joyce (maiden name)",
+  "people": {
+    "brown-michael-1825": {
+      "name": "Michael Brown",
+      "first_name": "Michael",
+      "last_name": "Brown",
+      "birth_date": "1830-00-00",
+      "birth_place": "Ireland",
+      "death_date": "1888-00-00",
+      "death_place": "Nevada City, California",
+      "burial_place": "Holy Cross Catholic Cemetery, Colma, California (Section H, Row 11)",
+      "burial_plot": "Section H, Row 11 (perpetual care)",
+      "gender": "Male",
+      "occupation": "Gold miner",
+      "spouse": "brown-bridget-1835",
+      "marriage_date": "1855-10-04",
+      "marriage_place": "St. Patrick's Church, New Orleans, Louisiana",
+      "children": [
+        "brown-mary-1857",
+        "brown-catherine-1858",
+        "brown-thomas-1860",
+        "brown-john-1863",
+        "brown-michael-jr-1866",
+        "brown-margaret-1869",
+        "brown-james-1872",
+        "brown-annie-1875"
+      ],
+      "migration": [
+        {
+          "year": "1850s",
+          "from": "Ireland",
+          "to": "California",
+          "type": "Gold Rush emigration"
+        }
+      ],
+      "locations": [
+        "Nevada City, California (Gold Flat)",
+        "Nevada City, California (Boulder Street)",
+        "San Francisco, California (later life)"
+      ],
+      "religion": "Catholic",
+      "church": "St. Canice Catholic Church, Nevada City",
+      "notes": "Died c. 1888 in Nevada City. Death prompted family's gradual migration to Bay Area and Central Valley. Buried in perpetual care plot at Holy Cross.",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "Marriage: October 4, 1855, St. Patrick's Church, New Orleans",
+        "Death: c. 1888, Nevada City",
+        "Burial: Holy Cross Cemetery, Section H, Row 11 (perpetual care plot)"
+      ],
+      "sources_needed": [
+        "Ireland birth/baptism record",
+        "US immigration record (1850s)",
+        "Nevada County death record (c. 1888)",
+        "Nevada County mining claims",
+        "Holy Cross Cemetery interment records",
+        "Census 1860, 1870, 1880 (Nevada City)"
+      ]
+    },
+    "brown-bridget-1835": {
+      "name": "Bridget Joyce Brown",
+      "first_name": "Bridget",
+      "maiden_name": "Joyce",
+      "last_name": "Brown",
+      "birth_date": "1835-00-00",
+      "birth_place": "County Galway, Ireland",
+      "death_date": "1912-05-22",
+      "death_place": "San Francisco, California",
+      "last_residence": "3474 18th Street, San Francisco",
+      "burial_place": "Holy Cross Cemetery, Colma, California (Section H, Row 11)",
+      "burial_plot": "Section H, Row 11 (perpetual care)",
+      "burial_date": "1912-05-23",
+      "gender": "Female",
+      "estate": "Died intestate (no will); probate filed SF Superior Court 1912",
+      "estate_administrators": ["Thomas J. Brown", "Michael Brown Jr."],
+      "property": "Maintained Nevada City property after moving to San Francisco",
+      "spouse": "brown-michael-1825",
+      "marriage_date": "1855-10-04",
+      "marriage_place": "St. Patrick's Church, New Orleans, Louisiana",
+      "children": [
+        "brown-mary-1857",
+        "brown-catherine-1858",
+        "brown-thomas-1860",
+        "brown-john-1863",
+        "brown-michael-jr-1866",
+        "brown-margaret-1869",
+        "brown-james-1872",
+        "brown-annie-1875"
+      ],
+      "migration": [
+        {
+          "year": "1850s",
+          "from": "County Galway, Ireland",
+          "to": "California",
+          "type": "Gold Rush emigration"
+        }
+      ],
+      "religion": "Catholic",
+      "church": "St. Canice Catholic Church, Nevada City",
+      "notes": "Maiden name Joyce is key identifier for this branch. Widowed before 1912.",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "San Francisco Call obituary (1912-05-23)",
+        "Death date: May 22, 1912",
+        "Funeral from 3474 18th Street, SF",
+        "Buried Holy Cross Cemetery"
+      ],
+      "sources_needed": [
+        "Ireland birth/baptism record (County Galway)",
+        "US immigration record (1850s)",
+        "California marriage record (mid-1850s)",
+        "Death certificate (1912-05-22)",
+        "Holy Cross Cemetery records (lot/section)",
+        "Census 1860, 1870, 1880 (Nevada City)",
+        "San Francisco Probate Case (Estate of Bridget Brown, 1912)"
+      ]
+    },
+    "brown-mary-1857": {
+      "name": "Mary Brown",
+      "first_name": "Mary",
+      "last_name": "Brown",
+      "birth_date": "1857-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Female",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "religion": "Catholic",
+      "research_priority": "medium",
+      "sources_needed": [
+        "California birth record",
+        "Marriage record (married name)",
+        "Census records",
+        "Death record"
+      ]
+    },
+    "brown-catherine-1858": {
+      "name": "Catherine 'Kate' Brown Kelly",
+      "first_name": "Catherine",
+      "nickname": "Kate",
+      "last_name": "Brown",
+      "married_name": "Kelly",
+      "birth_date": "1858-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "1934-01-15",
+      "death_place": "Santa Rosa, California",
+      "gender": "Female",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "spouse": "John J. Kelly",
+      "spouse_occupation": "Blacksmith",
+      "marriage_place": "Nevada City, California",
+      "years_in_santa_rosa": 30,
+      "children": [
+        "Mary C. Kelly (m. Thomas M. O'Connor, Oct 14, 1914, Santa Rosa)",
+        "Alice G. Kelly (m. Edward J. Gannon, 1919)"
+      ],
+      "religion": "Catholic",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "Press Democrat (Santa Rosa) obituary (January 1934)",
+        "Death January 15, 1934",
+        "30 years residence in Santa Rosa",
+        "Children: O'Connors and Gannons"
+      ],
+      "sources_needed": [
+        "California birth record",
+        "Marriage record to Mr. Kelly",
+        "Press Democrat obituary full text",
+        "Death certificate (1934-01-15)",
+        "Census records (Santa Rosa)",
+        "Children's full names (O'Connor, Gannon lines)"
+      ]
+    },
+    "brown-thomas-1860": {
+      "name": "Thomas J. Brown",
+      "first_name": "Thomas",
+      "middle_initial": "J",
+      "last_name": "Brown",
+      "birth_date": "1860-09-12",
+      "birth_place": "Nevada City, California",
+      "death_date": "1951-01-07",
+      "death_place": "Local hospital, Fresno, California",
+      "death_cause": "Brief illness",
+      "burial_place": "Holy Cross Catholic Cemetery, Colma, California (Section H, Row 11)",
+      "burial_plot": "Section H, Row 11 (perpetual care, family plot)",
+      "age_at_death": 90,
+      "years_in_fresno": 50,
+      "last_residence": "East Belmont Avenue, Fresno",
+      "gender": "Male",
+      "marital_status": "Unknown (likely never married - no wife mentioned)",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "occupation": [
+        "Rancher (primary)",
+        "Agricultural work (Fresno district)"
+      ],
+      "lived_with": "Margaret Brown (sister, until 1944)",
+      "locations": [
+        "Nevada City, California (1860-1901)",
+        "Fresno, California (1901-1951)"
+      ],
+      "religion": "Catholic",
+      "church_member": "Catholic Church (Fresno)",
+      "migration": [
+        {
+          "year": "1901",
+          "from": "Nevada City",
+          "to": "Fresno",
+          "reason": "Mining economy collapse, moved to Central Valley agriculture"
+        }
+      ],
+      "survivors": [
+        "Sister: Margaret Brown (Fresno)",
+        "Several nieces and nephews (San Francisco and Santa Rosa areas)"
+      ],
+      "funeral_arrangements": "White's Chapel (Fresno) forwarded remains to San Francisco",
+      "research_priority": "HIGHEST",
+      "sources_confirmed": [
+        "Fresno Bee obituary (January 8, 1951)",
+        "Death January 7, 1951",
+        "Age 90, 50 years in Fresno",
+        "Burial at Holy Cross Cemetery family plot",
+        "Survived by sister Margaret",
+        "Native of Nevada City",
+        "Rancher/agricultural worker"
+      ],
+      "sources_needed": [
+        "California birth certificate (1860-09-12)",
+        "Death certificate (1951-01-07)",
+        "Census 1870, 1880 (Nevada City)",
+        "Census 1900, 1910, 1920, 1930, 1940, 1950 (Fresno)",
+        "Holy Cross Cemetery records (lot/section number)",
+        "Fresno city directories (1901-1950)",
+        "Fresno County property records",
+        "Confirmation of marital status",
+        "Nieces/nephews identities"
+      ]
+    },
+    "brown-john-1863": {
+      "name": "John F. Brown",
+      "first_name": "John",
+      "middle_name": "Francis",
+      "middle_initial": "F",
+      "last_name": "Brown",
+      "birth_date": "1863-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Male",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "occupation": "Miner or laborer",
+      "locations": ["Nevada City, California (remained into late 40s)"],
+      "religion": "Catholic",
+      "notes": "Listed as 'John F.' in mother's 1912 obituary. One of the few siblings who remained in Nevada City foothills into his late 40s.",
+      "research_priority": "medium",
+      "sources_confirmed": [
+        "Named in mother's 1912 obituary as 'John F. Brown'"
+      ],
+      "sources_needed": [
+        "California birth record",
+        "Nevada County mining records",
+        "Census records",
+        "Marriage record",
+        "Death record",
+        "Confirmation of middle name Francis"
+      ]
+    },
+    "brown-michael-jr-1866": {
+      "name": "Michael Brown Jr.",
+      "first_name": "Michael",
+      "suffix": "Jr.",
+      "last_name": "Brown",
+      "birth_date": "1866-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "",
+      "death_place": "San Francisco, California",
+      "burial_place": "Holy Cross Catholic Cemetery, Colma, California (Section H, Row 11)",
+      "gender": "Male",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "residence": "Mission District, San Francisco",
+      "occupation": "Municipal Railway worker",
+      "religion": "Catholic",
+      "notes": "Co-administrator of mother's estate (1912). Lived in SF Mission District, worked for municipal railway. Buried in family plot.",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "Co-administrator of Bridget Brown's probate estate (1912)",
+        "Buried Holy Cross Cemetery, Section H, Row 11"
+      ],
+      "sources_needed": [
+        "California birth record",
+        "Census records (San Francisco)",
+        "Marriage record",
+        "Death record and date",
+        "SF municipal railway employment records"
+      ]
+    },
+    "brown-margaret-1869": {
+      "name": "Margaret 'Maggie' Brown",
+      "first_name": "Margaret",
+      "nickname": "Maggie",
+      "last_name": "Brown",
+      "title": "Miss",
+      "birth_date": "1869-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "1944-04-14",
+      "death_place": "Fresno, California",
+      "burial_place": "Holy Cross Catholic Cemetery, Colma, California (Section H, Row 11)",
+      "gender": "Female",
+      "marital_status": "Never married",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "years_in_fresno": "40+",
+      "lived_with": "Thomas J. Brown (brother)",
+      "religion": "Catholic",
+      "notes": "Native of Nevada City, resident of Fresno for over 40 years. Never married. Lived with brother Thomas.",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "Fresno Bee obituary (April 1944)",
+        "Death April 14, 1944",
+        "40+ years in Fresno (arrived c. 1904)",
+        "Native of Nevada City",
+        "Listed as 'Miss Margaret Brown' (unmarried)"
+      ],
+      "sources_needed": [
+        "California birth record",
+        "Fresno Bee obituary full text",
+        "Death certificate (1944-04-14)",
+        "Census records (Fresno, with Thomas)",
+        "Burial location"
+      ]
+    },
+    "brown-james-1872": {
+      "name": "James Brown",
+      "first_name": "James",
+      "last_name": "Brown",
+      "birth_date": "1872-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Male",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "religion": "Catholic",
+      "research_priority": "medium",
+      "sources_needed": [
+        "California birth record",
+        "Census records",
+        "Marriage record",
+        "Death record"
+      ]
+    },
+    "brown-annie-1875": {
+      "name": "Annie Brown",
+      "first_name": "Annie",
+      "last_name": "Brown",
+      "birth_date": "1875-00-00",
+      "birth_place": "Nevada City, California",
+      "death_date": "",
+      "death_place": "San Francisco, California",
+      "burial_place": "Holy Cross Catholic Cemetery, Colma, California (Section H, Row 11)",
+      "gender": "Female",
+      "father": "brown-michael-1825",
+      "mother": "brown-bridget-1835",
+      "residence": "3474 18th Street, San Francisco (with mother Bridget)",
+      "occupation": "Seamstress",
+      "marital_status": "Unknown",
+      "religion": "Catholic",
+      "notes": "Lived with mother Bridget in San Francisco. Worked as seamstress. Buried in family plot.",
+      "research_priority": "HIGH",
+      "sources_confirmed": [
+        "Lived at 3474 18th Street with mother Bridget",
+        "Buried Holy Cross Cemetery, Section H, Row 11"
+      ],
+      "sources_needed": [
+        "California birth record",
+        "Marriage record (if married)",
+        "Census records (San Francisco)",
+        "Death record and date",
+        "SF city directories"
+      ]
+    }
+  }
+}

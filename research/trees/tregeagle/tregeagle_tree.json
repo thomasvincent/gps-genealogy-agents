@@ -1,0 +1,349 @@
+{
+  "generated_at": "2026-01-27T20:15:00",
+  "family_name": "Tregeagle",
+  "origin": "Cornwall, England",
+  "migration_path": "Cornwall → New Zealand (1876) → USA (1890s-1900s)",
+  "total_profiles": 11,
+  "research_status": "initial_documentation",
+  "source": "Quenton Tregeagle (family historian)",
+  "people": {
+    "tregeagle-james-1837": {
+      "name": "James Tregeagle",
+      "first_name": "James",
+      "last_name": "Tregeagle",
+      "birth_date": "1837-00-00",
+      "birth_place": "Cornwall, England",
+      "death_date": "1880-12-28",
+      "death_place": "Auckland, New Zealand",
+      "death_cause": "Fell from barn (family account)",
+      "gender": "Male",
+      "spouse": "tregeagle-rosina-1840",
+      "children": [
+        "tregeagle-sarah-1863",
+        "tregeagle-laura-1865",
+        "tregeagle-rosebelle-1867",
+        "tregeagle-james-eli-1870",
+        "tregeagle-amelia-1872",
+        "tregeagle-eliza-1874",
+        "tregeagle-jessie-1876",
+        "tregeagle-samuel-1878",
+        "tregeagle-richard-1880"
+      ],
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "Cornwall birth record (c. 1837)",
+        "Waitangi passenger manifest (1876)",
+        "Auckland death record (1880-12-28)"
+      ]
+    },
+    "tregeagle-rosina-1840": {
+      "name": "Rosina Ann Oliver James",
+      "first_name": "Rosina Ann",
+      "maiden_name": "Oliver James",
+      "last_name": "Tregeagle",
+      "birth_date": "1840-00-00",
+      "birth_place": "England",
+      "death_date": "",
+      "death_place": "New Zealand",
+      "gender": "Female",
+      "spouse": "tregeagle-james-1837",
+      "marriage_date": "1862-07-20",
+      "marriage_place": "Kenwyn, Cornwall, England",
+      "children": [
+        "tregeagle-sarah-1863",
+        "tregeagle-laura-1865",
+        "tregeagle-rosebelle-1867",
+        "tregeagle-james-eli-1870",
+        "tregeagle-amelia-1872",
+        "tregeagle-eliza-1874",
+        "tregeagle-jessie-1876",
+        "tregeagle-samuel-1878",
+        "tregeagle-richard-1880"
+      ],
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "Kenwyn marriage record (1862-07-20)",
+        "Waitangi passenger manifest (1876)",
+        "New Zealand death record"
+      ]
+    },
+    "tregeagle-sarah-1863": {
+      "name": "Sarah Georgina Tregeagle",
+      "first_name": "Sarah Georgina",
+      "last_name": "Tregeagle",
+      "married_name": "Gresty",
+      "birth_date": "1863-00-00",
+      "birth_place": "Cornwall, England",
+      "death_date": "1922-00-00",
+      "death_place": "Silver City or Virginia City, Nevada, USA",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "spouse": "Thomas Gresty",
+      "marriage_date": "",
+      "marriage_place": "",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        },
+        {
+          "year": "1890s-1900s",
+          "from": "New Zealand",
+          "to": "Nevada, USA",
+          "type": "emigration"
+        }
+      ],
+      "locations": [
+        "Virginia City, Nevada",
+        "Silver City, Nevada"
+      ],
+      "research_priority": "HIGH",
+      "sources_needed": [
+        "US immigration record (port/date of entry)",
+        "Nevada marriage record (to Thomas Gresty)",
+        "US Census 1900, 1910, 1920 (Nevada)",
+        "Nevada death certificate (1922)",
+        "Cemetery record (Virginia City/Silver City)",
+        "Mining town records"
+      ]
+    },
+    "tregeagle-laura-1865": {
+      "name": "Laura Alice Tregeagle",
+      "first_name": "Laura Alice",
+      "last_name": "Tregeagle",
+      "birth_date": "1865-00-00",
+      "birth_place": "Cornwall, England",
+      "death_date": "",
+      "death_place": "New Zealand",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "New Zealand marriage record",
+        "New Zealand death record",
+        "New Zealand census records"
+      ]
+    },
+    "tregeagle-rosebelle-1867": {
+      "name": "Rosebelle Bateman Tregeagle",
+      "first_name": "Rosebelle Bateman",
+      "last_name": "Tregeagle",
+      "birth_date": "1867-00-00",
+      "birth_place": "Cornwall, England",
+      "death_date": "",
+      "death_place": "New Zealand",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "New Zealand marriage record",
+        "Connection to Bateman family",
+        "New Zealand death record"
+      ]
+    },
+    "tregeagle-james-eli-1870": {
+      "name": "James Eli Tregeagle",
+      "first_name": "James Eli",
+      "last_name": "Tregeagle",
+      "birth_date": "1870-00-00",
+      "birth_place": "Cornwall, England or New Zealand",
+      "death_date": "",
+      "death_place": "Utah, USA",
+      "gender": "Male",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        },
+        {
+          "year": "1890s-1900s",
+          "from": "New Zealand",
+          "to": "Utah, USA",
+          "type": "emigration"
+        }
+      ],
+      "locations": [
+        "Provo, Utah",
+        "Utah County, Utah"
+      ],
+      "notes": "Well-known in Utah genealogical records. Raised large family.",
+      "research_priority": "HIGH",
+      "sources_needed": [
+        "US immigration record (port/date of entry)",
+        "Utah marriage record",
+        "US Census 1900, 1910, 1920, 1930 (Provo area)",
+        "LDS Church records (if applicable)",
+        "Provo city directories",
+        "Utah death certificate",
+        "Cemetery record",
+        "Children's birth records"
+      ]
+    },
+    "tregeagle-amelia-1872": {
+      "name": "Amelia Edith Tregeagle",
+      "first_name": "Amelia Edith",
+      "last_name": "Tregeagle",
+      "birth_date": "1872-00-00",
+      "birth_place": "Cornwall, England or New Zealand",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "Birth location (Cornwall or NZ?)",
+        "Marriage record (NZ or USA?)",
+        "Death record"
+      ]
+    },
+    "tregeagle-eliza-1874": {
+      "name": "Eliza Maud Tregeagle",
+      "first_name": "Eliza Maud",
+      "last_name": "Tregeagle",
+      "birth_date": "1874-00-00",
+      "birth_place": "Cornwall, England or New Zealand",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "Birth location (Cornwall or NZ?)",
+        "Marriage record (NZ or USA?)",
+        "Death record"
+      ]
+    },
+    "tregeagle-jessie-1876": {
+      "name": "Jessie Ada Tregeagle",
+      "first_name": "Jessie Ada",
+      "last_name": "Tregeagle",
+      "birth_date": "1876-00-00",
+      "birth_place": "At sea or New Zealand",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Female",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "notes": "Born during or shortly after 1876 voyage on Waitangi",
+      "migration": [
+        {
+          "year": 1876,
+          "from": "Cornwall, England",
+          "to": "Canterbury, New Zealand",
+          "ship": "Waitangi",
+          "type": "emigration"
+        }
+      ],
+      "research_priority": "medium",
+      "sources_needed": [
+        "Birth location (at sea or NZ?)",
+        "Marriage record (NZ or USA?)",
+        "Death record"
+      ]
+    },
+    "tregeagle-samuel-1878": {
+      "name": "Samuel Thomas Tregeagle",
+      "first_name": "Samuel Thomas",
+      "last_name": "Tregeagle",
+      "birth_date": "1878-00-00",
+      "birth_place": "New Zealand",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Male",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "research_priority": "medium",
+      "sources_needed": [
+        "New Zealand birth record",
+        "Marriage record (NZ or USA?)",
+        "Death record"
+      ]
+    },
+    "tregeagle-richard-1880": {
+      "name": "Richard Edley Tregeagle",
+      "first_name": "Richard Edley",
+      "last_name": "Tregeagle",
+      "birth_date": "1880-00-00",
+      "birth_place": "New Zealand",
+      "death_date": "",
+      "death_place": "",
+      "gender": "Male",
+      "father": "tregeagle-james-1837",
+      "mother": "tregeagle-rosina-1840",
+      "notes": "Born same year father died (1880)",
+      "research_priority": "medium",
+      "sources_needed": [
+        "New Zealand birth record",
+        "Marriage record (NZ or USA?)",
+        "Death record"
+      ]
+    }
+  }
+}
