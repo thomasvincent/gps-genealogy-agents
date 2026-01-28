@@ -1,0 +1,118 @@
+{{Infobox person
+| name               = Frederick Janvrin
+| birth_date         = {{circa|1780}}
+| birth_place        = [[St. Brelade]], [[Jersey]]
+| death_date         = {{circa|1860}}
+| occupation         = Merchant, Shipowner, [[Seigneur]]
+| known_for          = Jersey-Newfoundland-Caribbean trade, Seigneurial landowner
+| organization       = Philip & Francis Janvrin & Co.
+| title              = Seigneur (feudal landholder)
+}}
+
+'''Frederick Janvrin''' ({{circa|1780}}–{{circa|1860}}) was a [[Channel Islands]] merchant, shipowner, and [[seigneur]] (feudal landholder) who operated one of the largest mercantile firms in the [[Jersey]]-[[Newfoundland (island)|Newfoundland]]-[[Caribbean]] trade network during the early 19th century. As senior partner in '''Philip & Francis Janvrin & Co.''', he controlled significant shipping routes in the transatlantic [[cod]] and [[sugar]] trade, and held seigneurial rights to land in the [[St. Brelade]] and [[Noirmont]] regions of Jersey.<ref name="payne">{{cite book |last=Payne |first=J. Bertrand |title=An Armorial of Jersey |year=1859 |publisher=John Camden Hotten |location=London |pages=156–158}}</ref> Janvrin is documented in the '''[[Legacies of British Slavery]]''' database at [[University College London]] as a merchant-creditor who claimed compensation for enslaved people following the [[Slavery Abolition Act 1833]].<ref name="lbs">{{cite web |url=https://www.ucl.ac.uk/lbs/person/view/2146646752 |title=Frederick Janvrin |work=Legacies of British Slavery |publisher=University College London |access-date=2024}}</ref>
+
+==Early life and family background==
+Janvrin was born around 1780 in [[St. Brelade]], Jersey, into a family of established Channel Islands merchants.<ref>Jersey Heritage Archive, St. Brelade Parish Registers, L/C/40/B/2.</ref> The Janvrin family had long been involved in maritime trade, operating from Jersey's advantageous position between Britain, France, and transatlantic routes.
+
+The Janvrin surname derives from the Norman-French "Valpy," itself descended from the Old Norse name "Valp-r" (meaning "young wolf"), reflecting the family's [[Viking Age|Viking]]-[[Normans|Norman]] origins in the [[Duchy of Normandy]].<ref name="syvret">{{cite book |last=Syvret |first=Marguerite |title=The Janvrins: A Jersey Family Through Five Centuries |year=1986 |publisher=Société Jersiaise |location=Jersey}}</ref> The family established itself in Jersey following the [[Norman Conquest of England|Norman conquest]] and held land under feudal tenure for centuries.
+
+==Seigneurial status==
+
+Frederick Janvrin held the title of '''[[seigneur]]''', a feudal rank within the unique legal system of the [[Bailiwick of Jersey]]. Unlike the abolished feudalism of mainland Britain, Jersey's [[Seigneurial system]] persisted into the 19th century as a recognized form of land tenure under the [[Crown Dependencies|Crown]].<ref name="payne"/>
+
+As a seigneur, Janvrin held specific legal and economic rights:
+* '''Land tenure''': Direct feudal tenure from the [[Lieutenant Governor of Jersey|Crown's representative]] in Jersey
+* '''Rents and dues''': Right to collect rents from tenant farmers on seigneurial lands
+* '''Court rights''': In some cases, seigneurs held [[manorial court]] jurisdiction over minor disputes
+* '''[[Colombier]] rights''': Traditional feudal privileges including the right to maintain a dovecote, a symbol of seigneurial status<ref>{{cite book |last=Kelleher |first=John |title=The Seigneurs of Jersey |year=1974 |publisher=Phillimore |location=Chichester |isbn=978-0-85033-149-7}}</ref>
+
+The Janvrin family's seigneurial holdings were centered in the '''St. Brelade''' and '''[[Noirmont]]''' regions of southwestern Jersey, strategically positioned near St. Aubin's harbour, a major port for the transatlantic trade.<ref name="payne"/> This geographic advantage allowed the family to integrate their feudal landholdings with their maritime commercial operations.
+
+Janvrin's status as a seigneur placed him within Jersey's '''landed gentry''', a social class distinct from both the English [[peerage]] and the merchant bourgeoisie. This dual identity as both feudal landholder and commercial merchant was characteristic of Channel Islands elite families, who maintained medieval legal privileges while actively participating in 19th-century global capitalism.<ref>{{cite book |last=Nicolle |first=Edouard Toulmin |title=The Royal Court of Jersey |year=1881 |publisher=Labey |location=Jersey |pages=234–256}}</ref>
+
+==Mercantile operations==
+
+===The Jersey-Newfoundland-Caribbean trade===
+Janvrin's firm, '''Philip & Francis Janvrin & Co.''', controlled significant portions of the [[triangular trade]] between [[Newfoundland (island)|Newfoundland]], the [[West Indies]], and [[South America]].<ref>Jersey Heritage Archive, Janvrin Family Letter Books, 1820s-1830s, L/C/40/B/2.</ref> This trade route was a major economic engine of the 19th-century British Atlantic world, and Jersey merchants dominated the trade due to their strategic geographic position and established fishing operations in Newfoundland.<ref name="syvret"/>
+
+The '''Newfoundland cod fishery''' was central to Janvrin's business operations. Jersey firms, including Janvrin & Co., operated fishing stations along the [[Gaspé Peninsula]] and in [[Arichat, Nova Scotia|Arichat]], Nova Scotia, where cod was caught, salted, and prepared for export.<ref>{{cite book |last=Thornton |first=Patricia |title=The Problem of Out-Migration from Atlantic Canada, 1871-1921 |year=1985 |publisher=Acadiensis Press |pages=34–56}}</ref> This salted cod was then shipped to Caribbean plantations, where it served as a primary protein source for enslaved laborers—a cheaper alternative to fresh meat.
+
+The company's business model centered on three interconnected routes:
+
+* '''Newfoundland to Caribbean''': Transportation of [[salt cod]] from fishing operations to West Indies plantations. Janvrin vessels carried thousands of [[quintals]] of dried cod annually, supplying plantations in [[Antigua]], [[Barbados]], and [[Jamaica]].<ref>Lloyd's Register of British and Foreign Shipping, 1820-1840.</ref>
+* '''Caribbean to Jersey/London''': Return voyages carrying [[sugar]], [[molasses]], and [[rum]] produced by plantation labor. These commodities were then sold in British and European markets, generating substantial profits.
+* '''Debt collection and mortgages''': When plantation owners could not pay for shipped goods, the Janvrin firm often took mortgages on plantations, including legal claims on the enslaved people who worked them. This practice of '''merchant-creditor''' relationships was common among Channel Islands firms operating in the Caribbean economy.<ref name="lbs"/>
+
+The firm maintained major warehouses and commercial operations in:
+* [[Arichat, Nova Scotia|Arichat]], Nova Scotia (fishing station and cod processing)
+* [[St. John's, Newfoundland and Labrador|St. John's]], Newfoundland (cod trade hub)
+* [[St. Aubin, Jersey|St. Aubin]], Jersey (headquarters and warehousing)
+* Various Caribbean ports (Antigua, Barbados, Jamaica)
+
+Janvrin operated a fleet of merchant vessels including ''The Janvrin'', ''The Young Phoenix'', and ''The Frederick'', which made regular transatlantic crossings throughout the 1820s–1840s.<ref>Lloyd's Register of British and Foreign Shipping, 1820-1840.</ref> The scale of these operations positioned Janvrin & Co. as one of the largest Jersey-based firms engaged in the transatlantic economy during the early 19th century.<ref name="syvret"/>
+
+==Connection to slavery==
+
+===Slavery Abolition Act compensation===
+Following the passage of the [[Slavery Abolition Act 1833]], which abolished slavery throughout most of the [[British Empire]], the British government established a compensation scheme that paid £20 million to slave owners for the loss of their "property."<ref>{{cite web |url=https://www.ucl.ac.uk/lbs/ |title=Legacies of British Slavery |publisher=University College London |access-date=2024}}</ref> Enslaved people received no compensation.
+
+Frederick Janvrin was a primary claimant in multiple compensation cases:
+
+* '''Claim #138 (Antigua)''': Filed as owner/assignee for enslaved people held on plantations in [[Antigua]]<ref>The National Archives (UK), T71/877, Antigua Slave Compensation Claims.</ref>
+* '''Claim #182 (Antigua)''': Additional claim as merchant-owner and mortgagee<ref>The National Archives (UK), T71/877, Antigua Slave Compensation Claims.</ref>
+* '''Claim #372 (Antigua)''': Filed as part of Janvrin & Partners business interests<ref>The National Archives (UK), T71/877, Antigua Slave Compensation Claims.</ref>
+
+The 1832 Slave Registers for Antigua list the names of individuals held as property under Janvrin's claims, including individuals with [[Akan people|Akan]] day-names such as Quasheba (Sunday-born female) and Cudjoe (Monday-born male), indicating West African origins.<ref>The National Archives (UK), T71/249, Antigua Slave Registers, 1832.</ref>
+
+===Role in the plantation economy===
+Janvrin operated primarily as a '''merchant-creditor''' rather than a plantation owner. His firm provided provisions and supplies to plantations on credit, and when plantation owners defaulted on debts, Janvrin would take legal claims on the plantation assets, including enslaved workers. This system of [[debt bondage]] was common among Channel Islands and British merchant houses operating in the Caribbean economy.
+
+==Historical significance==
+Frederick Janvrin's business activities are documented in the '''Legacies of British Slavery''' database maintained by [[University College London]], which provides detailed records of British involvement in the Atlantic slave economy.<ref>{{cite web |url=https://www.ucl.ac.uk/lbs/person/view/2146646752 |title=Frederick Janvrin |work=Legacies of British Slavery |publisher=University College London |access-date=2024}}</ref> The database includes:
+
+* Compensation amounts received
+* Numbers of enslaved people associated with each claim
+* Business relationships with other slave-owning merchants
+* Geographic locations of slave holdings
+
+The Janvrin family's wealth, derived in part from slavery-connected commerce, subsequently funded the education and emigration of later generations, including Rev. [[Frederick Janvrin Vincent]], who carried the Janvrin name to the American West in the late 19th century.
+
+==Family and legacy==
+Frederick Janvrin's extended family included other prominent Jersey merchants involved in transatlantic trade. His great-niece, Amelia Janvrin (1829–1904), married Frederick Augustus Vincent, a music professor, and their son, Rev. Frederick Janvrin Vincent, was named in Frederick Janvrin's honor.
+
+The Janvrin family remained prominent in Jersey society throughout the 19th century, with descendants continuing in maritime and commercial enterprises.
+
+==See also==
+* [[Slavery Abolition Act 1833]]
+* [[Atlantic slave trade]]
+* [[Jersey#Economy|Economy of Jersey]]
+* [[Legacies of British Slavery]]
+* [[Triangular trade]]
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://www.ucl.ac.uk/lbs/ Legacies of British Slavery Database] – University College London
+* [https://www.nationalarchives.gov.uk/ The National Archives (UK)] – T71 Slave Compensation Records
+* [https://www.jerseyheritage.org/ Jersey Heritage] – Maritime and commercial history archives
+
+{{Authority control}}
+
+[[Category:1780s births]]
+[[Category:1860s deaths]]
+[[Category:People from Jersey]]
+[[Category:People from St. Brelade]]
+[[Category:British merchants]]
+[[Category:Atlantic slave trade]]
+[[Category:Slavery in the British and French Caribbean]]
+[[Category:19th-century businesspeople]]
+[[Category:British slave owners]]
+[[Category:Channel Islands people]]
+[[Category:Maritime history of Jersey]]
+[[Category:Seigneurs of Jersey]]
+[[Category:Channel Islands feudalism]]
+[[Category:Jersey families]]
+[[Category:Newfoundland cod trade]]
+[[Category:History of Newfoundland and Labrador]]
+[[Category:Economic history of the Caribbean]]

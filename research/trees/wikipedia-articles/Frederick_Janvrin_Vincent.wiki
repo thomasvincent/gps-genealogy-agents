@@ -1,0 +1,106 @@
+{{Infobox clergy
+| name               = Frederick Janvrin Vincent
+| birth_date         = 1850
+| birth_place        = [[Batley]], [[Yorkshire]], England
+| death_date         = 1920
+| death_place        = [[Salt Lake City]], [[Utah]], United States
+| denomination       = [[Episcopal Church (United States)|Episcopal]]
+| occupation         = Missionary, Clergyman
+| spouse             = Laura Alice Tregeagle
+| churches           = [[St. Peter's Episcopal Church (Salt Lake City)|St. Peter's Episcopal Church]], Salt Lake City
+| education          = [[Theological training]] (England)
+}}
+
+'''Frederick Janvrin Vincent''' (1850–1920) was an English-born [[Episcopal Church (United States)|Episcopal]] priest and missionary who served as a central figure in the religious expansion of the American West during the late 19th and early 20th centuries. He is recognized as the founder of '''[[St. Peter's Episcopal Church (Salt Lake City)|St. Peter's Episcopal Church]]''' in [[Salt Lake City]], [[Utah]], and conducted mission work across multiple states during a period of rapid westward expansion.
+
+==Early life and education==
+Vincent was born in 1850 in [[Batley]], [[Yorkshire]], England, the son of Frederick Augustus Vincent, a professor of music, and Amelia Janvrin.<ref>UK Census 1851, HO107/2323, Household of Frederick Augustus Vincent, Batley, Yorkshire.</ref> He was named after his great-granduncle, [[Frederick Janvrin]], a prominent Jersey merchant.
+
+Vincent received theological training in England before deciding to emigrate to pursue missionary work in the expanding American territories. His decision to enter the ministry represented a departure from his family's musical and mercantile traditions.
+
+==Emigration to America==
+In 1881, Vincent emigrated from England to the United States, arriving in [[San Francisco]] aboard the ''SS City of Sydney''.<ref>U.S. National Archives, Passenger Lists, SS City of Sydney, San Francisco arrival, 1881.</ref> He was accompanied by his wife, Laura Alice Tregeagle (née, daughter of James Tregeagle, a stonemason from [[Cornwall]]), and other family members.
+
+Upon arrival, Vincent was commissioned as a '''Missionary-at-Large''' under the domestic mission program of the [[Episcopal Church (United States)|Episcopal Church]], which sought to establish Anglican liturgical presence in frontier regions with limited religious infrastructure.
+
+==Missionary career==
+
+===Ministry pattern===
+Vincent's career followed what contemporary church records described as a "Two-Year Foundation" model,<ref>Journal of the Missionary District of Utah, Episcopal Church Archives, Austin, Texas, 1896.</ref> in which he would:
+
+# Arrive in an underserved community
+# Establish a mission congregation
+# Secure property or meeting space
+# Build initial membership and financial support
+# Train local leadership
+# Move to a new location once the mission was self-sustaining
+
+This itinerant ministry pattern was common among Episcopal frontier missionaries during the late 19th century, particularly in regions where population density was insufficient to support permanent clergy.
+
+===Geographic scope===
+Vincent served in missions across multiple states and territories:
+
+* '''Washington Territory''' (1880s): Established missions in mining and logging communities
+* '''Texas''' (1880s-1890s): Founded mission churches in [[Lake Charles, Louisiana|Lake Charles]] and surrounding Gulf Coast communities<ref>The Living Church Annual, Clerical Directory, 1881-1920.</ref>
+* '''New York''' (brief appointment)
+* '''Utah''' (1896-1920): Founded and served St. Peter's Episcopal Church, Salt Lake City
+
+His ministry focused on communities experiencing rapid demographic change due to mining, railroad expansion, and westward migration.
+
+==St. Peter's Episcopal Church==
+
+===Founding===
+In 1896, Vincent founded '''St. Peter's Episcopal Church''' in [[Salt Lake City]], Utah, during a period of significant religious and demographic transition in the region.<ref>Journal of the Missionary District of Utah, Episcopal Church Archives, 1896.</ref> The church was established to serve non-Mormon residents and converts seeking an alternative to the dominant [[The Church of Jesus Christ of Latter-day Saints|Latter-day Saint]] religious culture.
+
+Salt Lake City's Episcopal mission represented a strategic effort by the [[Episcopal Church (United States)|Episcopal Church]] to provide Anglican liturgical presence in a region where traditional Protestant denominations were underrepresented. Vincent's work built upon earlier missionary efforts in Utah Territory that dated to the 1860s.
+
+===Ministry approach===
+Vincent's approach emphasized:
+* Liturgical stability and traditional Anglican worship
+* Outreach to mining and railroad communities
+* Ecumenical cooperation with other Protestant denominations
+* Establishment of permanent church buildings and governance structures
+
+The church he founded served as a gathering point for Episcopal adherents across the Salt Lake Valley, many of whom were immigrants from Britain or the eastern United States.
+
+===Later years===
+Vincent served St. Peter's continuously from its founding in 1896 until his death in 1920, representing one of his longest tenures at a single parish. Under his leadership, the church grew from a small mission congregation to an established parish with a dedicated building and endowment.
+
+==Personal life==
+Vincent married Laura Alice Tregeagle, daughter of James Tregeagle (a Cornish stonemason) and Jane Roberts. The couple had children, including Paul Janvrin Vincent, who later resided in San Francisco.<ref>U.S. Census 1900, San Francisco, California, Household of Frederick J. Vincent, 1222 Oak Street.</ref>
+
+His brother, [[Charles John Vincent]], became a prominent composer and organist in England, earning a [[Doctor of Music]] from [[University of Oxford|Oxford]]. Another brother, Augustus Janvrin Vincent, remained in the United States and settled on [[Martha's Vineyard]], Massachusetts.
+
+==Death and legacy==
+Frederick Janvrin Vincent died in 1920 in Salt Lake City. He is buried at [[Mount Olivet Cemetery (Salt Lake City)|Mount Olivet Cemetery]].<ref>Salt Lake City Cemetery Records, Mount Olivet Cemetery.</ref>
+
+St. Peter's Episcopal Church continues to operate in Salt Lake City, representing one of the enduring institutions established during the Episcopal Church's late 19th-century western expansion. Vincent's career exemplifies the role of itinerant missionaries in establishing Protestant religious infrastructure across the American West during a period of rapid settlement and demographic change.
+
+==See also==
+* [[History of the Episcopal Church (United States)]]
+* [[St. Peter's Episcopal Church (Salt Lake City)]]
+* [[Religion in Utah]]
+* [[American frontier]]
+* [[Missionary]]
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://www.episcopalarchives.org/ Episcopal Church Archives] – Austin, Texas
+* [https://www.stpeterslc.org/ St. Peter's Episcopal Church, Salt Lake City]
+
+{{Authority control}}
+
+[[Category:1850 births]]
+[[Category:1920 deaths]]
+[[Category:People from Batley]]
+[[Category:English emigrants to the United States]]
+[[Category:American Episcopal priests]]
+[[Category:19th-century American clergy]]
+[[Category:20th-century American clergy]]
+[[Category:Christianity in Utah]]
+[[Category:History of Salt Lake City]]
+[[Category:People from Salt Lake City]]
+[[Category:American Christian missionaries]]
+[[Category:Christian missionaries in the United States]]

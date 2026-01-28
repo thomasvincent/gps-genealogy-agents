@@ -1,0 +1,69 @@
+{{Infobox person
+| name               = Charles John Vincent
+| birth_date         = 1852
+| birth_place        = [[Batley]], [[Yorkshire]], England
+| death_date         = 1934
+| death_place        = [[Sunderland]], England
+| occupation         = [[Composer]], [[Organist]], Music Publisher
+| education          = [[Leipzig Conservatory]]<br/>[[University of Oxford]] ([[Doctor of Music|Mus.Doc]], 1885)
+| notable_works      = ''A Manual of Harmony''<br/>''The Rules of Counterpoint''
+| parents            = Frederick Augustus Vincent<br/>Amelia Janvrin
+}}
+
+'''Charles John Vincent''' (1852–1934) was an English [[organist]], [[composer]], and music examiner of the late Victorian and Edwardian eras. He is known for his contributions to [[Anglican]] choral music, his academic publications on music theory, and his role as an examiner for [[Trinity College of Music]].
+
+==Early life and education==
+Vincent was born in 1852 in [[Batley]], [[Yorkshire]], the son of Frederick Augustus Vincent, a professor of music, and Amelia Janvrin.<ref>UK Census 1851, HO107/2323, Household of Frederick Augustus Vincent, Batley, Yorkshire.</ref> He received his initial musical training from his father before attending the [[Leipzig Conservatory]] in Germany, one of Europe's leading music institutions during the 19th century.
+
+Vincent later earned a [[Doctor of Music]] degree from the [[University of Oxford]] in 1885,<ref>University of Oxford, Degrees Conferred Records, 1885.</ref> joining a distinguished tradition of English composers who received doctoral recognition for their contributions to sacred and academic music.
+
+==Career==
+
+===Church positions===
+Vincent served as organist at several prominent English churches during his career, including St. Mark's Church in [[Sunderland]] and Christ Church in [[Hampstead]]. His tenure at these institutions contributed to the development of late Victorian [[Anglican]] liturgical music, a period marked by renewed interest in traditional choral forms and the Oxford Movement's influence on church music.
+
+===Music publishing===
+In 1890, Vincent co-founded the '''Vincent Music Publishing Company''' in London.<ref>Lloyd's Register of British and Foreign Shipping, Commercial Directory, 1890-1900.</ref> The firm became a significant distributor of pedagogical and liturgical music throughout the [[British Empire]], supplying music schools, cathedrals, and parish churches with printed scores and instructional materials. The company's catalogue included both Vincent's own compositions and works by contemporary British composers.
+
+===Academic contributions===
+Vincent authored several influential textbooks on music theory, including:
+* ''A Manual of Harmony'' – a comprehensive guide to [[Harmony (music)|harmonic]] principles that remained in use at British music schools for several decades
+* ''The Rules of Counterpoint'' – an instructional text on [[counterpoint]] that codified traditional compositional practices
+
+These works reflected the conservative pedagogical approach characteristic of late 19th-century English music education, emphasizing mastery of classical forms and techniques.
+
+===Examiner role===
+Vincent served as an examiner for [[Trinity College of Music]], one of Britain's leading music examination boards. In this capacity, he assessed candidates for performance diplomas and theoretical certifications, contributing to the standardization of music education across the United Kingdom and its colonies.
+
+==Compositions==
+Vincent's compositions, primarily sacred choral works and organ pieces, are held in the permanent collection of the [[British Library]].<ref>British Library Music Collections, Catalogue of English Composers, 19th Century.</ref> His style reflected the influence of the [[English church music]] tradition, with particular emphasis on clarity of text setting and liturgical appropriateness.
+
+==Personal life==
+Vincent was part of a musical family; his brother, [[George Frederick Vincent]], was also a noted organist and composer. Another brother, Rev. [[Frederick Janvrin Vincent]], served as an Episcopal missionary in the American West and founded [[St. Peter's Episcopal Church]] in [[Salt Lake City]], [[Utah]].
+
+Vincent died in 1934 in [[Sunderland]], where he had maintained his final church appointment.
+
+==Legacy==
+Charles John Vincent represents the tradition of English cathedral musicians who combined performance, composition, and pedagogy in their professional lives. His textbooks contributed to the standardization of music theory instruction in British education, while his role as an examiner helped establish professional standards for church musicians throughout the late Victorian and Edwardian periods.
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://explore.bl.uk British Library Explore] – Search for Charles John Vincent compositions
+
+{{Authority control}}
+
+[[Category:1852 births]]
+[[Category:1934 deaths]]
+[[Category:English classical organists]]
+[[Category:British male organists]]
+[[Category:English composers]]
+[[Category:Alumni of the University of Oxford]]
+[[Category:People from Batley]]
+[[Category:19th-century classical composers]]
+[[Category:20th-century classical composers]]
+[[Category:English music educators]]
+[[Category:Trinity College of Music]]
+[[Category:Victorian composers]]
+[[Category:Male classical organists]]
