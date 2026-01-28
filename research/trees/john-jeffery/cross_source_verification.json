@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-01-25T21:28:30.262626",
+  "verification_type": "cross_source_corroboration",
+  "wikitree_verified": 3,
+  "wikitree_relationships": {
+    "John Jeffery": {
+      "wikitree_id": "Jeffery-538",
+      "birth_date": "1803-00-00",
+      "birth_location": "Brenchley, Kent, England",
+      "father": "Edward Jeffery",
+      "mother": "Lydia Hickmott",
+      "source": "WikiTree (verified live)"
+    },
+    "John Jefferies": {
+      "wikitree_id": "Jefferies-795",
+      "birth_date": "1803-08-07",
+      "birth_location": "Forncett St Mary, Norfolk, England",
+      "father": "John Jefferies",
+      "mother": "Mary Hubbard",
+      "source": "WikiTree (verified live)"
+    },
+    "Joseph Jeffcoat": {
+      "wikitree_id": "Jeffcoat-237",
+      "birth_date": "1803-10-19",
+      "birth_location": "Aylesbury, Buckinghamshire, England",
+      "father": "John Jeffcoat",
+      "mother": "Rebecca Fardon",
+      "source": "WikiTree (verified live)"
+    }
+  },
+  "familysearch_records_count": 5,
+  "familysearch_records": [
+    {
+      "title": "England Marriages, 1538\u20131973",
+      "year": 1826,
+      "type": "marriage"
+    },
+    {
+      "title": "England and Wales, Census, 1841",
+      "year": 1841,
+      "type": "census"
+    },
+    {
+      "title": "England and Wales, Census, 1851",
+      "year": 1851,
+      "type": "census"
+    },
+    {
+      "title": "England and Wales, Census, 1861",
+      "year": 1861,
+      "type": "census"
+    },
+    {
+      "title": "Michigan, Deaths and Burials, 1800-1995",
+      "year": 1899,
+      "type": "death"
+    }
+  ],
+  "gps_pillar_3_status": "incomplete",
+  "gps_pillar_3_reason": "Relationships claimed by WikiTree only, no corroborating source data",
+  "recommendations": [
+    "Extract detailed census household data from FamilySearch collections",
+    "Search FamilySearch for person profiles with family tree relationships",
+    "Find additional primary sources (vital records, church records, etc.)"
+  ]
+}

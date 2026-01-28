@@ -1,0 +1,41 @@
+# 1841 Census for John Jeffery
+# Instructions: Fill in data from your FamilySearch record
+# Leave blank fields as empty strings ""
+
+census_year: 1841
+
+citation:
+  collection: "England and Wales Census, 1841"
+  registration_district: ""  # e.g., "Tonbridge"
+  sub_district: ""           # e.g., "Brenchley"
+  enumeration_district: ""   # e.g., "1a"
+  piece: ""                  # e.g., "HO107/1085"
+  folio: ""                  # e.g., "15"
+  page: ""                   # e.g., "23"
+  line: ""                   # Line number on page
+  familysearch_url: ""       # Full URL from FamilySearch
+
+person:
+  name: "John Jeffery"       # Exact spelling from record
+  age: ""                    # Note: 1841 ages rounded to nearest 5 for adults
+  sex: "M"
+  occupation: ""             # Job listed in census
+  birthplace: ""             # In 1841: Y=same county, N=different county, or "Scotland", "Ireland", "Foreign"
+
+household:
+  # List all people in the household
+  # Copy this block for each person:
+  # - name: ""
+  #   age: ""
+  #   sex: ""
+  #   occupation: ""
+  #   birthplace: ""
+  #   relationship: ""  # Not officially recorded in 1841, but infer if possible
+
+address:
+  street: ""                 # Street name or "Uninhabited" or blank
+  parish: ""                 # e.g., "Brenchley"
+  township: ""               # Sometimes same as parish
+  county: ""                 # e.g., "Kent"
+
+notes: ""  # Any unusual observations, crossed-out entries, annotations

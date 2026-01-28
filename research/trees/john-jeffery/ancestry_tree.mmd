@@ -1,0 +1,84 @@
+graph TD
+    %% John Jeffery Line
+    JJ[John Jeffery<br/>Jeffery-538<br/>b. 1803 Brenchley, Kent]
+    EJ[Edward Jeffery<br/>Jeffery-390<br/>b. 1765 Lamberhurst]
+    TJ[Thomas Jeffery<br/>Jeffery-1237<br/>b. 1735 Horsmonden]
+    RB[Rachel Baldwin<br/>Baldwin-8616<br/>b. 1741 Lamberhurst]
+    LH[Lydia Hickmott<br/>Hickmott-289<br/>b. 1773 Lamberhurst]
+    JH1[John Hickmott<br/>Hickmott-283]
+    GH[George Hickmott<br/>Hickmott-290]
+    RH[Richard Hickmott<br/>Hickmott-299]
+    SR[Susanna Russell<br/>Russell-7272]
+    MA[Martha Avery<br/>Avery-5760]
+    JA1[John Avery<br/>Avery-5821]
+    JA2[John Avery<br/>Avery-9713<br/>b. 1647 Sussex<br/>⭐ EARLIEST]
+    UNK[Unknown-238808]
+
+    %% John Jefferies Line
+    JJF[John Jefferies<br/>Jefferies-795<br/>b. 1803 Forncett St Mary]
+    JJF2[John Jefferies<br/>Jefferies-721<br/>b. 1780 Pulham]
+    WJ[William Jefferies<br/>Jefferies-887]
+    JJF3[John Jefferies<br/>Jefferies-881]
+    MK[Mary Kybird<br/>Kybird-2]
+    ET[Elizabeth Thorold<br/>Thorold-88]
+    MH[Mary Hubbard<br/>Hubbard-7253<br/>b. 1781 Tivetshall]
+    SH1[Samuel Hubbard<br/>Hubbard-7254]
+    SH2[Samuel Hubbard<br/>Hubbard-8642]
+    MC[Mary Clayton<br/>Clayton-6804]
+    EG[Elizabeth Gardiner<br/>Gardiner-4482]
+
+    %% Joseph Jeffcoat Line
+    JC[Joseph Jeffcoat<br/>Jeffcoat-237<br/>b. 1803 Aylesbury]
+    JJC[John Jeffcoat<br/>Jeffcoat-234<br/>b. 1776 Upper Winchendon]
+    MJC[Marmaduke Jeffcoat<br/>Jeffcoat-235]
+    AE[Anne Eaton<br/>Eaton-6418]
+    RF[Rebecca Fardon<br/>Fardon-19<br/>b. 1776 Sibford Ferris]
+    BF[Benjamin Fardon<br/>Fardon-20]
+    RHar[Rebecca Harris<br/>Harris-34530]
+
+    %% Jeffery Line Relationships
+    JJ --> EJ
+    JJ --> LH
+    EJ --> TJ
+    EJ --> RB
+    LH --> JH1
+    LH --> MA
+    JH1 --> GH
+    JH1 --> UNK
+    GH --> RH
+    GH --> SR
+    MA --> JA1
+    JA1 --> JA2
+
+    %% Jefferies Line Relationships
+    JJF --> JJF2
+    JJF --> MH
+    JJF2 --> WJ
+    JJF2 --> ET
+    WJ --> JJF3
+    WJ --> MK
+    MH --> SH1
+    MH --> EG
+    SH1 --> SH2
+    SH1 --> MC
+
+    %% Jeffcoat Line Relationships
+    JC --> JJC
+    JC --> RF
+    JJC --> MJC
+    JJC --> AE
+    RF --> BF
+    RF --> RHar
+
+    %% Styling
+    classDef primary fill:#e1f5ff,stroke:#01579b,stroke-width:3px
+    classDef gen2 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef gen3 fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef gen4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef earliest fill:#ffebee,stroke:#b71c1c,stroke-width:4px
+
+    class JJ,JJF,JC primary
+    class EJ,LH,JJF2,MH,JJC,RF gen2
+    class TJ,RB,JH1,MA,WJ,ET,SH1,EG,MJC,AE,BF,RHar gen3
+    class GH,UNK,JA1,JJF3,MK,SH2,MC gen4
+    class JA2 earliest

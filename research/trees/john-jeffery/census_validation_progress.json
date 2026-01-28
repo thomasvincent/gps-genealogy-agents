@@ -1,0 +1,19 @@
+{
+  "last_updated": "2026-01-27T01:40:47.528140",
+  "processed_ids": [
+    "Jeffery-538"
+  ],
+  "stats": {
+    "total_profiles": 0,
+    "census_found": 0,
+    "birth_records": 0,
+    "death_records": 0,
+    "marriage_records": 0,
+    "immigration_records": 0,
+    "military_records": 0,
+    "other_records": 0,
+    "not_found": 1,
+    "rate_limited": 0,
+    "cache_hits": 0
+  }
+}

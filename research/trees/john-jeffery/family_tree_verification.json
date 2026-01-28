@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-01-25T21:21:36.285033",
+  "tree_file": "tree.json",
+  "summary": {
+    "total_people": 3,
+    "total_relationships": 6,
+    "consistent": 0,
+    "conflicts": 0,
+    "single_source": 6
+  },
+  "analysis": {
+    "consistent": [],
+    "conflicts": [],
+    "single_source": [
+      {
+        "person": "John Jeffery",
+        "relationship": "father",
+        "relative": "Edward Jeffery",
+        "source": "WikiTree",
+        "confidence": ""
+      },
+      {
+        "person": "John Jeffery",
+        "relationship": "mother",
+        "relative": "Lydia Hickmott",
+        "source": "WikiTree",
+        "confidence": ""
+      },
+      {
+        "person": "John Jefferies",
+        "relationship": "father",
+        "relative": "John Jefferies",
+        "source": "WikiTree",
+        "confidence": ""
+      },
+      {
+        "person": "John Jefferies",
+        "relationship": "mother",
+        "relative": "Mary Hubbard",
+        "source": "WikiTree",
+        "confidence": ""
+      },
+      {
+        "person": "Joseph Jeffcoat",
+        "relationship": "father",
+        "relative": "John Jeffcoat",
+        "source": "WikiTree",
+        "confidence": ""
+      },
+      {
+        "person": "Joseph Jeffcoat",
+        "relationship": "mother",
+        "relative": "Rebecca Fardon",
+        "source": "WikiTree",
+        "confidence": ""
+      }
+    ],
+    "unsourced": []
+  }
+}

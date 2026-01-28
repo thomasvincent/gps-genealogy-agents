@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-01-25T21:48:14.972677",
+  "extraction_type": "familysearch_playwright",
+  "people_searched": 3,
+  "data": {
+    "John Jeffery": {
+      "search_url": "https://www.familysearch.org/search/record/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808",
+      "extracted": false,
+      "note": "Manual extraction required or use browser automation"
+    },
+    "John Jefferies": {
+      "search_url": "https://www.familysearch.org/search/record/results?q.givenName=John&q.surname=Jefferies&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808",
+      "extracted": false,
+      "note": "Manual extraction required or use browser automation"
+    },
+    "Joseph Jeffcoat": {
+      "search_url": "https://www.familysearch.org/search/record/results?q.givenName=Joseph&q.surname=Jeffcoat&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808",
+      "extracted": false,
+      "note": "Manual extraction required or use browser automation"
+    }
+  },
+  "instructions": "To complete extraction, use Playwright MCP tools to navigate search URLs and extract family relationships"
+}

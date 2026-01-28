@@ -1,0 +1,382 @@
+{
+  "generated_at": "2026-01-26T00:44:43.906306",
+  "tier": "tier2",
+  "tier_name": "Generation 3 (Grandparents)",
+  "priority": "MEDIUM - Good coverage expected",
+  "profile_count": 12,
+  "instructions": "For each profile, visit the FamilySearch URL, extract the record data, and fill in the fields below",
+  "profiles": [
+    {
+      "wikitree_id": "Jeffery-1237",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Thomas&surname=Jeffery&birthLikeYear=1735&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Jeffery-1237",
+        "birth_date": "1735-00-00",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Baldwin-8616",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Rachel&surname=Baldwin&birthLikeYear=1741&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Baldwin-8616",
+        "birth_date": "1741-00-00",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hickmott-283",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=James&surname=Hickmott&birthLikeYear=1740&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-283",
+        "birth_date": "1740-11-16",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Hickmott-290",
+        "mother": "Unknown-238808"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Avery-5760",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Avery&birthLikeYear=1729&birthLikePlace=Cuckfield+Sussex",
+      "wikitree_data": {
+        "name": "Avery-5760",
+        "birth_date": "1729-04-11",
+        "birth_place": "Cuckfield, Sussex, England",
+        "father": "Avery-5821",
+        "mother": "Aynscombe-10"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Avery-5821",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Thomas&surname=Avery&birthLikeYear=1692&birthLikePlace=Hurstpierpoint+Sussex",
+      "wikitree_data": {
+        "name": "Avery-5821",
+        "birth_date": "1692-09-25",
+        "birth_place": "Hurstpierpoint, Sussex, England",
+        "father": "Avery-9713",
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Aynscombe-10",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Aynscombe&birthLikeYear=1693&birthLikePlace=Cuckfield+Sussex",
+      "wikitree_data": {
+        "name": "Aynscombe-10",
+        "birth_date": "1693-11-12",
+        "birth_place": "Cuckfield, Sussex, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Jefferies-887",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jefferies&birthLikeYear=1748&birthLikePlace=Long Stratton+Norfolk",
+      "wikitree_data": {
+        "name": "Jefferies-887",
+        "birth_date": "1748-03-23",
+        "birth_place": "Long Stratton, Norfolk, England",
+        "father": "Jefferies-881",
+        "mother": "Kybird-2"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Jefferies-881",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Jonathan&surname=Jefferies&birthLikeYear=1710&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Jefferies-881",
+        "birth_date": "1710-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Kybird-2",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Elizabeth&surname=Kybird&birthLikeYear=1712&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Kybird-2",
+        "birth_date": "1712-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Thorold-88",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Thorold&birthLikeYear=1747&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Thorold-88",
+        "birth_date": "1747-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hubbard-7254",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Robert&surname=Hubbard&birthLikeYear=1761&birthLikePlace=Wacton+Norfolk",
+      "wikitree_data": {
+        "name": "Hubbard-7254",
+        "birth_date": "1761-02-01",
+        "birth_place": "Wacton, Norfolk, England",
+        "father": "Hubbard-8642",
+        "mother": "Clayton-6804"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Gardiner-4482",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Gardiner&birthLikeYear=1758&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Gardiner-4482",
+        "birth_date": "1758-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "generated_at": "2026-01-26T00:44:43.906861",
+  "tier": "tier3",
+  "tier_name": "GPS Compliance Profiles",
+  "priority": "MEDIUM - Reach 75% threshold",
+  "profile_count": 6,
+  "instructions": "For each profile, visit the FamilySearch URL, extract the record data, and fill in the fields below",
+  "profiles": [
+    {
+      "wikitree_id": "Hickmott-290",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Hickmott&birthLikeYear=1716&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-290",
+        "birth_date": "1716-10-15",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Hickmott-299",
+        "mother": "Russell-7272"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hickmott-299",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Hickmott&birthLikeYear=1684&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-299",
+        "birth_date": "1684-05-18",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Hickmott-313",
+        "mother": "Masters-781"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Russell-7272",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Russell&birthLikeYear=1698&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Russell-7272",
+        "birth_date": "1698-02-18",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Russell-19815",
+        "mother": "Coleman-10761"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hubbard-8642",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Robert&surname=Hubbard&birthLikeYear=1736&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Hubbard-8642",
+        "birth_date": "1736-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Clayton-6804",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Clayton&birthLikeYear=1740&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Clayton-6804",
+        "birth_date": "1740-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Fardon-20",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Jonathan&surname=Fardon&birthLikeYear=1740&birthLikePlace=Deddington+Oxfordshire",
+      "wikitree_data": {
+        "name": "Fardon-20",
+        "birth_date": "1740-08-06",
+        "birth_place": "Deddington, Oxfordshire, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    }
+  ]
+}

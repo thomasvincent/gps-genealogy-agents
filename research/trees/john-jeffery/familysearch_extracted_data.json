@@ -1,0 +1,5025 @@
+{
+  "generated_at": "2026-01-26T22:26:30.426124",
+  "extraction_type": "familysearch_primary_source_validation",
+  "people_searched": 214,
+  "data": {
+    "Jeffery-538": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NF3-49T1&id=MVZM-N9H&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jeffery-538",
+      "relationships": {
+        "father": {
+          "name": "VIEW JOHN WILLIAM JEFFERY"
+        },
+        "mother": {
+          "name": "John Jeffery (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:16:21.010546",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW JOHN WILLIAM JEFFERY"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Hickmott-289, FamilySearch=John Jeffery (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Jefferies-795": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NF3-2G34&id=MVZM-FN1&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jefferies-795",
+      "relationships": {
+        "father": {
+          "name": "VIEW JOHN JEFFERIES"
+        },
+        "mother": {
+          "name": "Stephen Jefferies (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:35:35.029721",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW JOHN JEFFERIES"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Hubbard-7253, FamilySearch=Stephen Jefferies (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Jeffcoat-237": {
+      "person_name": "Joseph Jeffcoat",
+      "birth_date": "1803-10-19",
+      "birth_location": "Aylesbury, Buckingham, England",
+      "familysearch_record_id": "NV8L-T4Y",
+      "familysearch_url": "https://www.familysearch.org/ark:/61903/1:1:NV8L-T4Y",
+      "familysearch_pid": "KLC6-PCF",
+      "wikitree_id": "Jeffcoat-237",
+      "relationships": {
+        "father": {
+          "name": "John Jeffcoat",
+          "familysearch_url": "https://www.familysearch.org/ark:/61903/1:1:NV8L-T4B"
+        },
+        "mother": {
+          "name": "Rebecca Jeffcoat",
+          "familysearch_url": "https://www.familysearch.org/ark:/61903/1:1:NV8L-T41"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "England, Births and Christenings, 1538-1975",
+      "extraction_confidence": "high",
+      "extraction_method": "playwright_browser_automation",
+      "notes": "Primary source - christening record from parish register (christened Buckingham, Buckinghamshire; birth 19 October 1803, Aylesbury). Extracted via Playwright. This record CONFIRMS WikiTree Jeffcoat-237 data: father John Jeffcoat, mother Rebecca Fardon (recorded as Rebecca Jeffcoat [married name] in FamilySearch)."
+    },
+    "Jeffery-390": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NF3-PDVH&id=GMC1-YN4&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jeffery-390",
+      "relationships": {
+        "father": {
+          "name": "VIEW ARTHUR EDWARD JEFFERY"
+        },
+        "mother": {
+          "name": "Charles Jeffery (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:17:48.054178",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW ARTHUR EDWARD JEFFERY"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Baldwin-8616, FamilySearch=Charles Jeffery (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Jeffery-1237": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NFS-B7CV&id=MV7V-55P&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jeffery-1237",
+      "relationships": {
+        "father": {
+          "name": "VIEW THOMAS JEFFERY"
+        },
+        "mother": {
+          "name": "Richard Jeffery (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:19:15.180764",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Baldwin-8616": {
+      "person_name": "Rachel Baldwin",
+      "birth_date": "1741-00-00",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Baldwin-8616",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Baldwin-8616",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.464133",
+      "notes": "Data from WikiTree profile Baldwin-8616. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hickmott-289": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:2NXF-SH7&id=M9S7-XGT&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Hickmott-289",
+      "relationships": {
+        "father": {
+          "name": "VIEW LYDIA EMILY HICKMOTT"
+        },
+        "mother": {
+          "name": "Thomas Hickmott (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:21:58.084177",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW LYDIA EMILY HICKMOTT"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Avery-5760, FamilySearch=Thomas Hickmott (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Hickmott-283": {
+      "person_name": "James Hickmott",
+      "birth_date": "1740-11-16",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-283",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-283",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.464381",
+      "notes": "Data from WikiTree profile Hickmott-283. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hickmott-290": {
+      "person_name": "John Hickmott",
+      "birth_date": "1716-10-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-290",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-290",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.464492",
+      "notes": "Data from WikiTree profile Hickmott-290. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hickmott-299": {
+      "person_name": "John Hickmott",
+      "birth_date": "1684-05-18",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-299",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-299",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.464597",
+      "notes": "Data from WikiTree profile Hickmott-299. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Russell-7272": {
+      "person_name": "Ann Russell",
+      "birth_date": "1698-02-18",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Russell-7272",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Russell-7272",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.464702",
+      "notes": "Data from WikiTree profile Russell-7272. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Unknown-238808": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:QPTX-87YG&id=KGK5-4RD&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Unknown-238808",
+      "relationships": {
+        "father": {
+          "name": "VIEW CATHERINE MARY WHITMARSH"
+        },
+        "mother": {
+          "name": "George Whitmarsh (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:28:29.609640",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Avery-5760": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:QKLP-MZ2Q&id=LRLF-94X&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Avery-5760",
+      "relationships": {
+        "father": {
+          "name": "VIEW MARY HELEN PROVCI"
+        },
+        "mother": {
+          "name": "Samuel Provci (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:29:56.852907",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [
+          "Father: WikiTree=Avery-5821, FamilySearch=VIEW MARY HELEN PROVCI",
+          "Mother: WikiTree=Aynscombe-10, FamilySearch=Samuel Provci (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 2 discrepancies, 0 sources found."
+    },
+    "Avery-5821": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:QK2M-Q3RT&id=GBBN-R39&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Avery-5821",
+      "relationships": {
+        "father": {
+          "name": "VIEW THOMAS JAMES AVERY"
+        },
+        "mother": {
+          "name": "Glenn Lester Avery (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:31:24.169896",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW THOMAS JAMES AVERY"
+        ],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 0 discrepancies, 0 sources found."
+    },
+    "Avery-9713": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:QK2M-Q3RT&id=GBBN-R39&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Avery-9713",
+      "relationships": {
+        "father": {
+          "name": "VIEW THOMAS JAMES AVERY"
+        },
+        "mother": {
+          "name": "Glenn Lester Avery (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:32:51.322724",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW THOMAS JAMES AVERY"
+        ],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 0 discrepancies, 0 sources found."
+    },
+    "Aynscombe-10": {
+      "person_name": "Ann Aynscombe",
+      "birth_date": "1693-11-12",
+      "birth_location": "Cuckfield, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Aynscombe-10",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Aynscombe-10",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.465225",
+      "notes": "Data from WikiTree profile Aynscombe-10. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Jefferies-721": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NF3-2G34&id=MVZM-FN1&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jefferies-721",
+      "relationships": {
+        "father": {
+          "name": "VIEW JOHN JEFFERIES"
+        },
+        "mother": {
+          "name": "Stephen Jefferies (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:37:02.330547",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW JOHN JEFFERIES"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Thorold-88, FamilySearch=Stephen Jefferies (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Jefferies-887": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/linker?ark=/ark:/61903/1:1:6NF3-2G34&id=MVZM-FN1&hinting=/tree/person/details/",
+      "familysearch_sources": [],
+      "wikitree_id": "Jefferies-887",
+      "relationships": {
+        "father": {
+          "name": "VIEW JOHN JEFFERIES"
+        },
+        "mother": {
+          "name": "Stephen Jefferies (Father)"
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "medium",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T02:38:29.464757",
+      "cross_reference": {
+        "matches": [
+          "Father confirmed: VIEW JOHN JEFFERIES"
+        ],
+        "discrepancies": [
+          "Mother: WikiTree=Kybird-2, FamilySearch=Stephen Jefferies (Father)"
+        ],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 1 matches, 1 discrepancies, 0 sources found."
+    },
+    "Jefferies-881": {
+      "person_name": "Jonathan Jefferies",
+      "birth_date": "1710-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Jefferies-881",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Jefferies-881",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.465664",
+      "notes": "Data from WikiTree profile Jefferies-881. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Kybird-2": {
+      "person_name": "Elizabeth Kybird",
+      "birth_date": "1712-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Kybird-2",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Kybird-2",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.465775",
+      "notes": "Data from WikiTree profile Kybird-2. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Thorold-88": {
+      "person_name": "Mary Thorold",
+      "birth_date": "1747-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Thorold-88",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Thorold-88",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.465883",
+      "notes": "Data from WikiTree profile Thorold-88. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hubbard-7253": {
+      "person_name": "Mary Hubbard",
+      "birth_date": "1781-04-08",
+      "birth_location": "Tivetshall St Margaret, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hubbard-7253",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hubbard-7253",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.465987",
+      "notes": "Data from WikiTree profile Hubbard-7253. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hubbard-7254": {
+      "person_name": "Robert Hubbard",
+      "birth_date": "1761-02-01",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hubbard-7254",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-8642"
+        },
+        "mother": {
+          "name": "Clayton-6804"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hubbard-7254",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466087",
+      "notes": "Data from WikiTree profile Hubbard-7254. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Hubbard-8642": {
+      "person_name": "Robert Hubbard",
+      "birth_date": "1736-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hubbard-8642",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hubbard-8642",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466197",
+      "notes": "Data from WikiTree profile Hubbard-8642. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Clayton-6804": {
+      "person_name": "Ann Clayton",
+      "birth_date": "1740-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Clayton-6804",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Clayton-6804",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466298",
+      "notes": "Data from WikiTree profile Clayton-6804. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Gardiner-4482": {
+      "person_name": "Mary Gardiner",
+      "birth_date": "1758-00-00",
+      "birth_location": "Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Gardiner-4482",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Gardiner-4482",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466405",
+      "notes": "Data from WikiTree profile Gardiner-4482. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Jeffcoat-234": {
+      "person_name": "John Jeffcoat",
+      "birth_date": "1776-03-15",
+      "birth_location": "Upper Winchendon, Buckinghamshire, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Jeffcoat-234",
+      "relationships": {
+        "father": {
+          "name": "Jeffcoat-235"
+        },
+        "mother": {
+          "name": "Eaton-6418"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Jeffcoat-234",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466610",
+      "notes": "Data from WikiTree profile Jeffcoat-234. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Fardon-19": {
+      "person_name": "Rebecca Fardon",
+      "birth_date": "1776-05-28",
+      "birth_location": "Sibford Ferris, Oxfordshire, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Fardon-19",
+      "relationships": {
+        "father": {
+          "name": "Fardon-20"
+        },
+        "mother": {
+          "name": "Harris-34530"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Fardon-19",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.466924",
+      "notes": "Data from WikiTree profile Fardon-19. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "Fardon-20": {
+      "person_name": "Jonathan Fardon",
+      "birth_date": "1740-08-06",
+      "birth_location": "Deddington, Oxfordshire, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Fardon-20",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Fardon-20",
+      "extraction_confidence": "medium",
+      "extraction_method": "wikitree_secondary_source",
+      "extraction_date": "2026-01-26T00:48:52.467032",
+      "notes": "Data from WikiTree profile Fardon-20. PENDING: Verify against FamilySearch primary source records. This is a secondary source requiring primary source confirmation."
+    },
+    "7958924": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Russell&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7958924",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T04:30:34.921667",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958917": {
+      "person_name": "Joseph Hickmott",
+      "birth_date": "1727-01-08",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958917",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958917",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114052",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22327183": {
+      "person_name": "Nathaniel Avery",
+      "birth_date": "1740-12-19",
+      "birth_location": "Cuckfield, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22327183",
+      "relationships": {
+        "father": {
+          "name": "Avery-5821"
+        },
+        "mother": {
+          "name": "Aynscombe-10"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22327183",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114061",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213979": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29213979",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T05:45:35.935302",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "21831033": {
+      "person_name": "William Russell",
+      "birth_date": "1704-11-04",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21831033",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21831033",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114081",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213565": {
+      "person_name": "Sarah Hubbard",
+      "birth_date": "1795-01-12",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213565",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213565",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114085",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214056": {
+      "person_name": "Hannah Jefferies",
+      "birth_date": "1750-04-00",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214056",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214056",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114090",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958887": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1718-12-07",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958887",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958887",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114094",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958758": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Susannah&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7958758",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T07:00:43.351025",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "22327202": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Anne&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "22327202",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T07:17:22.165852",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "42592603": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Susanna&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "42592603",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T07:44:41.994029",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958912": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1725-00-00",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958912",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958912",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114112",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29781385": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=John&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "29781385",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T08:11:03.522851",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962279": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1678-04-12",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962279",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962279",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114121",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "26719505": {
+      "person_name": "Rachel Jeffery",
+      "birth_date": "1797-03-05",
+      "birth_location": "Brenchley, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "26719505",
+      "relationships": {
+        "father": {
+          "name": "Jeffery-390"
+        },
+        "mother": {
+          "name": "Hickmott-289"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 26719505",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114126",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958930": {
+      "person_name": "Richard Hickmott",
+      "birth_date": "1729-08-30",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958930",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958930",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114131",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "26719392": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=James&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "26719392",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T09:29:02.035798",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962298": {
+      "person_name": "William Hickmott",
+      "birth_date": "1686-03-11",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962298",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962298",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114139",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214666": {
+      "person_name": "Charlotte Jefferies",
+      "birth_date": "1782-03-03",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214666",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214666",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114144",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958583": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1769-04-16",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958583",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958583",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114148",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958748": {
+      "person_name": "William Hickmott",
+      "birth_date": "1744-12-23",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958748",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958748",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114152",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962302": {
+      "person_name": "Leonard Hickmott",
+      "birth_date": "1687-09-27",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962302",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962302",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114156",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962312": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7962312",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T11:48:48.737361",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958538": {
+      "person_name": "James Hickmott",
+      "birth_date": "1761-00-00",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958538",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958538",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114167",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214691": {
+      "person_name": "Isaac Jefferies",
+      "birth_date": "1783-11-23",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214691",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214691",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114172",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213512": {
+      "person_name": "Robert Hubbard",
+      "birth_date": "1788-02-11",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213512",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213512",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114183",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357521": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357521",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:08:47.511407",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "22327193": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=John&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "22327193",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:10:36.574275",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "23956691": {
+      "person_name": "Robert Jefferies",
+      "birth_date": "1809-05-06",
+      "birth_location": "Dickleburgh, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "23956691",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 23956691",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114195",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22327212": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Thomas&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "22327212",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:14:52.211955",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958737": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Lydia&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7958737",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:17:08.713881",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "26719438": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Phoebe&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "26719438",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:21:20.387967",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "27357570": {
+      "person_name": "Isaac Jefferies",
+      "birth_date": "1806-04-12",
+      "birth_location": "Tivetshall St Mary, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357570",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357570",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114213",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357611": {
+      "person_name": "David Jefferies",
+      "birth_date": "1818-02-01",
+      "birth_location": "Dickleburgh, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357611",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357611",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114218",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214123": {
+      "person_name": "Esther Jefferies",
+      "birth_date": "1754-08-25",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214123",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214123",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114222",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27978839": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Thomas&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "27978839",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T12:51:27.315753",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "22169873": {
+      "person_name": "Henry Jeffcoat",
+      "birth_date": "1817-03-15",
+      "birth_location": "Aylesbury, Buckinghamshire, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22169873",
+      "relationships": {
+        "father": {
+          "name": "Jeffcoat-234"
+        },
+        "mother": {
+          "name": "Fardon-19"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22169873",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114231",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214621": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29214621",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:08:09.974184",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958751": {
+      "person_name": "Ruth Hickmott",
+      "birth_date": "1749-05-28",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958751",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958751",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114239",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357616": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Eliza&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357616",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:17:12.011741",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "27357601": {
+      "person_name": "William Jefferies",
+      "birth_date": "1814-02-27",
+      "birth_location": "Dickleburgh, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357601",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357601",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114247",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21830981": {
+      "person_name": "Elizabeth Russell",
+      "birth_date": "1691-01-03",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21830981",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21830981",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114254",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214633": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Sarah&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29214633",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:23:00.675038",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958463": {
+      "person_name": "John Hickmott",
+      "birth_date": "1763-11-20",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958463",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958463",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114266",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958907": {
+      "person_name": "Ann Hickmott",
+      "birth_date": "1722-12-02",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958907",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958907",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114270",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22170554": {
+      "person_name": "Rafela Jeffcoat",
+      "birth_date": "1808-00-00",
+      "birth_location": "England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22170554",
+      "relationships": {
+        "father": {
+          "name": "Jeffcoat-234"
+        },
+        "mother": {
+          "name": "Fardon-19"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22170554",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114274",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958872": {
+      "person_name": "Susan Hickmott",
+      "birth_date": "1714-02-07",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958872",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958872",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114281",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958949": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elisabeth&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7958949",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:34:55.662171",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958936": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Timothy&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7958936",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:37:23.279374",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "14856241": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1694-01-17",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "14856241",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 14856241",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114293",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Coleman-10761": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Ann&q.surname=Coleman",
+      "familysearch_sources": [],
+      "wikitree_id": "Coleman-10761",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:44:07.775606",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Avery-9714": {
+      "person_name": "Nathaniel Avery",
+      "birth_date": "1604-00-00",
+      "birth_location": "Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Avery-9714",
+      "relationships": {
+        "father": {
+          "name": "Avery-9715"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Avery-9714",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114303",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Russell-19815": {
+      "person_name": "Stephen Russell",
+      "birth_date": "1659-05-24",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Russell-19815",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Russell-19815",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114307",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Hickmott-313": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1651-06-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-313",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-518"
+        },
+        "mother": {
+          "name": "Unknown-238851"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-313",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:18:46.114311",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Masters-781": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Masters",
+      "familysearch_sources": [],
+      "wikitree_id": "Masters-781",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T13:55:27.867279",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958602": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Edward&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "7958602",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:00:44.836195",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958864": {
+      "person_name": "John Hickmott",
+      "birth_date": "1684-05-18",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958864",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958864",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027881",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21742511": {
+      "person_name": "John Russell",
+      "birth_date": "1639-04-14",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21742511",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21742511",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027891",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "42592578": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Thomas&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "42592578",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:09:49.346407",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "21742739": {
+      "person_name": "Alice Russell",
+      "birth_date": "1644-02-10",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21742739",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21742739",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027901",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22170580": {
+      "person_name": "Joseph Jeffcoat",
+      "birth_date": "1803-10-19",
+      "birth_location": "Aylesbury, Buckinghamshire, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22170580",
+      "relationships": {
+        "father": {
+          "name": "Jeffcoat-234"
+        },
+        "mother": {
+          "name": "Fardon-19"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22170580",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027918",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21742599": {
+      "person_name": "Anne Russell",
+      "birth_date": "1640-11-01",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21742599",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21742599",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027924",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357553": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=John&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357553",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:17:59.929340",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958533": {
+      "person_name": "James Hickmott",
+      "birth_date": "1740-11-16",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958533",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958533",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027949",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962424": {
+      "person_name": "John Hickmott",
+      "birth_date": "1653-02-21",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962424",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-518"
+        },
+        "mother": {
+          "name": "Unknown-238851"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962424",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027955",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958857": {
+      "person_name": "Ann Russell",
+      "birth_date": "1698-02-18",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958857",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958857",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027961",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21742761": {
+      "person_name": "Judith Russell",
+      "birth_date": "1647-06-13",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21742761",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21742761",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027966",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214049": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=John&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29214049",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:36:45.973128",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "8930973": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=John&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "8930973",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:38:52.034422",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "29213769": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Ann&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29213769",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T14:42:07.192731",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "29213528": {
+      "person_name": "Robert Hubbard",
+      "birth_date": "1789-04-21",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213528",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213528",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027992",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213537": {
+      "person_name": "Elizabeth Hubbard",
+      "birth_date": "1791-03-14",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213537",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213537",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.027997",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "23957147": {
+      "person_name": "Mary Hubbard",
+      "birth_date": "1781-04-08",
+      "birth_location": "Tivetshall St Margaret, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "23957147",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 23957147",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028008",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "17574325": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=William&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "17574325",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T15:02:33.935375",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7958697": {
+      "person_name": "Ruth Hickmott",
+      "birth_date": "1775-01-05",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958697",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958697",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028020",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958769": {
+      "person_name": "Edward Hickmott",
+      "birth_date": "1762-00-00",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958769",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958769",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028025",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962291": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1681-07-20",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962291",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962291",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028038",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214067": {
+      "person_name": "Isaac Jefferies",
+      "birth_date": "1752-10-15",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214067",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214067",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028044",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "39943640": {
+      "person_name": "Thomas Jeffery",
+      "birth_date": "1763-09-04",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "39943640",
+      "relationships": {
+        "father": {
+          "name": "Jeffery-1237"
+        },
+        "mother": {
+          "name": "Baldwin-8616"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 39943640",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028049",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958678": {
+      "person_name": "John Hickmott",
+      "birth_date": "1746-10-26",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958678",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-290"
+        },
+        "mother": {
+          "name": "Unknown-238808"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958678",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028058",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214041": {
+      "person_name": "John Jefferies",
+      "birth_date": "1744-09-28",
+      "birth_location": "Long Stratton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214041",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214041",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028064",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958945": {
+      "person_name": "Elisabeth Hickmott",
+      "birth_date": "1734-00-00",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958945",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958945",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028069",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958878": {
+      "person_name": "Susanna Hickmott",
+      "birth_date": "1715-01-13",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958878",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958878",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028074",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "23957073": {
+      "person_name": "John Jefferies",
+      "birth_date": "1780-03-19",
+      "birth_location": "Pulham, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "23957073",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 23957073",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028079",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "42592675": {
+      "person_name": "Allen Avery",
+      "birth_date": "1731-00-00",
+      "birth_location": "Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "42592675",
+      "relationships": {
+        "father": {
+          "name": "Avery-5821"
+        },
+        "mother": {
+          "name": "Aynscombe-10"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 42592675",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028084",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357603": {
+      "person_name": "Harriet Jefferies",
+      "birth_date": "1815-07-09",
+      "birth_location": "Dickleburgh, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357603",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357603",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028090",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214717": {
+      "person_name": "Fanny Jefferies",
+      "birth_date": "1788-06-29",
+      "birth_location": "Pulham, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214717",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214717",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028095",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357629": {
+      "person_name": "Charlotte Jefferies",
+      "birth_date": "1823-07-27",
+      "birth_location": "Dickleburgh, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357629",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357629",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028101",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41198462": {
+      "person_name": "William Russell",
+      "birth_date": "1649-10-27",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41198462",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41198462",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028106",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "26340347": {
+      "person_name": "Alice Jeffery",
+      "birth_date": "1801-06-21",
+      "birth_location": "Brenchley, Kent, England, United Kingdom",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "26340347",
+      "relationships": {
+        "father": {
+          "name": "Jeffery-390"
+        },
+        "mother": {
+          "name": "Hickmott-289"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 26340347",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028111",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958599": {
+      "person_name": "Lydia Hickmott",
+      "birth_date": "1773-05-09",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958599",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958599",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028117",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958608": {
+      "person_name": "Edward Jeffery",
+      "birth_date": "1799-00-00",
+      "birth_location": "Brenchley, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958608",
+      "relationships": {
+        "father": {
+          "name": "Jeffery-390"
+        },
+        "mother": {
+          "name": "Hickmott-289"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958608",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.028121",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962314": {
+      "person_name": "Jane Hickmott",
+      "birth_date": "1696-04-13",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962314",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962314",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030573",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958902": {
+      "person_name": "William Hickmott",
+      "birth_date": "1721-01-08",
+      "birth_location": "Pembury, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958902",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958902",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030580",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958595": {
+      "person_name": "Elizabeth Hickmott",
+      "birth_date": "1771-03-20",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958595",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958595",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030584",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214021": {
+      "person_name": "John Jefferies",
+      "birth_date": "1743-06-04",
+      "birth_location": "Long Stratton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214021",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214021",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030588",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213551": {
+      "person_name": "Robert Hubbard",
+      "birth_date": "1793-06-01",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213551",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213551",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030592",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21742639": {
+      "person_name": "Ellen Russell",
+      "birth_date": "1642-01-29",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21742639",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21742639",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030595",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213993": {
+      "person_name": "Sarah Jefferies",
+      "birth_date": "1741-11-01",
+      "birth_location": "Long Stratton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213993",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-881"
+        },
+        "mother": {
+          "name": "Kybird-2"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213993",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030599",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214737": {
+      "person_name": "Lucy Jefferies",
+      "birth_date": "1791-02-27",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214737",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214737",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030604",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29213466": {
+      "person_name": "William Hubbard",
+      "birth_date": "1785-12-15",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29213466",
+      "relationships": {
+        "father": {
+          "name": "Hubbard-7254"
+        },
+        "mother": {
+          "name": "Gardiner-4482"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29213466",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030607",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958657": {
+      "person_name": "John Hickmott",
+      "birth_date": "1716-10-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958657",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958657",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030611",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "10751540": {
+      "person_name": "John Russell",
+      "birth_date": "1700-02-21",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "10751540",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 10751540",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030615",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22327188": {
+      "person_name": "William Avery",
+      "birth_date": "1720-07-10",
+      "birth_location": "Cuckfield, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22327188",
+      "relationships": {
+        "father": {
+          "name": "Avery-5821"
+        },
+        "mother": {
+          "name": "Aynscombe-10"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22327188",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030619",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Hickmott-518": {
+      "person_name": "John Hickmott",
+      "birth_date": "1605-01-13",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-518",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-518",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030622",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Unknown-238851": {
+      "person_name": "Agnes Unknown",
+      "birth_date": "1629-00-00",
+      "birth_location": "Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Unknown-238851",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Unknown-238851",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030626",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Baldocke-1": {
+      "person_name": "Elizabeth Baldocke",
+      "birth_date": "1614-02-13",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Baldocke-1",
+      "relationships": {
+        "father": {
+          "name": "Baldock-844"
+        },
+        "mother": {
+          "name": "Wenbourne-19"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Baldocke-1",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030630",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Avery-9715": {
+      "person_name": "Thomas Avery",
+      "birth_date": "1570-00-00",
+      "birth_location": "Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Avery-9715",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Avery-9715",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030633",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Russell-19816": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1611-05-13",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Russell-19816",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Russell-19816",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:32:50.030636",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200995": {
+      "person_name": "Elizabeth Russell",
+      "birth_date": "1631-01-30",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200995",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200995",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835932",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962270": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1651-06-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962270",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-518"
+        },
+        "mother": {
+          "name": "Unknown-238851"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962270",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835961",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21882547": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1601-04-26",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21882547",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21882547",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835966",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21881837": {
+      "person_name": "William Hickmott",
+      "birth_date": "1603-03-26",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21881837",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21881837",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835971",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "32592627": {
+      "person_name": "Richard Hickmott",
+      "birth_date": "1609-02-12",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "32592627",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 32592627",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835975",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200939": {
+      "person_name": "Elizabeth Russell",
+      "birth_date": "1620-12-28",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200939",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200939",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835978",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200928": {
+      "person_name": "William Russell",
+      "birth_date": "1616-11-10",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200928",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200928",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835982",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22091318": {
+      "person_name": "Joane Hickmott",
+      "birth_date": "1637-02-06",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22091318",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Darby-1834"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22091318",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835986",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200990": {
+      "person_name": "Anne Russell",
+      "birth_date": "1627-06-24",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200990",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200990",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835990",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200933": {
+      "person_name": "Nicholas Russell",
+      "birth_date": "1619-05-17",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200933",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200933",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835994",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21882199": {
+      "person_name": "Elizabeth Hickmott",
+      "birth_date": "1614-06-22",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21882199",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21882199",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.835998",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41200978": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1628-03-09",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200978",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200978",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836002",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "35580650": {
+      "person_name": "Ruth Hickmott",
+      "birth_date": "1598-08-06",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "35580650",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 35580650",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836006",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41201013": {
+      "person_name": "Mary Russell",
+      "birth_date": "1633-12-01",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41201013",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41201013",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836009",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "45835848": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1629-00-00",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "45835848",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Darby-1834"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 45835848",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836013",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "32602890": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1610-12-30",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "32602890",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 32602890",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836017",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41201003": {
+      "person_name": "John Russell",
+      "birth_date": "1631-10-13",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41201003",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41201003",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836021",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21886606": {
+      "person_name": "Stephen Hickmott",
+      "birth_date": "1610-10-28",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21886606",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21886606",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836024",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357561": {
+      "person_name": "Maria Jefferies",
+      "birth_date": "1801-07-24",
+      "birth_location": "Wacton, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "27357561",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-721"
+        },
+        "mother": {
+          "name": "Hubbard-7253"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 27357561",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836028",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214652": {
+      "person_name": "Elizabeth Jefferies",
+      "birth_date": "1778-05-31",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214652",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214652",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836032",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22091259": {
+      "person_name": "Henry Hickmott",
+      "birth_date": "1633-03-24",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22091259",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Darby-1834"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22091259",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836036",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21741264": {
+      "person_name": "Stephen Russell",
+      "birth_date": "1659-05-24",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21741264",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21741264",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836040",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21886714": {
+      "person_name": "Robert Hickmott",
+      "birth_date": "1612-08-20",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21886714",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21886714",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836044",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962309": {
+      "person_name": "Ann Hickmott",
+      "birth_date": "1689-02-12",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962309",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962309",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836047",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7958933": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1731-05-22",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7958933",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-299"
+        },
+        "mother": {
+          "name": "Russell-7272"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7958933",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836052",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41198476": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1644-02-21",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41198476",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41198476",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836055",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21882135": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Alexander&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "21882135",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:19:31.591707",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "22321904": {
+      "person_name": "William Hickmott",
+      "birth_date": "1766-04-27",
+      "birth_location": "Lamberhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22321904",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-283"
+        },
+        "mother": {
+          "name": "Avery-5760"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22321904",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836063",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22091273": {
+      "person_name": "James Hickmott",
+      "birth_date": "1633-03-24",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22091273",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Darby-1834"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22091273",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836067",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21857332": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Avery",
+      "familysearch_sources": [],
+      "wikitree_id": "21857332",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:23:51.929726",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "41201026": {
+      "person_name": "Susan Russell",
+      "birth_date": "1637-04-02",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41201026",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41201026",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836074",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21830960": {
+      "person_name": "Stephen Russell",
+      "birth_date": "1689-06-06",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21830960",
+      "relationships": {
+        "father": {
+          "name": "Russell-19815"
+        },
+        "mother": {
+          "name": "Coleman-10761"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21830960",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836077",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "40648084": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Russell&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "40648084",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:28:12.578325",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "27357621": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Caroline&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357621",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:29:44.732714",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "41200962": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1627-01-18",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200962",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200962",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836099",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41198344": {
+      "person_name": "Mary Russell",
+      "birth_date": "1638-03-10",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41198344",
+      "relationships": {
+        "father": {
+          "name": "Russell-19816"
+        },
+        "mother": {
+          "name": "Baldocke-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41198344",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836103",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214725": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Maria&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29214725",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:34:04.960589",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "29213905": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "29213905",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:35:37.321442",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "26719460": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mary&q.surname=Jeffery",
+      "familysearch_sources": [],
+      "wikitree_id": "26719460",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:37:09.692326",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "41200944": {
+      "person_name": "Marie Russell",
+      "birth_date": "1623-04-06",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "41200944",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        },
+        "mother": {
+          "name": "Weston-10553"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 41200944",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836117",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357538": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357538",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:40:05.927811",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962290": {
+      "person_name": "Ann Hickmott",
+      "birth_date": "1679-10-28",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962290",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-313"
+        },
+        "mother": {
+          "name": "Masters-781"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962290",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836124",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "22327225": {
+      "person_name": "Elizabeth Avery",
+      "birth_date": "1718-10-10",
+      "birth_location": "Cuckfield, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "22327225",
+      "relationships": {
+        "father": {
+          "name": "Avery-5821"
+        },
+        "mother": {
+          "name": "Aynscombe-10"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 22327225",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836128",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "29214704": {
+      "person_name": "Susan Jefferies",
+      "birth_date": "1786-03-12",
+      "birth_location": "Pulham Market, Norfolk, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "29214704",
+      "relationships": {
+        "father": {
+          "name": "Jefferies-887"
+        },
+        "mother": {
+          "name": "Thorold-88"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 29214704",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836131",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "27357582": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Jefferies",
+      "familysearch_sources": [],
+      "wikitree_id": "27357582",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:45:53.236466",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "21882567": {
+      "person_name": "Leonard Hickmott",
+      "birth_date": "1617-03-23",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21882567",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21882567",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836138",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Weston-10553": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Weston",
+      "familysearch_sources": [],
+      "wikitree_id": "Weston-10553",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:48:49.515003",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Baldock-844": {
+      "person_name": "Thomas Baldock",
+      "birth_date": "1585-00-00",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Baldock-844",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Baldock-844",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836146",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Hickmott-345": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1573-11-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-345",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-343"
+        },
+        "mother": {
+          "name": "Kingswoode-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-345",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836149",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Usborne-46": {
+      "person_name": "Elizabeth Usborne",
+      "birth_date": "1575-00-00",
+      "birth_location": "Goudhurst, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Usborne-46",
+      "relationships": {
+        "father": {
+          "name": "Usborne-60"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Usborne-46",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836153",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Russell-19823": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1589-11-02",
+      "birth_location": "Mayfield, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Russell-19823",
+      "relationships": {
+        "father": {
+          "name": "Russell-37399"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Russell-19823",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:46:23.836156",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Darby-1834": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Marie&q.surname=Darby",
+      "familysearch_sources": [],
+      "wikitree_id": "Darby-1834",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:55:58.044451",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Wenbourne-19": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Mercy&q.surname=Wenbourne",
+      "familysearch_sources": [],
+      "wikitree_id": "Wenbourne-19",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:57:30.416690",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "41204807": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Anna&q.surname=Weston",
+      "familysearch_sources": [],
+      "wikitree_id": "41204807",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T21:59:02.975735",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962592": {
+      "person_name": "William Hickmott",
+      "birth_date": "1570-10-02",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962592",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-343"
+        },
+        "mother": {
+          "name": "Kingswoode-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962592",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704645",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41204886": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Marie&q.surname=Weston",
+      "familysearch_sources": [],
+      "wikitree_id": "41204886",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:01:59.474970",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962607": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "7962607",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:03:31.955250",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "28639476": {
+      "person_name": "Alexander Weston",
+      "birth_date": "1602-00-00",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "28639476",
+      "relationships": {
+        "father": {
+          "name": "Weston-2394"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 28639476",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704653",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "28639623": {
+      "person_name": "Richard Weston",
+      "birth_date": "1595-00-00",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "28639623",
+      "relationships": {
+        "father": {
+          "name": "Weston-2394"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 28639623",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704655",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "44267160": {
+      "person_name": "John Darby",
+      "birth_date": "1598-00-00",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "44267160",
+      "relationships": {
+        "father": {
+          "name": "Darby-3626"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 44267160",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704657",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962610": {
+      "person_name": "Margery Hickmott",
+      "birth_date": "1586-05-01",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962610",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-343"
+        },
+        "mother": {
+          "name": "Kingswoode-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962610",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704658",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "21741793": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1611-05-13",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21741793",
+      "relationships": {
+        "father": {
+          "name": "Russell-19823"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21741793",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704661",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "41204759": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Alice&q.surname=Weston",
+      "familysearch_sources": [],
+      "wikitree_id": "41204759",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:12:04.591833",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "21886827": {
+      "person_name": "John Hickmott",
+      "birth_date": "1605-01-13",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "21886827",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-345"
+        },
+        "mother": {
+          "name": "Usborne-46"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 21886827",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704665",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "7962602": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1579-02-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962602",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-343"
+        },
+        "mother": {
+          "name": "Kingswoode-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962602",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704667",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Russell-37399": {
+      "person_name": "Thomas Russell",
+      "birth_date": "1560-00-00",
+      "birth_location": "Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Russell-37399",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Russell-37399",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704669",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Usborne-60": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Alexander&q.surname=Usborne",
+      "familysearch_sources": [],
+      "wikitree_id": "Usborne-60",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:17:49.620172",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "Darby-3626": {
+      "person_name": "John Darby",
+      "birth_date": "1560-00-00",
+      "birth_location": "Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Darby-3626",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Darby-3626",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704673",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Hickmott-343": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1543-00-00",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-343",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-2601"
+        },
+        "mother": {
+          "name": "Unknown-667962"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-343",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704675",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Weston-2394": {
+      "person_name": "Richard Weston",
+      "birth_date": "1570-00-00",
+      "birth_location": "Wadhurst, Sussex, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Weston-2394",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Weston-2394",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:50:59.704678",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Kingswoode-1": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Elizabeth&q.surname=Kingswoode",
+      "familysearch_sources": [],
+      "wikitree_id": "Kingswoode-1",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:23:34.123950",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "42915965": {
+      "person_name": "Mary Hickmott",
+      "birth_date": "1550-00-00",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "42915965",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-2601"
+        },
+        "mother": {
+          "name": "Unknown-667962"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 42915965",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:52:01.079068",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "42915941": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Alice&q.surname=Hickmott",
+      "familysearch_sources": [],
+      "wikitree_id": "42915941",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T22:26:30.424397",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    },
+    "7962599": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1573-11-15",
+      "birth_location": "Horsmonden, Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "7962599",
+      "relationships": {
+        "father": {
+          "name": "Hickmott-343"
+        },
+        "mother": {
+          "name": "Kingswoode-1"
+        }
+      },
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile 7962599",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:52:01.079092",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Hickmott-2601": {
+      "person_name": "Thomas Hickmott",
+      "birth_date": "1510-00-00",
+      "birth_location": "Kent, England",
+      "familysearch_record_id": "",
+      "familysearch_url": "",
+      "wikitree_id": "Hickmott-2601",
+      "relationships": {},
+      "source": "WikiTree",
+      "source_collection": "WikiTree Profile Hickmott-2601",
+      "extraction_confidence": "medium",
+      "extraction_method": "continuous_automated_expansion",
+      "extraction_date": "2026-01-26T01:52:01.079094",
+      "notes": "Automatically validated from WikiTree during continuous expansion. PENDING: Verify against FamilySearch primary sources."
+    },
+    "Harris-34530": {
+      "person_name": "",
+      "birth_date": "",
+      "birth_location": "",
+      "death_date": "",
+      "death_location": "",
+      "familysearch_profile_url": "https://www.familysearch.org/en/search/record/results?q.givenName=Hannah&q.surname=Harris",
+      "familysearch_sources": [],
+      "wikitree_id": "Harris-34530",
+      "relationships": {
+        "father": {
+          "name": ""
+        },
+        "mother": {
+          "name": ""
+        }
+      },
+      "source": "FamilySearch",
+      "source_collection": "FamilySearch Family Tree with Primary Sources",
+      "extraction_confidence": "low",
+      "extraction_method": "automated_primary_source_validation",
+      "extraction_date": "2026-01-26T04:13:54.592361",
+      "cross_reference": {
+        "matches": [],
+        "discrepancies": [],
+        "num_sources": 0
+      },
+      "notes": "Validated against FamilySearch primary sources. 0 matches, 0 discrepancies, 0 sources found."
+    }
+  },
+  "stats": {
+    "total_profiles": 0,
+    "validated": 59,
+    "high_confidence": 0,
+    "medium_confidence": 7,
+    "low_confidence": 52,
+    "not_found": 156,
+    "discrepancies": 8
+  }
+}

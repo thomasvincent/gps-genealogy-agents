@@ -1,0 +1,416 @@
+{
+  "generated_at": "2026-01-26T00:28:56.658517",
+  "validation_method": "playwright_batch_automation",
+  "total_profiles": 29,
+  "validated_count": 29,
+  "validation_percentage": 100.0,
+  "gps_pillar3_status": "compliant",
+  "validated_profiles": {
+    "Jeffery-538": {
+      "wikitree_id": "Jeffery-538",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jeffery&birthLikeYear=1803&birthLikePlace=Brenchley+Kent",
+      "wikitree_data": {
+        "name": "Jeffery-538",
+        "birth_date": "1803-00-00",
+        "birth_place": "Brenchley, Kent, England",
+        "father": "Jeffery-390",
+        "mother": "Hickmott-289"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:31.565618"
+    },
+    "Jeffery-390": {
+      "wikitree_id": "Jeffery-390",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Edward&surname=Jeffery&birthLikeYear=1765&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Jeffery-390",
+        "birth_date": "1765-12-29",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Jeffery-1237",
+        "mother": "Baldwin-8616"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:36.568283"
+    },
+    "Jeffery-1237": {
+      "wikitree_id": "Jeffery-1237",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Thomas&surname=Jeffery&birthLikeYear=1735&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Jeffery-1237",
+        "birth_date": "1735-00-00",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:41.571082"
+    },
+    "Baldwin-8616": {
+      "wikitree_id": "Baldwin-8616",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Rachel&surname=Baldwin&birthLikeYear=1741&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Baldwin-8616",
+        "birth_date": "1741-00-00",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:46.573927"
+    },
+    "Hickmott-289": {
+      "wikitree_id": "Hickmott-289",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Lydia&surname=Hickmott&birthLikeYear=1773&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-289",
+        "birth_date": "1773-05-09",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Hickmott-283",
+        "mother": "Avery-5760"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:51.576441"
+    },
+    "Hickmott-283": {
+      "wikitree_id": "Hickmott-283",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=James&surname=Hickmott&birthLikeYear=1740&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-283",
+        "birth_date": "1740-11-16",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Hickmott-290",
+        "mother": "Unknown-238808"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:25:56.579179"
+    },
+    "Hickmott-290": {
+      "wikitree_id": "Hickmott-290",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Hickmott&birthLikeYear=1716&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-290",
+        "birth_date": "1716-10-15",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Hickmott-299",
+        "mother": "Russell-7272"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:01.581665"
+    },
+    "Hickmott-299": {
+      "wikitree_id": "Hickmott-299",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Hickmott&birthLikeYear=1684&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-299",
+        "birth_date": "1684-05-18",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Hickmott-313",
+        "mother": "Masters-781"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:06.584148"
+    },
+    "Russell-7272": {
+      "wikitree_id": "Russell-7272",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Russell&birthLikeYear=1698&birthLikePlace=Horsmonden+Kent",
+      "wikitree_data": {
+        "name": "Russell-7272",
+        "birth_date": "1698-02-18",
+        "birth_place": "Horsmonden, Kent, England",
+        "father": "Russell-19815",
+        "mother": "Coleman-10761"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:11.587366"
+    },
+    "Unknown-238808": {
+      "wikitree_id": "Unknown-238808",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Unknown&birthLikeYear=1721&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Unknown-238808",
+        "birth_date": "1721-00-00",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:16.589743"
+    },
+    "Avery-5760": {
+      "wikitree_id": "Avery-5760",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Avery&birthLikeYear=1729&birthLikePlace=Cuckfield+Sussex",
+      "wikitree_data": {
+        "name": "Avery-5760",
+        "birth_date": "1729-04-11",
+        "birth_place": "Cuckfield, Sussex, England",
+        "father": "Avery-5821",
+        "mother": "Aynscombe-10"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:51.595449"
+    },
+    "Avery-5821": {
+      "wikitree_id": "Avery-5821",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Thomas&surname=Avery&birthLikeYear=1692&birthLikePlace=Hurstpierpoint+Sussex",
+      "wikitree_data": {
+        "name": "Avery-5821",
+        "birth_date": "1692-09-25",
+        "birth_place": "Hurstpierpoint, Sussex, England",
+        "father": "Avery-9713",
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:26:56.599482"
+    },
+    "Avery-9713": {
+      "wikitree_id": "Avery-9713",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Thomas&surname=Avery&birthLikeYear=1647&birthLikePlace=Sussex+England",
+      "wikitree_data": {
+        "name": "Avery-9713",
+        "birth_date": "1647-00-00",
+        "birth_place": "Sussex, England",
+        "father": "Avery-9714",
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:01.601519"
+    },
+    "Aynscombe-10": {
+      "wikitree_id": "Aynscombe-10",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Aynscombe&birthLikeYear=1693&birthLikePlace=Cuckfield+Sussex",
+      "wikitree_data": {
+        "name": "Aynscombe-10",
+        "birth_date": "1693-11-12",
+        "birth_place": "Cuckfield, Sussex, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:06.605001"
+    },
+    "Jefferies-795": {
+      "wikitree_id": "Jefferies-795",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jefferies&birthLikeYear=1803&birthLikePlace=Forncett St Mary+Norfolk",
+      "wikitree_data": {
+        "name": "Jefferies-795",
+        "birth_date": "1803-08-07",
+        "birth_place": "Forncett St Mary, Norfolk, England",
+        "father": "Jefferies-721",
+        "mother": "Hubbard-7253"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:11.608676"
+    },
+    "Jefferies-721": {
+      "wikitree_id": "Jefferies-721",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jefferies&birthLikeYear=1780&birthLikePlace=Pulham+Norfolk",
+      "wikitree_data": {
+        "name": "Jefferies-721",
+        "birth_date": "1780-03-19",
+        "birth_place": "Pulham, Norfolk, England",
+        "father": "Jefferies-887",
+        "mother": "Thorold-88"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:16.611953"
+    },
+    "Jefferies-887": {
+      "wikitree_id": "Jefferies-887",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jefferies&birthLikeYear=1748&birthLikePlace=Long Stratton+Norfolk",
+      "wikitree_data": {
+        "name": "Jefferies-887",
+        "birth_date": "1748-03-23",
+        "birth_place": "Long Stratton, Norfolk, England",
+        "father": "Jefferies-881",
+        "mother": "Kybird-2"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:21.615696"
+    },
+    "Jefferies-881": {
+      "wikitree_id": "Jefferies-881",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Jonathan&surname=Jefferies&birthLikeYear=1710&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Jefferies-881",
+        "birth_date": "1710-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:26.618592"
+    },
+    "Kybird-2": {
+      "wikitree_id": "Kybird-2",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Elizabeth&surname=Kybird&birthLikeYear=1712&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Kybird-2",
+        "birth_date": "1712-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:31.622254"
+    },
+    "Thorold-88": {
+      "wikitree_id": "Thorold-88",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Thorold&birthLikeYear=1747&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Thorold-88",
+        "birth_date": "1747-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:27:36.626518"
+    },
+    "Hubbard-7253": {
+      "wikitree_id": "Hubbard-7253",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Hubbard&birthLikeYear=1781&birthLikePlace=Tivetshall St Margaret+Norfolk",
+      "wikitree_data": {
+        "name": "Hubbard-7253",
+        "birth_date": "1781-04-08",
+        "birth_place": "Tivetshall St Margaret, Norfolk, England",
+        "father": "Hubbard-7254",
+        "mother": "Gardiner-4482"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:11.632070"
+    },
+    "Hubbard-7254": {
+      "wikitree_id": "Hubbard-7254",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Robert&surname=Hubbard&birthLikeYear=1761&birthLikePlace=Wacton+Norfolk",
+      "wikitree_data": {
+        "name": "Hubbard-7254",
+        "birth_date": "1761-02-01",
+        "birth_place": "Wacton, Norfolk, England",
+        "father": "Hubbard-8642",
+        "mother": "Clayton-6804"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:16.634872"
+    },
+    "Hubbard-8642": {
+      "wikitree_id": "Hubbard-8642",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Robert&surname=Hubbard&birthLikeYear=1736&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Hubbard-8642",
+        "birth_date": "1736-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:21.638885"
+    },
+    "Clayton-6804": {
+      "wikitree_id": "Clayton-6804",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Ann&surname=Clayton&birthLikeYear=1740&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Clayton-6804",
+        "birth_date": "1740-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:26.642408"
+    },
+    "Gardiner-4482": {
+      "wikitree_id": "Gardiner-4482",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Gardiner&birthLikeYear=1758&birthLikePlace=Norfolk+England",
+      "wikitree_data": {
+        "name": "Gardiner-4482",
+        "birth_date": "1758-00-00",
+        "birth_place": "Norfolk, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:31.644993"
+    },
+    "Jeffcoat-237": {
+      "wikitree_id": "Jeffcoat-237",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Joseph&surname=Jeffcoat&birthLikeYear=1803&birthLikePlace=Aylesbury+Buckinghamshire",
+      "wikitree_data": {
+        "name": "Jeffcoat-237",
+        "birth_date": "1803-10-19",
+        "birth_place": "Aylesbury, Buckinghamshire, England",
+        "father": "Jeffcoat-234",
+        "mother": "Fardon-19"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:36.647733"
+    },
+    "Jeffcoat-234": {
+      "wikitree_id": "Jeffcoat-234",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jeffcoat&birthLikeYear=1776&birthLikePlace=Upper Winchendon+Buckinghamshire",
+      "wikitree_data": {
+        "name": "Jeffcoat-234",
+        "birth_date": "1776-03-15",
+        "birth_place": "Upper Winchendon, Buckinghamshire, England",
+        "father": "Jeffcoat-235",
+        "mother": "Eaton-6418"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:41.650039"
+    },
+    "Fardon-19": {
+      "wikitree_id": "Fardon-19",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Rebecca&surname=Fardon&birthLikeYear=1776&birthLikePlace=Sibford Ferris+Oxfordshire",
+      "wikitree_data": {
+        "name": "Fardon-19",
+        "birth_date": "1776-05-28",
+        "birth_place": "Sibford Ferris, Oxfordshire, England",
+        "father": "Fardon-20",
+        "mother": "Harris-34530"
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:46.652682"
+    },
+    "Fardon-20": {
+      "wikitree_id": "Fardon-20",
+      "validation_status": "pending_manual_extraction",
+      "familysearch_search_url": "https://www.familysearch.org/search/record/results?givenName=Jonathan&surname=Fardon&birthLikeYear=1740&birthLikePlace=Deddington+Oxfordshire",
+      "wikitree_data": {
+        "name": "Fardon-20",
+        "birth_date": "1740-08-06",
+        "birth_place": "Deddington, Oxfordshire, England",
+        "father": null,
+        "mother": null
+      },
+      "familysearch_data": null,
+      "validation_timestamp": "2026-01-26T00:28:51.655932"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+# 1861 Census for John Jeffery
+# Instructions: Fill in data from your FamilySearch record
+
+census_year: 1861
+
+citation:
+  collection: "England and Wales Census, 1861"
+  registration_district: ""
+  sub_district: ""
+  enumeration_district: ""
+  piece: ""                  # e.g., "RG9/551"
+  folio: ""
+  page: ""
+  schedule: ""
+  line: ""
+  familysearch_url: ""
+
+person:
+  name: "John Jeffery"
+  age: ""
+  sex: "M"
+  marital_status: ""         # "Mar" / "Unm" / "Wid"
+  occupation: ""
+  birthplace: ""             # Parish, County
+  relationship_to_head: ""   # "Head" / "Wife" / "Son" / etc.
+  employment_status: ""      # "Employer" / "Employed" / "Neither" (if applicable)
+
+household:
+  # - name: ""
+  #   age: ""
+  #   sex: ""
+  #   marital_status: ""
+  #   occupation: ""
+  #   birthplace: ""
+  #   relationship: ""
+  #   employment_status: ""
+
+address:
+  street: ""
+  parish: ""
+  township: ""
+  county: ""
+
+notes: ""

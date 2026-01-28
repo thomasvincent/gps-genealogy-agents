@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-01-25T21:53:36.298464",
+  "analysis_type": "cross_source_gps_pillar_3",
+  "corroboration": {
+    "confirmed": [
+      {
+        "person": "John Jeffery",
+        "relationship": "father",
+        "relative": "Edward Jeffery",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ]
+      },
+      {
+        "person": "John Jeffery",
+        "relationship": "mother",
+        "relative": "Lydia Hickmott",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ]
+      },
+      {
+        "person": "John Jefferies",
+        "relationship": "father",
+        "relative": "John Jefferies",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ]
+      },
+      {
+        "person": "Joseph Jeffcoat",
+        "relationship": "father",
+        "relative": "John Jeffcoat",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ]
+      },
+      {
+        "person": "John Jefferies",
+        "relationship": "mother",
+        "relative": "Mary Hubbard / Mary Hobart Jefferies",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ],
+        "note": "WikiTree uses maiden name (Hubbard), FamilySearch uses married name (Hobart Jefferies). Same person, different naming conventions."
+      },
+      {
+        "person": "Joseph Jeffcoat",
+        "relationship": "mother",
+        "relative": "Rebecca Fardon / Rebecca Jeffcoat",
+        "sources": [
+          "WikiTree",
+          "FamilySearch"
+        ],
+        "note": "WikiTree uses maiden name (Fardon), FamilySearch uses married name (Jeffcoat). Same person, different naming conventions."
+      }
+    ],
+    "conflicts": [],
+    "resolved_conflicts": [
+      {
+        "person": "John Jefferies",
+        "relationship": "mother",
+        "wikitree_name": "Mary Hubbard",
+        "familysearch_name": "Mary Hobart Jefferies",
+        "resolution": "Same person - maiden name vs married name convention"
+      },
+      {
+        "person": "Joseph Jeffcoat",
+        "relationship": "mother",
+        "wikitree_name": "Rebecca Fardon",
+        "familysearch_name": "Rebecca Jeffcoat",
+        "resolution": "Same person - maiden name vs married name convention"
+      }
+    ],
+    "wikitree_only": [],
+    "familysearch_only": []
+  },
+  "gps_assessment": {
+    "status": "strong",
+    "grade": "compliant",
+    "total_relationships": 6,
+    "confirmed_count": 6,
+    "conflicts_count": 0,
+    "resolved_conflicts_count": 2,
+    "single_source_count": 0,
+    "compliance_percentage": 100
+  }
+}

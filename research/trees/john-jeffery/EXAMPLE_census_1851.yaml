@@ -1,0 +1,63 @@
+# EXAMPLE: 1851 Census (This is sample data showing what a completed form looks like)
+# DO NOT USE THIS - Create your own census_1851.yaml with real data
+
+census_year: 1851
+
+citation:
+  collection: "England and Wales Census, 1851"
+  registration_district: "Tonbridge"
+  sub_district: "Brenchley"
+  enumeration_district: "1a"
+  piece: "HO107/1618"
+  folio: "234"
+  page: "15"
+  schedule: "78"
+  line: "3"
+  familysearch_url: "https://www.familysearch.org/ark:/61903/1:1:XXXX-XXX"
+
+person:
+  name: "John Jeffery"
+  age: "48"
+  sex: "M"
+  marital_status: "Mar"
+  occupation: "Agricultural Labourer"
+  birthplace: "Brenchley, Kent"
+  relationship_to_head: "Head"
+
+household:
+  - name: "Mary Jeffery"
+    age: "45"
+    sex: "F"
+    marital_status: "Mar"
+    occupation: ""
+    birthplace: "Lamberhurst, Kent"
+    relationship: "Wife"
+  - name: "Sarah Jeffery"
+    age: "18"
+    sex: "F"
+    marital_status: "Unm"
+    occupation: "At Home"
+    birthplace: "Brenchley, Kent"
+    relationship: "Daughter"
+  - name: "Thomas Jeffery"
+    age: "12"
+    sex: "M"
+    marital_status: "Unm"
+    occupation: "Scholar"
+    birthplace: "Brenchley, Kent"
+    relationship: "Son"
+  - name: "Elizabeth Jeffery"
+    age: "8"
+    sex: "F"
+    marital_status: "Unm"
+    occupation: "Scholar"
+    birthplace: "Brenchley, Kent"
+    relationship: "Daughter"
+
+address:
+  street: "High Street"
+  parish: "Brenchley"
+  township: "Brenchley"
+  county: "Kent"
+
+notes: "Family living in village center. Agricultural laborer profession typical for rural Kent."

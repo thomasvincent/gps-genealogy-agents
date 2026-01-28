@@ -1,0 +1,42 @@
+# 1851 Census for John Jeffery
+# Instructions: Fill in data from your FamilySearch record
+
+census_year: 1851
+
+citation:
+  collection: "England and Wales Census, 1851"
+  registration_district: ""  # e.g., "Tonbridge"
+  sub_district: ""           # e.g., "Brenchley"
+  enumeration_district: ""   # e.g., "1a"
+  piece: ""                  # e.g., "HO107/1618"
+  folio: ""                  # e.g., "234"
+  page: ""                   # e.g., "15"
+  schedule: ""               # Household schedule number
+  line: ""                   # Line number
+  familysearch_url: ""       # Full URL
+
+person:
+  name: "John Jeffery"
+  age: ""                    # Exact age (not rounded)
+  sex: "M"
+  marital_status: ""         # "Mar" / "Unm" / "Wid"
+  occupation: ""
+  birthplace: ""             # Specific parish and county, e.g., "Brenchley, Kent"
+  relationship_to_head: ""   # "Head" / "Wife" / "Son" / "Daughter" / etc.
+
+household:
+  # - name: ""
+  #   age: ""
+  #   sex: ""
+  #   marital_status: ""
+  #   occupation: ""
+  #   birthplace: ""
+  #   relationship: ""
+
+address:
+  street: ""
+  parish: ""
+  township: ""
+  county: ""
+
+notes: ""

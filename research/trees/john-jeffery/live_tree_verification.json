@@ -1,0 +1,158 @@
+{
+  "generated_at": "2026-01-25T21:27:06.239758",
+  "tree_file": "tree.json",
+  "verification_type": "live_source_verification",
+  "summary": {
+    "total_profiles": 3,
+    "up_to_date": 3,
+    "modified": 0,
+    "missing_in_cache": 0
+  },
+  "cached_data": {
+    "Jeffery-538": {
+      "person_name": "John Jeffery",
+      "birth_date": "1803-00-00",
+      "death_date": "1868-00-00",
+      "relationships": {
+        "father": {
+          "name": "Edward Jeffery",
+          "wikitree_id": "Jeffery-390",
+          "birth_date": "1765-12-29",
+          "death_date": "1849-06-03"
+        },
+        "mother": {
+          "name": "Lydia Hickmott",
+          "wikitree_id": "Hickmott-289",
+          "birth_date": "1773-05-09",
+          "death_date": "1808-00-00"
+        }
+      }
+    },
+    "Jefferies-795": {
+      "person_name": "John Jefferies",
+      "birth_date": "1803-08-07",
+      "death_date": "0000-00-00",
+      "relationships": {
+        "father": {
+          "name": "John Jefferies",
+          "wikitree_id": "Jefferies-721",
+          "birth_date": "1780-03-19",
+          "death_date": "0000-00-00"
+        },
+        "mother": {
+          "name": "Mary Hubbard",
+          "wikitree_id": "Hubbard-7253",
+          "birth_date": "1781-04-08",
+          "death_date": "0000-00-00"
+        }
+      }
+    },
+    "Jeffcoat-237": {
+      "person_name": "Joseph Jeffcoat",
+      "birth_date": "1803-10-19",
+      "death_date": "1870-04-11",
+      "relationships": {
+        "father": {
+          "name": "John Jeffcoat",
+          "wikitree_id": "Jeffcoat-234",
+          "birth_date": "1776-03-15",
+          "death_date": "1840-00-00"
+        },
+        "mother": {
+          "name": "Rebecca Fardon",
+          "wikitree_id": "Fardon-19",
+          "birth_date": "1776-05-28",
+          "death_date": "1838-00-00"
+        }
+      }
+    }
+  },
+  "live_data": {
+    "Jeffery-538": {
+      "person_name": "John Jeffery",
+      "birth_date": "1803-00-00",
+      "death_date": "1868-00-00",
+      "birth_location": "Brenchley, Kent, England",
+      "death_location": "Tonbridge, Kent, England",
+      "relationships": {
+        "father": {
+          "name": "Edward Jeffery",
+          "wikitree_id": "Jeffery-390",
+          "birth_date": "1765-12-29",
+          "death_date": "1849-06-03"
+        },
+        "mother": {
+          "name": "Lydia Hickmott",
+          "wikitree_id": "Hickmott-289",
+          "birth_date": "1773-05-09",
+          "death_date": "1808-00-00"
+        }
+      },
+      "touched": "20201021231134"
+    },
+    "Jefferies-795": {
+      "person_name": "John Jefferies",
+      "birth_date": "1803-08-07",
+      "death_date": "0000-00-00",
+      "birth_location": "Forncett St Mary, Norfolk, England",
+      "death_location": "",
+      "relationships": {
+        "father": {
+          "name": "John Jefferies",
+          "wikitree_id": "Jefferies-721",
+          "birth_date": "1780-03-19",
+          "death_date": "0000-00-00"
+        },
+        "mother": {
+          "name": "Mary Hubbard",
+          "wikitree_id": "Hubbard-7253",
+          "birth_date": "1781-04-08",
+          "death_date": "0000-00-00"
+        }
+      },
+      "touched": "20230324112556"
+    },
+    "Jeffcoat-237": {
+      "person_name": "Joseph Jeffcoat",
+      "birth_date": "1803-10-19",
+      "death_date": "1870-04-11",
+      "birth_location": "Aylesbury, Buckinghamshire, England",
+      "death_location": "Kankakee, Kankakee, Illinois, USA",
+      "relationships": {
+        "father": {
+          "name": "John Jeffcoat",
+          "wikitree_id": "Jeffcoat-234",
+          "birth_date": "1776-03-15",
+          "death_date": "1840-00-00"
+        },
+        "mother": {
+          "name": "Rebecca Fardon",
+          "wikitree_id": "Fardon-19",
+          "birth_date": "1776-05-28",
+          "death_date": "1838-00-00"
+        }
+      },
+      "touched": "20190212021845"
+    }
+  },
+  "comparison": {
+    "up_to_date": [
+      {
+        "wikitree_id": "Jeffery-538",
+        "person_name": "John Jeffery"
+      },
+      {
+        "wikitree_id": "Jefferies-795",
+        "person_name": "John Jefferies"
+      },
+      {
+        "wikitree_id": "Jeffcoat-237",
+        "person_name": "Joseph Jeffcoat"
+      }
+    ],
+    "modified": [],
+    "relationship_changes": [],
+    "new_relationships": [],
+    "missing_in_cache": []
+  }
+}

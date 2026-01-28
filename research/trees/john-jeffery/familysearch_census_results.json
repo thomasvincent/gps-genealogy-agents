@@ -1,0 +1,144 @@
+[
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-search-Jeffery",
+    "record_type": "search_url",
+    "url": "https://www.familysearch.org/search/record/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+    "raw_data": {
+      "query": {
+        "given_name": "John",
+        "surname": "Jeffery",
+        "surname_variants": [],
+        "birth_year": 1803,
+        "birth_year_range": 5,
+        "birth_place": "England",
+        "death_year": null,
+        "death_year_range": 5,
+        "death_place": null,
+        "residence": null,
+        "state": null,
+        "county": null,
+        "spouse_name": null,
+        "father_name": null,
+        "mother_name": null,
+        "record_types": [
+          "census"
+        ],
+        "exclude_sources": []
+      }
+    },
+    "extracted_fields": {
+      "search_type": "FamilySearch Historical Records",
+      "search_url": "https://www.familysearch.org/search/record/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+      "note": "Free account required for full record details",
+      "tip": "Create free FamilySearch account for full access"
+    },
+    "accessed_at": "2026-01-26 05:17:28.603464+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  },
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-collection-us_census_1880",
+    "record_type": "collection_search",
+    "url": "https://www.familysearch.org/search/collection/1417683/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+    "raw_data": {
+      "collection_id": "1417683",
+      "collection_name": "US Census 1880"
+    },
+    "extracted_fields": {
+      "collection_name": "US Census 1880",
+      "collection_id": "1417683",
+      "search_url": "https://www.familysearch.org/search/collection/1417683/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+      "note": "Browse collection - free account for full details"
+    },
+    "accessed_at": "2026-01-26 05:17:28.812331+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  },
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-collection-us_census_1870",
+    "record_type": "collection_search",
+    "url": "https://www.familysearch.org/search/collection/1438024/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+    "raw_data": {
+      "collection_id": "1438024",
+      "collection_name": "US Census 1870"
+    },
+    "extracted_fields": {
+      "collection_name": "US Census 1870",
+      "collection_id": "1438024",
+      "search_url": "https://www.familysearch.org/search/collection/1438024/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+      "note": "Browse collection - free account for full details"
+    },
+    "accessed_at": "2026-01-26 05:17:28.812372+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  },
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-collection-us_census_1860",
+    "record_type": "collection_search",
+    "url": "https://www.familysearch.org/search/collection/1473181/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+    "raw_data": {
+      "collection_id": "1473181",
+      "collection_name": "US Census 1860"
+    },
+    "extracted_fields": {
+      "collection_name": "US Census 1860",
+      "collection_id": "1473181",
+      "search_url": "https://www.familysearch.org/search/collection/1473181/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+      "note": "Browse collection - free account for full details"
+    },
+    "accessed_at": "2026-01-26 05:17:28.812384+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  },
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-collection-us_census_1850",
+    "record_type": "collection_search",
+    "url": "https://www.familysearch.org/search/collection/1401638/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+    "raw_data": {
+      "collection_id": "1401638",
+      "collection_name": "US Census 1850"
+    },
+    "extracted_fields": {
+      "collection_name": "US Census 1850",
+      "collection_id": "1401638",
+      "search_url": "https://www.familysearch.org/search/collection/1401638/results?q.givenName=John&q.surname=Jeffery&q.birthLikeDate.from=1798&q.birthLikeDate.to=1808&q.birthLikePlace=England",
+      "note": "Browse collection - free account for full details"
+    },
+    "accessed_at": "2026-01-26 05:17:28.812401+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  },
+  {
+    "source": "FamilySearchNoLogin",
+    "record_id": "fs-nara-workaround",
+    "record_type": "tip",
+    "url": "https://www.archives.gov/research/census",
+    "raw_data": {
+      "steps": [
+        "1. Find person in FamilySearch index (visible without login)",
+        "2. Note: Enumeration District (ED), Sheet/Page Number, Line Number",
+        "3. Go to archives.gov/research/census",
+        "4. Browse to that census year > state > county > ED > page"
+      ]
+    },
+    "extracted_fields": {
+      "tip_title": "NARA Image Workaround",
+      "description": "If FamilySearch requires login to view census images, note the Enumeration District (ED) and Page Number from the index, then look it up on NARA (archives.gov) which is free without login.",
+      "how_to": "1) Find person in FamilySearch index; 2) Note ED/Page/Line; 3) Go to archives.gov/research/census; 4) Browse census year > state > county > ED > page"
+    },
+    "accessed_at": "2026-01-26 05:17:28.812410+00:00",
+    "confidence_hint": null,
+    "needs_translation": false,
+    "language": "en"
+  }
+]

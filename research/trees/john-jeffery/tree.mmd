@@ -1,0 +1,46 @@
+```mermaid
+graph TD
+    subgraph "John Jeffery Research Case"
+        seed[John Jeffery<br/>b. ~1803 England<br/>d. 1899 Michigan]
+
+        subgraph "Primary Sources - FamilySearch"
+            fs1[Marriage 1826<br/>England]
+            fs2[Census 1841<br/>England & Wales]
+            fs3[Census 1851<br/>England & Wales]
+            fs4[Census 1861<br/>England & Wales]
+            fs5[Death 1899<br/>Michigan]
+        end
+
+        subgraph "Secondary Sources"
+            fg1[FindAGrave 240047451<br/>1803-1876]
+            fg2[FindAGrave 41806515<br/>William Dowling<br/>NOT RELEVANT]
+        end
+
+        subgraph "Authored Sources - WikiTree"
+            wt1[WikiTree Jeffery-538<br/>b. 1803 Kent<br/>d. 1868 Kent<br/>⚠️ CONFLICTS]
+            wt2[WikiTree Jefferies-795<br/>b. 1803 Norfolk<br/>DIFFERENT PERSON]
+            wt3[WikiTree Jeffcoat-237<br/>Joseph Jeffcoat<br/>DIFFERENT PERSON]
+        end
+
+        seed -->|documented by| fs1
+        seed -->|documented by| fs2
+        seed -->|documented by| fs3
+        seed -->|documented by| fs4
+        seed -->|documented by| fs5
+
+        seed -.->|possible match?| fg1
+        seed -.->|conflicts with| wt1
+
+        style seed fill:#4CAF50,stroke:#2E7D32,color:#fff
+        style fs1 fill:#2196F3,stroke:#1565C0,color:#fff
+        style fs2 fill:#2196F3,stroke:#1565C0,color:#fff
+        style fs3 fill:#2196F3,stroke:#1565C0,color:#fff
+        style fs4 fill:#2196F3,stroke:#1565C0,color:#fff
+        style fs5 fill:#2196F3,stroke:#1565C0,color:#fff
+        style fg1 fill:#FF9800,stroke:#E65100,color:#fff
+        style fg2 fill:#9E9E9E,stroke:#424242,color:#fff
+        style wt1 fill:#F44336,stroke:#C62828,color:#fff
+        style wt2 fill:#9E9E9E,stroke:#424242,color:#fff
+        style wt3 fill:#9E9E9E,stroke:#424242,color:#fff
+    end
+```

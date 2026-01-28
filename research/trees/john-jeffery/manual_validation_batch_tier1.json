@@ -1,0 +1,196 @@
+{
+  "generated_at": "2026-01-26T00:44:43.905719",
+  "tier": "tier1",
+  "tier_name": "Generation 2 (Direct Parents)",
+  "priority": "HIGH - Validate these first",
+  "profile_count": 6,
+  "instructions": "For each profile, visit the FamilySearch URL, extract the record data, and fill in the fields below",
+  "profiles": [
+    {
+      "wikitree_id": "Jeffery-390",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Edward&surname=Jeffery&birthLikeYear=1765&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Jeffery-390",
+        "birth_date": "1765-12-29",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Jeffery-1237",
+        "mother": "Baldwin-8616"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hickmott-289",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Lydia&surname=Hickmott&birthLikeYear=1773&birthLikePlace=Lamberhurst+Kent",
+      "wikitree_data": {
+        "name": "Hickmott-289",
+        "birth_date": "1773-05-09",
+        "birth_place": "Lamberhurst, Kent, England",
+        "father": "Hickmott-283",
+        "mother": "Avery-5760"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Jefferies-721",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jefferies&birthLikeYear=1780&birthLikePlace=Pulham+Norfolk",
+      "wikitree_data": {
+        "name": "Jefferies-721",
+        "birth_date": "1780-03-19",
+        "birth_place": "Pulham, Norfolk, England",
+        "father": "Jefferies-887",
+        "mother": "Thorold-88"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Hubbard-7253",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Mary&surname=Hubbard&birthLikeYear=1781&birthLikePlace=Tivetshall St Margaret+Norfolk",
+      "wikitree_data": {
+        "name": "Hubbard-7253",
+        "birth_date": "1781-04-08",
+        "birth_place": "Tivetshall St Margaret, Norfolk, England",
+        "father": "Hubbard-7254",
+        "mother": "Gardiner-4482"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Jeffcoat-234",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=John&surname=Jeffcoat&birthLikeYear=1776&birthLikePlace=Upper Winchendon+Buckinghamshire",
+      "wikitree_data": {
+        "name": "Jeffcoat-234",
+        "birth_date": "1776-03-15",
+        "birth_place": "Upper Winchendon, Buckinghamshire, England",
+        "father": "Jeffcoat-235",
+        "mother": "Eaton-6418"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    },
+    {
+      "wikitree_id": "Fardon-19",
+      "search_url": "https://www.familysearch.org/search/record/results?givenName=Rebecca&surname=Fardon&birthLikeYear=1776&birthLikePlace=Sibford Ferris+Oxfordshire",
+      "wikitree_data": {
+        "name": "Fardon-19",
+        "birth_date": "1776-05-28",
+        "birth_place": "Sibford Ferris, Oxfordshire, England",
+        "father": "Fardon-20",
+        "mother": "Harris-34530"
+      },
+      "familysearch_data": {
+        "person_name": "",
+        "birth_date": "",
+        "birth_location": "",
+        "familysearch_record_id": "",
+        "familysearch_url": "",
+        "relationships": {
+          "father": {
+            "name": ""
+          },
+          "mother": {
+            "name": ""
+          }
+        },
+        "source": "FamilySearch",
+        "source_collection": "England, Births and Christenings, 1538-1975",
+        "extraction_confidence": "high",
+        "extraction_method": "manual_entry",
+        "notes": ""
+      }
+    }
+  ]
+}
