@@ -1,0 +1,101 @@
+{{Infobox person
+| name               = James Eli Tregeagle
+| birth_date         = {{birth date|1863|10|18}}
+| birth_place        = [[St. Helier]], [[Jersey]], [[Channel Islands]]
+| death_date         = {{death date and age|1934|11|16|1863|10|18}}
+| death_place        = [[Salt Lake City]], [[Utah]], United States
+| occupation         = Master Stonemason, Stone Contractor
+| known_for          = [[Karl G. Maeser Memorial Building]], [[Brigham Young University]]
+| spouse             = Jane Roberts
+| children           = Laura Alice Tregeagle (Vincent)
+}}
+
+'''James Eli Tregeagle''' (18 October 1863 – 16 November 1934) was a British-American master stonemason known for his contributions to the architectural heritage of the [[Intermountain West]]. He served as the lead masonry contractor for the '''[[Karl G. Maeser Memorial Building]]''' at [[Brigham Young University]] (1909–1911), a structure now listed on the [[National Register of Historic Places]].
+
+==Early life==
+Tregeagle was born on 18 October 1863 in [[St. Helier]], [[Jersey]], [[Channel Islands]], into a family with origins in [[Cornwall]] and [[Devon]], regions historically associated with skilled stonework and mining.<ref>Jersey Parish Registers, St. Helier, Birth Records, 1863.</ref> His surname is a variant of the traditional Cornish name "Tregagle," common in southwest England.
+
+Tregeagle trained in traditional British and Channel Islands masonry techniques, learning the craft of working with limestone, granite, and other building stones. The Channel Islands' maritime architecture and defensive fortifications provided early exposure to large-scale stonework.
+
+==Immigration to the United States==
+Tregeagle immigrated to the United States in the early 1880s, initially settling in [[New Zealand]] before relocating to [[Utah Territory]].<ref>U.S. Census 1900, Provo, Utah.</ref> He established the '''Belmont Stone Company''' in [[Provo, Utah]], around 1895, which became a leading supplier of cut stone and masonry services for institutional and commercial buildings across Utah.
+
+His business, also known as "Belmont Stone Works" or "Belmont Masonry Company," specialized in [[Oolite|oolitic limestone]] quarried from deposits near [[Manti, Utah|Manti]] and [[Ephraim, Utah|Ephraim]] in [[Sanpete County, Utah|Sanpete County]]. This stone, known as '''Sanpete White Oolitic Limestone''', became a preferred material for prominent Utah buildings due to its workability and durability.
+
+==Karl G. Maeser Memorial Building==
+
+===Commission and construction===
+Tregeagle's most significant professional achievement was his work as lead stonemason and masonry contractor for the '''Karl G. Maeser Memorial Building''' at [[Brigham Young University]] in Provo.<ref>National Register of Historic Places, Inventory-Nomination Form, Karl G. Maeser Memorial Building, Reference #71000854.</ref> The building, designed by the architectural firm [[Ware & Treganza]], was constructed between 1909 and 1911 to serve as the central academic building for the university, then known as Brigham Young Academy.
+
+The Maeser Building exemplifies [[Greek Revival architecture|Greek Revival]] and [[Neoclassical architecture]], featuring:
+
+* Four massive [[Ionic order|Ionic columns]] carved from single pieces of oolitic limestone
+* Hand-carved [[volute]]s (scrolls) on each capital
+* [[Dentil]] molding beneath the cornice
+* Smooth-faced [[ashlar]] limestone walls
+* Precisely cut [[quoin]]s at the building's corners
+* Carved limestone window surrounds
+
+===Craftsmanship===
+Tregeagle's work on the Maeser Building demonstrated mastery of Neo-Classical stone-cutting techniques that were becoming rare in early 20th-century American construction, as steel and concrete began to replace traditional masonry. The precision of the ionic capitals and the seamless integration of decorative and structural elements reflected training in European masonry traditions.
+
+The building's construction required:
+* Quarrying and transporting limestone from [[Sanpete County, Utah|Sanpete County]] (approximately 60 miles south of Provo)
+* Cutting and finishing large blocks on-site
+* Coordinating with the architectural firm to ensure specifications were met
+* Training and supervising a crew of stonecutters and masons
+
+===National Register designation===
+The Karl G. Maeser Memorial Building was listed on the [[National Register of Historic Places]] in 1971 (Reference #71000854) in recognition of its architectural significance and role in Utah's educational history.<ref>National Register of Historic Places, NRHP #71000854, Karl G. Maeser Memorial Building.</ref> The building remains in use as a classroom and administrative building at BYU and is considered one of the most architecturally distinguished structures on campus.
+
+==Business operations==
+The '''Belmont Stone Company''', operated by Tregeagle from approximately 1895 to 1935, served as both a stone supply business and a contracting firm. The company maintained yards at 186 West, First South in Provo and employed skilled stonecutters from immigrant communities, particularly those with European masonry training.
+
+Tregeagle's business coincided with a period of significant institutional building in Utah, including:
+* University and school buildings
+* [[The Church of Jesus Christ of Latter-day Saints|LDS Church]] meetinghouses and temples
+* County courthouses
+* Commercial buildings in Provo and surrounding communities
+
+The firm's specialization in oolitic limestone positioned it advantageously during Utah's architectural development, as the material was favored for its aesthetic qualities and availability from local quarries.
+
+==Family==
+Tregeagle married Jane Roberts, and the couple had several children, including Laura Alice Tregeagle (1863–1953), who married Rev. [[Frederick Janvrin Vincent]], an [[Episcopal Church (United States)|Episcopal]] missionary and founder of [[St. Peter's Episcopal Church (Salt Lake City)|St. Peter's Episcopal Church]] in Salt Lake City.
+
+The family maintained connections to both the Cornish-Jersey immigrant community and Utah's growing professional class.
+
+==Death and legacy==
+James Eli Tregeagle died on 16 November 1934 in Salt Lake City and is buried at [[Provo City Cemetery]].<ref>Provo City Cemetery Records, Burial Register, 1934.</ref>
+
+His legacy is preserved in the surviving structures built with his craftsmanship, most notably the Maeser Building at BYU. The building's continued use and recognition as a historic landmark ensure that Tregeagle's contribution to Utah's architectural heritage remains visible to contemporary audiences.
+
+Tregeagle represents the tradition of immigrant craftsmen who brought European building techniques to the American West, adapting traditional skills to the materials and architectural styles of their adopted regions.
+
+==See also==
+* [[Karl G. Maeser Memorial Building]]
+* [[Brigham Young University]]
+* [[Greek Revival architecture]]
+* [[Stonemasonry]]
+* [[National Register of Historic Places listings in Utah County, Utah]]
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://npgallery.nps.gov/NRHP National Register of Historic Places] – NPS Database
+* [https://www.byu.edu Brigham Young University] – Campus history
+
+{{Authority control}}
+
+[[Category:1863 births]]
+[[Category:1934 deaths]]
+[[Category:People from Jersey]]
+[[Category:British emigrants to the United States]]
+[[Category:American stonemasons]]
+[[Category:People from Provo, Utah]]
+[[Category:Burials at Provo City Cemetery]]
+[[Category:Brigham Young University]]
+[[Category:Greek Revival architecture in Utah]]
+[[Category:National Register of Historic Places in Utah]]
+[[Category:19th-century American businesspeople]]
+[[Category:20th-century American businesspeople]]
