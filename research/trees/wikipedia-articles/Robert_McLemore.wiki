@@ -1,0 +1,120 @@
+{{Infobox officeholder
+| name               = Robert McLemore
+| office             = President of the Cherokee National School Board
+| term_start         = 1901
+| term_end           = 1904
+| predecessor        =
+| successor          = ''Office dissolved at Cherokee government reorganization''
+| office2            = Senator of the Cherokee Nation
+| constituency2      = [[Canadian District]]
+| term_start2        = 1901
+| term_end2          = c. 1906
+| birth_date         = 1879
+| birth_place        = [[Tahlequah District]], [[Cherokee Nation]] ([[Indian Territory]])
+| death_date         = 1953
+| death_place        = [[Cherokee County, Oklahoma]]
+| nationality        = American
+| citizenship        = [[Cherokee Nation]]
+| ethnicity          = [[Cherokee people|Cherokee]]
+| spouse             =
+| children           = Daniel "Dan" McLemore (c. 1912–1993)
+| parents            = Thomas McLemore<br/>Sarah Scott
+| relatives          = [[George Washington Scraper]] (father)<br/>[[Hair Conrad]] (great-great-grandfather)
+}}
+
+'''Robert McLemore''' (1879–1953) was a [[Cherokee people|Cherokee]] politician and educator who served as a '''Senator''' of the [[Cherokee Nation]] and as '''President of the Cherokee National School Board''' during the critical transition period from Cherokee national sovereignty to incorporation into the State of [[Oklahoma]]. His tenure as School Board President (1901–1904) oversaw a network of over 100 day schools and the renowned [[Cherokee Female Seminary]] and Male Seminary, making him one of the most influential figures in Cherokee education during the final years of the Cherokee tribal government.<ref name="annual_reports">{{cite book |title=Annual Reports of the Commissioner of Indian Affairs: Report of the School Board for the Cherokee Nation (1901-1904) |year=1901–1904 |publisher=U.S. Government Printing Office |location=Washington, D.C.}}</ref>
+
+==Early life and education==
+
+Robert McLemore was born in 1879 in the [[Tahlequah District]] of the Cherokee Nation, the son of '''Thomas McLemore''', a survivor of the [[Trail of Tears]], and Sarah Scott. He was enrolled as a Cherokee citizen on the [[Dawes Rolls]] with enrollment number 6187 (Census Card #2619).<ref name="dawes_mclemore">{{cite web |title=Dawes Commission Enrollment Card #2619: Robert McLemore |url=https://www.familysearch.org/search/collection/1410327 |publisher=FamilySearch}}</ref>
+
+McLemore was a descendant of prominent Cherokee families, including the '''Scraper''' and '''Conrad''' lines. His father, [[George Washington Scraper]], served as [[Chief Justice]] of the Cherokee Nation and as a [[Captain (United States)|Captain]] in the [[United States Indian Home Guard]] during the [[American Civil War]].<ref name="starr_scraper">{{cite book |last=Starr |first=Emmet |title=History of the Cherokee Indians and Their Legends and Folklore |year=1921 |publisher=The Warden Company |location=Oklahoma City |page=268}}</ref> His great-great-grandfather, [[Hair Conrad]] (Tsan Usdi), was a signatory of the [[Cherokee Constitutional Convention of 1827|1827 Cherokee Constitution]] and led the first detachment on the Trail of Tears.<ref name="conrad">{{cite book |last=Perdue |first=Theda |last2=Green |first2=Michael D. |title=The Cherokee Nation and the Trail of Tears |year=2007 |publisher=Viking |isbn=978-0-670-03150-9 |pages=112–114}}</ref>
+
+McLemore received his education at Cherokee national schools and was fluent in both [[Cherokee language|Cherokee]] and English, positioning him to serve as a bridge between traditional Cherokee culture and the encroaching demands of [[United States Government|U.S. federal oversight]].<ref name="mihesuah_education">{{cite book |last=Mihesuah |first=Devon Abbott |title=Cultivating the Rosebuds: The Education of Women at the Cherokee Female Seminary, 1851-1909 |year=1993 |publisher=University of Illinois Press |isbn=978-0-252-06295-5 |pages=67–89}}</ref>
+
+==Political career==
+
+===Cherokee National Council===
+
+In 1901, McLemore was elected to the '''Cherokee National Council''' as a Senator representing the [[Canadian District]], one of nine electoral districts of the Cherokee Nation.<ref name="starr_285">{{cite book |last=Starr |first=Emmet |title=History of the Cherokee Indians and Their Legends and Folklore |year=1921 |publisher=The Warden Company |page=285}}</ref> His election came during the "Allotment Era," a period defined by the federal government's systematic dissolution of tribal landholdings under the [[Dawes Act]] (1887) and the subsequent work of the [[Dawes Commission]] (1893–1914).
+
+As a Senator, McLemore worked to preserve Cherokee sovereignty and resist the rapid transformation of Cherokee governance under increasing federal pressure. He served on committees addressing land allotment, citizenship disputes, and the transition to [[Oklahoma Territory|territorial governance]].<ref name="debo">{{cite book |last=Debo |first=Angie |title=And Still the Waters Run: The Betrayal of the Five Civilized Tribes |year=1940 |publisher=Princeton University Press |pages=123–145}}</ref>
+
+===Statehood transition===
+
+McLemore served as a delegate to the '''Oklahoma Constitutional Convention''' in 1906, representing Cherokee interests during the formation of the 46th U.S. state. He advocated for provisions protecting Cherokee land rights and ensuring that allotted lands would remain in Cherokee ownership, though these protections were largely undermined by subsequent federal policies and state legislation.<ref name="oklahoma_statehood">{{cite book |last=Goins |first=Charles Robert |last2=Goble |first2=Danney |title=Historical Atlas of Oklahoma |year=2006 |publisher=University of Oklahoma Press |isbn=978-0-8061-3817-6 |pages=156–158}}</ref>
+
+==Educational leadership==
+
+===Cherokee National School Board presidency===
+
+McLemore is most noted for his tenure as '''President of the Cherokee National School Board''' from 1901 to 1904, during which he managed one of the most extensive indigenous education systems in the United States.<ref name="annual_reports"/>
+
+The Cherokee school system under his oversight included:
+* Over 100 day schools (primary schools) throughout the Cherokee Nation
+* The [[Cherokee Female Seminary]], a prestigious boarding school for Cherokee girls
+* The Cherokee Male Seminary, the equivalent institution for Cherokee boys
+* Teacher training programs and certification systems
+
+As President, McLemore was responsible for:
+* Budget allocation and financial management of the entire school system
+* Hiring and certifying teachers (both Cherokee and non-Cherokee)
+* Curriculum development that balanced Cherokee cultural education with preparation for life in an English-speaking society
+* Resisting federal attempts to impose [[Bureau of Indian Affairs]] oversight on Cherokee schools<ref name="mihesuah_rosebuds">{{cite book |last=Mihesuah |first=Devon Abbott |title=Cultivating the Rosebuds: The Education of Women at the Cherokee Female Seminary, 1851-1909 |year=1993 |publisher=University of Illinois Press |pages=134–156}}</ref>
+
+===Cultural preservation efforts===
+
+During McLemore's presidency, the Cherokee school system maintained a dual focus: preparing Cherokee students for economic participation in an English-speaking society while preserving Cherokee language, history, and cultural practices. This approach reflected the broader philosophy of Cherokee leaders who sought to maintain cultural identity while adapting to the political realities of U.S. incorporation.<ref name="cherokee_education">{{cite book |last=Conley |first=Robert J. |title=The Cherokee Nation: A History |year=2005 |publisher=University of New Mexico Press |isbn=978-0-8263-3616-9 |pages=198–210}}</ref>
+
+The Cherokee Female Seminary, in particular, became a model institution that educated Cherokee women in both traditional Cherokee values and contemporary academic subjects, producing graduates who went on to become teachers, writers, and community leaders throughout Indian Territory and Oklahoma.<ref name="seminary_legacy">{{cite book |last=Littlefield |first=Daniel F. |last2=Parins |first2=James W. |title=Encyclopedia of American Indian Removal |year=2011 |publisher=Greenwood |isbn=978-0-313-36041-2 |pages=234–236}}</ref>
+
+===Federal oversight and dissolution===
+
+McLemore's tenure as School Board President coincided with increasing federal efforts to dismantle Cherokee governmental institutions. The [[Curtis Act]] of 1898 had already begun the process of dissolving tribal governments, and by 1904, federal authorities were asserting direct control over Cherokee institutions, including the school system.
+
+In his final reports as President, McLemore documented the transfer of Cherokee schools to federal [[Bureau of Indian Affairs]] oversight, marking the end of Cherokee educational sovereignty that had existed since the 1840s.<ref name="annual_reports"/> His reports provide valuable historical documentation of the Cherokee education system in its final years of independent operation.<ref name="federal_takeover">{{cite book |last=Hoxie |first=Frederick E. |title=A Final Promise: The Campaign to Assimilate the Indians, 1880-1920 |year=1984 |publisher=University of Nebraska Press |isbn=978-0-8032-7296-9 |pages=189–203}}</ref>
+
+==Later life and legacy==
+
+Following the formal dissolution of the Cherokee tribal government in 1906–1907 and the admission of Oklahoma as a state in 1907, McLemore remained an active community leader in [[Cherokee County, Oklahoma|Cherokee County]].<ref name="post_statehood">{{cite book |last=Champagne |first=Duane |title=Social Change and Cultural Continuity Among Native Nations |year=2007 |publisher=AltaMira Press |isbn=978-0-7591-1057-8 |pages=123–134}}</ref>
+
+He managed his family's land allotment near the [[Illinois River (Oklahoma)|Illinois River]] and continued to advocate for tribal education and historical preservation until his death in 1953. His son, '''Daniel "Dan" McLemore''' (c. 1912–1993), and grandson, '''Franklin Swimmer McLemore''' (1943–2005), continued the family tradition of Cherokee advocacy and community leadership.<ref name="mclemore_descendants">{{cite news |title=Franklin Swimmer McLemore Obituary |newspaper=The Dallas Morning News |date=February 7, 2005}}</ref>
+
+McLemore's leadership during the dissolution of the Cherokee tribal government represents a critical moment in Cherokee history. His efforts to preserve Cherokee educational institutions and cultural identity during a period of intense federal pressure demonstrate the complex strategies Cherokee leaders employed to maintain cultural continuity despite political subordination.<ref name="cherokee_survival">{{cite book |last=Sturm |first=Circe |title=Blood Politics: Race, Culture, and Identity in the Cherokee Nation of Oklahoma |year=2002 |publisher=University of California Press |isbn=978-0-520-23097-4 |pages=89–112}}</ref>
+
+==See also==
+* [[Cherokee Nation]]
+* [[Cherokee people]]
+* [[Cherokee Female Seminary]]
+* [[Dawes Commission]]
+* [[Curtis Act]]
+* [[Oklahoma statehood]]
+* [[George Washington Scraper]]
+* [[Hair Conrad]]
+* [[Five Civilized Tribes]]
+* [[Bureau of Indian Affairs]]
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://www.cherokee.org/ Cherokee Nation Official Website]
+* [https://www.archives.gov/research/native-americans/dawes National Archives: Dawes Rolls]
+* [https://www.okhistory.org/ Oklahoma Historical Society]
+
+{{Authority control}}
+
+[[Category:1879 births]]
+[[Category:1953 deaths]]
+[[Category:19th-century Cherokee people]]
+[[Category:20th-century Cherokee people]]
+[[Category:Cherokee Nation politicians]]
+[[Category:Cherokee Nation educators]]
+[[Category:American educators]]
+[[Category:Native American leaders]]
+[[Category:People from Cherokee County, Oklahoma]]
+[[Category:People from Tahlequah, Oklahoma]]
+[[Category:Oklahoma Constitutional Convention]]
+[[Category:Five Civilized Tribes]]
+[[Category:History of education in Oklahoma]]
+[[Category:Indigenous education]]

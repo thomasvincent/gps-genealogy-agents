@@ -1,0 +1,127 @@
+{{Infobox military person
+| name               = George Washington Scraper
+| birth_date         = 1844
+| birth_place        = [[Cooweescoowee District]], [[Cherokee Nation]] ([[Indian Territory]])
+| death_date         = 1911
+| death_place        = [[Cherokee County, Oklahoma]]
+| allegiance         = {{flag|United States|1861}}
+| branch             = [[United States Indian Home Guard]]
+| serviceyears       = 1861–1865
+| rank               = [[Captain (United States)|Captain]]
+| unit               = Company G, 2nd Regiment Indian Home Guards
+| battles            = [[American Civil War]]
+}}
+
+{{Infobox officeholder
+| name               = George Washington Scraper
+| office             = Chief Justice of the Cherokee Nation
+| term_start         = c. 1890
+| term_end           = c. 1906
+| predecessor        =
+| successor          = ''Office dissolved at Oklahoma statehood''
+| office2            = Senator of the Cherokee Nation
+| constituency2      = [[Cooweescoowee District]]
+| term_start2        = c. 1870
+| term_end2          = c. 1890
+}}
+
+'''George Washington Scraper''' (1844–1911) was a [[Cherokee people|Cherokee]] jurist, military officer, and statesman who served as the [[Chief Justice]] of the [[Cherokee Nation]] and as a [[Captain (United States)|Captain]] in the [[United States Indian Home Guard]] during the [[American Civil War]]. A prominent member of the [[Keetoowah Society]], Scraper was a leader of the "Loyal Cherokee" faction that opposed [[slavery]] and supported the [[Union (American Civil War)|Union]]. His judicial career spanned the critical period from post-war reconstruction through the dissolution of the Cherokee tribal government at [[Oklahoma statehood]] in 1907.<ref name="starr_268">{{cite book |last=Starr |first=Emmet |title=History of the Cherokee Indians and Their Legends and Folklore |year=1921 |publisher=The Warden Company |location=Oklahoma City |page=268}}</ref>
+
+==Early life and family==
+
+George Washington Scraper was born in 1844 in the [[Cooweescoowee District]] of the Cherokee Nation (Indian Territory), the son of Di-su-go-s-gi (known in English as "The Scraper") and Tiana Smith.<ref name="dawes_scraper">{{cite web |title=Dawes Commission Enrollment Card #6763: George W. Scraper |url=https://www.archives.gov/research/native-americans/dawes |publisher=National Archives and Records Administration}}</ref> He was the great-grandson of [[Hair Conrad]] (Tsan Usdi), a signatory of the [[Cherokee Constitutional Convention of 1827|1827 Cherokee Constitution]] and leader of the first detachment on the [[Trail of Tears]] in 1838–1839.<ref name="conrad_trail">{{cite book |last=Perdue |first=Theda |last2=Green |first2=Michael D. |title=The Cherokee Nation and the Trail of Tears |year=2007 |publisher=Viking |isbn=978-0-670-03150-9 |pages=112–114}}</ref>
+
+Scraper grew up during a period of intense political division within the Cherokee Nation between [[wikt:assimilation|assimilationist]] and traditionalist factions. His family aligned with the traditionalist Keetoowah Society, which advocated for preservation of Cherokee cultural practices and opposed the expansion of slavery within the Cherokee Nation.<ref name="confer_keetoowah">{{cite book |last=Confer |first=Clarissa |title=The Cherokee Nation in the Civil War |year=2007 |publisher=University of Oklahoma Press |isbn=978-0-8061-3811-4 |pages=23–45}}</ref>
+
+==Military service==
+
+===Confederate service and defection===
+
+At the outbreak of the American Civil War in 1861, the Cherokee Nation initially aligned with the [[Confederate States of America]] under the leadership of [[Stand Watie]]. Scraper, then 17 years old, was enlisted in the [[1st Cherokee Mounted Rifles]] (Confederate) under political pressure from the pro-Confederate Cherokee government.<ref name="abel_participant">{{cite book |last=Abel |first=Annie Heloise |title=The American Indian as Participant in the Civil War |year=1919 |publisher=The Arthur H. Clark Company |location=Cleveland |pages=156–158}}</ref>
+
+However, following the [[Battle of Pea Ridge|Battle of Bird Creek]] in late 1861, Scraper defected to the Union along with a large contingent of Keetoowah Society members who opposed Cherokee involvement in a slaveholding confederacy. This defection was part of a larger split within the Cherokee Nation, with traditionalists fleeing to [[Kansas]] and establishing a pro-Union Cherokee government-in-exile led by [[John Ross (Cherokee chief)|Chief John Ross]].<ref name="confer_defection">{{cite book |last=Confer |first=Clarissa |title=The Cherokee Nation in the Civil War |year=2007 |publisher=University of Oklahoma Press |pages=67–89}}</ref>
+
+===Union service===
+
+In 1862, Scraper received a commission as [[Captain (United States)|Captain]] in '''Company G of the 2nd Regiment Indian Home Guards''', a Union military unit composed primarily of Cherokee, Creek, and Seminole soldiers loyal to the United States government.<ref name="pension_scraper">{{cite document |title=Pension File of George W. Scraper, #529841 |publisher=National Archives and Records Administration |series=Record Group 15 |location=Washington, D.C.}}</ref>
+
+Throughout the war, Scraper led Cherokee troops in various engagements across Indian Territory and Arkansas, specifically targeting Confederate supply lines and defending Unionist Cherokee refugees in Kansas. His service was defined by his allegiance to the Keetoowah Society, a secret traditionalist organization that advocated for the abolition of slavery and loyalty to the Federal government.<ref name="abel_home_guard">{{cite book |last=Abel |first=Annie Heloise |title=The American Indian as Participant in the Civil War |year=1919 |publisher=The Arthur H. Clark Company |pages=234–267}}</ref>
+
+Scraper's military service earned him a Federal pension, documented in his pension file (#529841) held at the National Archives, which contains detailed records of his service, physical description, and post-war testimony about his military engagements.<ref name="pension_scraper"/>
+
+==Judicial and political career==
+
+===Post-war reconstruction===
+
+Following the war, Scraper became a central figure in the reconstruction of the Cherokee Nation. The Cherokee Nation was deeply divided between those who had supported the Confederacy (the "Southern Party" led by Stand Watie) and those who had remained loyal to the Union (the "Loyal Cherokee" or "Keetoowah Party").<ref name="mcloughlin_aftermath">{{cite book |last=McLoughlin |first=William G. |title=After the Trail of Tears: The Cherokees' Struggle for Sovereignty, 1839-1880 |year=1993 |publisher=University of North Carolina Press |isbn=978-0-8078-4433-2 |pages=245–267}}</ref>
+
+Scraper was elected as a '''Senator''' representing the [[Cooweescoowee District]] in the Cherokee National Council during the 1870s and 1880s. In this capacity, he worked to rebuild Cherokee institutions destroyed during the war and to resist encroachment by white settlers and railroad companies on Cherokee land.<ref name="starr_senate">{{cite book |last=Starr |first=Emmet |title=History of the Cherokee Indians and Their Legends and Folklore |year=1921 |publisher=The Warden Company |pages=268–270}}</ref>
+
+===Chief Justice of the Cherokee Nation===
+
+By the 1890s, Scraper had transitioned to the Cherokee judiciary, eventually rising to the position of '''Chief Justice of the Cherokee Supreme Court'''.<ref name="starr_268"/> The Cherokee judicial system operated independently of the United States courts system, hearing cases involving Cherokee citizens and interpreting Cherokee national law.
+
+As Chief Justice, Scraper presided over cases involving:
+- Land disputes arising from increasing white settlement pressure
+- Criminal cases under Cherokee jurisdiction
+- Constitutional questions about Cherokee sovereignty
+- Challenges to Cherokee laws imposed by the [[Dawes Commission]]<ref name="cherokee_courts">{{cite book |last=Strickland |first=Rennard |title=Fire and the Spirits: Cherokee Law from Clan to Court |year=1975 |publisher=University of Oklahoma Press |isbn=978-0-8061-1201-5 |pages=189–203}}</ref>
+
+===Allotment era===
+
+During the dissolution of tribal landholdings under the [[Dawes Act]] (1887) and the subsequent work of the [[Dawes Commission]] (1893–1914), Scraper served as a legal advisor and representative for Cherokee citizens, attempting to protect Cherokee land interests during the transition to [[Oklahoma statehood]] in 1907.<ref name="dawes_era">{{cite book |last=Hoxie |first=Frederick E. |title=A Final Promise: The Campaign to Assimilate the Indians, 1880-1920 |year=1984 |publisher=University of Nebraska Press |isbn=978-0-8032-7296-9 |pages=156–178}}</ref>
+
+The Cherokee Supreme Court was formally dissolved with the end of the Cherokee tribal government in 1906, though Scraper continued to serve as an informal legal advisor to Cherokee families navigating the allotment process.<ref name="debo_end">{{cite book |last=Debo |first=Angie |title=And Still the Waters Run: The Betrayal of the Five Civilized Tribes |year=1940 |publisher=Princeton University Press |pages=89–112}}</ref>
+
+==Personal life and legacy==
+
+Scraper married '''Louisa McIntosh''' in 1866, shortly after returning from military service. Louisa was herself enrolled as a Cherokee citizen on the [[Dawes Rolls]] (Roll #20078, Card #8511).<ref name="dawes_mcintosh">{{cite web |title=Dawes Commission Enrollment Card #8511: Louisa McIntosh Scraper |url=https://www.familysearch.org/search/collection/1410327 |publisher=FamilySearch}}</ref>
+
+Their son, '''Robert McLemore''' (1879–1953), continued the family's tradition of public service, serving as a Senator in the Cherokee National Council and as President of the Cherokee National School Board during the critical transition to Oklahoma statehood.<ref name="mclemore_son">{{cite book |last=Starr |first=Emmet |title=History of the Cherokee Indians and Their Legends and Folklore |year=1921 |publisher=The Warden Company |page=285}}</ref>
+
+George Washington Scraper died in 1911 in Cherokee County, Oklahoma, and is buried in the Cooweescoowee District. His descendants continued to hold prominent positions in Cherokee civic life throughout the 20th century, including his great-great-grandson '''Franklin Swimmer McLemore''' (1943–2005), who founded the Tribal American Network and served as a founding board member of the Dallas Indian Chamber of Commerce.<ref name="franklin_descendant">{{cite news |title=Franklin Swimmer McLemore Obituary |newspaper=The Dallas Morning News |date=February 7, 2005}}</ref>
+
+==Legacy==
+
+George Washington Scraper's life exemplified the experience of Cherokee leaders who navigated the turbulent transition from Cherokee national sovereignty to incorporation into the United States. His service as both a Union military officer and Chief Justice demonstrated the complex loyalties of Cherokee citizens during and after the Civil War, and his judicial career represented the final generation of Cherokee leaders who governed under the Cherokee Nation's independent legal system.
+
+His role in the Keetoowah Society and his opposition to slavery positioned him within the "Loyal Cherokee" faction that shaped Cherokee politics for decades after the Civil War. Modern Cherokee historians recognize Scraper as a representative figure of Cherokee resistance to cultural assimilation while simultaneously engaging with U.S. governmental institutions.<ref name="cherokee_resistance">{{cite book |last=Conley |first=Robert J. |title=The Cherokee Nation: A History |year=2005 |publisher=University of New Mexico Press |isbn=978-0-8263-3616-9 |pages=178–189}}</ref>
+
+==See also==
+* [[Cherokee Nation]]
+* [[Cherokee people]]
+* [[Hair Conrad]]
+* [[Trail of Tears]]
+* [[Keetoowah Society]]
+* [[United States Indian Home Guard]]
+* [[American Civil War]]
+* [[Dawes Commission]]
+* [[Oklahoma Territory]]
+* [[Cooweescoowee District]]
+
+==References==
+{{Reflist}}
+
+==External links==
+* [https://www.archives.gov/research/native-americans/dawes National Archives: Dawes Rolls]
+* [https://www.cherokee.org/ Cherokee Nation Official Website]
+* [https://www.okhistory.org/ Oklahoma Historical Society]
+
+{{Authority control}}
+
+[[Category:1844 births]]
+[[Category:1911 deaths]]
+[[Category:19th-century Cherokee people]]
+[[Category:20th-century Cherokee people]]
+[[Category:Cherokee Nation politicians]]
+[[Category:Cherokee Nation judges]]
+[[Category:Chief Justices]]
+[[Category:American Indian Wars]]
+[[Category:Union Army officers]]
+[[Category:United States Indian Home Guard]]
+[[Category:People of Oklahoma in the American Civil War]]
+[[Category:Keetoowah Society]]
+[[Category:People from Cherokee County, Oklahoma]]
+[[Category:People from Cooweescoowee District]]
+[[Category:Native American leaders]]
+[[Category:American jurists]]
